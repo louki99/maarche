@@ -1,0 +1,80 @@
+<div class="uploadSignature">
+    <div dnd-droppable matTooltip="{{'lang.uploadSignFileInfo' | translate}}"
+        (click)="clickOnUploader('uploadSignFile')"
+        [class.dndFileHighlighted]="highlightMe" (dragover)="highlightMe=true"
+        (dragleave)="highlightMe=false"
+        (onDropSuccess)="dndUploadSignature($event);highlightMe=false;"
+        class="dndFile">
+        {{'lang.uploadSignFile' | translate}}
+    </div>
+    <form (ngSubmit)="submitSignature()" #signatureForm="ngForm"
+        style="display:none;">
+        <div class="col-md-12">
+            <mat-form-field>
+                <input matInput type="text" id="signature_label"
+                    name="signature_label" title="{{'lang.label' | translate}}"
+                    placeholder="{{'lang.label' | translate}}"
+                    [(ngModel)]="signatureModel.label" required>
+            </mat-form-field>
+            <div class="form-inline hide">
+                <div class="form-group">
+                    <input type="file" name="files[]" id="uploadSignFile"
+                        (change)="uploadSignatureTrigger($event)" accept="image/*">
+                </div>
+            </div>
+        </div>
+        <div [ngClass]="[signatureModel.size != '' ? 'col-md-10' : 'col-md-12']">
+            <div class="upload-drop-zone"
+                (click)="clickOnUploader('uploadSignFile')">
+                {{'lang.clickOn' | translate}}
+                <i class="fa fa-upload fa-2x"></i>
+                (
+                < 2MB) </div> </div> <div class="col-md-2"
+                    *ngIf="signatureModel.size">
+                    <img id="signaturePreview" [src]="signatureModel.base64ForJs"
+                        alt="Image non valide" style="width: 100%;">
+            </div>
+            <div class="col-md-12 form-group" style="margin-top: 10px;">
+                <div id="submitButton">
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="!signatureForm.form.valid || !signatureModel.size">{{'lang.save' | translate}}</button>
+                </div>
+            </div>
+    </form>
+</div>
+
+<div class="userSignatures">
+    <div class="displaySignature">
+        <div class="col-md-4 col-sm-4 col-xm-6"
+            *ngFor="let signature of userSignatures; let i = index">
+            <mat-card style="margin-bottom:10px;">
+                <mat-card-content style="text-align:center;">
+                    <mat-form-field floatLabel="never">
+                        <input matInput type="text"
+                            [(ngModel)]="signature.signature_label"
+                            name="selectedSignatureLabel"
+                            placeholder="{{'lang.label' | translate}}"
+                            (change)="updateSignature(signature)">
+                        <button mat-button matSuffix mat-icon-button
+                            (click)="deleteSignature(signature.id)" color="warn"
+                            matTooltip="{{'lang.delete' | translate}}">
+                            <mat-icon class="fa fa-times"></mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <img [src]="'../rest/users/' + headerService.user.id + '/signatures/' + signature.id + '/content' | secureUrl | async"
+                        alt="Signature">
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    <div>
+        <button *ngIf="userSignatures.length > 0" mat-icon-button color="primary"
+            (click)="synchronizeSignatures()"
+            matTooltip="{{'lang.syncSignsToMaarchParapheur' | translate}}"
+            [disabled]="!externalSignatoryBook.canSynchronizeSignatures() || loadingSign">
+            <mat-icon class="fa fa-sync-alt fa-2x" [class.fa-spin]="loadingSign">
+            </mat-icon>
+        </button>
+    </div>
+</div>
+<div style="clear:both;"></div>

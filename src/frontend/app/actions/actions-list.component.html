@@ -1,0 +1,67 @@
+<button *ngIf="!contextMode" (click)="loadActionList();" mat-stroked-button [matMenuTriggerFor]="menu">Actions <mat-icon
+        matSuffix class="fa fa-caret-down"></mat-icon>
+</button>
+<span *ngIf="contextMode" [matMenuTriggerFor]="menu" #menu2 style="position: fixed;"
+    [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y"></span>
+
+<mat-menu #menu="matMenu" [class]="'actionListMenu'">
+    <div *ngIf="contextMode && this.selectedRes.length == 1"
+        style="text-align: center;font-size: 10px;color: white;background: #135F7F;padding: 5px;font-weight: bold;">
+        {{this.contextMenuTitle}}
+    </div>
+    <button *ngFor="let action of actionsList" [disabled]="action.component == '' || this.selectedRes.length == 0"
+        mat-menu-item (click)="launchEvent(action);">
+        <span>{{action.label}}</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item class="followAction" (click)="unFollow()" [disabled]="selectedRes.length === 0">
+        <mat-icon class="far fa-star fa-2x"></mat-icon>
+        <span>{{'lang.untrackThisMail' | translate}}</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button *ngIf="privilegeService.hasCurrentUserPrivilege('freeze_retention_rule')" mat-menu-item
+        [matMenuTriggerFor]="freezeRentalRule" [disabled]="selectedRes.length === 0"
+        [title]="'lang.freezeRetentionRule' | translate ">
+        <mat-icon class="freezeIcon fas fa-snowflake" style="font-size: 20px;"></mat-icon>
+        <span>{{ 'lang.freezeRetentionRule' | translate }}</span>
+    </button>
+    <mat-menu #freezeRentalRule="matMenu" ng-switch="getValue(var)">
+        <button mat-menu-item (click)="toggleFreezing(true)"
+            class="{{this.isSelectedFreeze === true ? 'isSelectedMenu' : 'notSelectedMenu'}}"
+            [title]="'lang.freezeTheCurrentUsefulLife' | translate ">
+            {{ 'lang.freezeTheCurrentUsefulLife' | translate }}
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="toggleFreezing(false)"
+            class="{{this.isSelectedFreeze === false ? 'isSelectedMenu' : 'notSelectedMenu'}}"
+            [title]="'lang.unfreezeTheCurrentUsefulLife' | translate">
+            {{ 'lang.unfreezeTheCurrentUsefulLife' | translate }}
+        </button>
+    </mat-menu>
+    <button *ngIf="privilegeService.hasCurrentUserPrivilege('set_binding_document')" mat-menu-item
+        [matMenuTriggerFor]="bindingRentalRule" [disabled]="selectedRes.length === 0"
+        [title]="'lang.setBindingDocument' | translate ">
+        <mat-icon class="bindidngIcon fas fa-exclamation" style="font-size: 20px;"></mat-icon>
+        <span>{{ 'lang.setBindingDocument' | translate }}</span>
+    </button>
+    <mat-menu #bindingRentalRule="matMenu">
+        <buton mat-menu-item (click)="toogleBinding(true)"
+            class="{{this.isSelectedBinding === true ? 'isSelectedMenu' : 'notSelectedMenu'}}"
+            [title]="'lang.bindingMail' | translate | stripTags" [innerHTML]="'lang.bindingMail' | translate">
+        </buton>
+        <mat-divider></mat-divider>
+        <buton mat-menu-item (click)="toogleBinding(false)"
+            class="{{this.isSelectedBinding === false ? 'isSelectedMenu' : 'notSelectedMenu'}}"
+            [title]="'lang.noBindingMail' | translate | stripTags" [innerHTML]="'lang.noBindingMail' | translate">
+        </buton>
+        <mat-divider></mat-divider>
+        <buton mat-menu-item (click)="toogleBinding(null)"
+            class="{{this.isSelectedBinding === null ? 'isSelectedMenu' : 'notSelectedMenu'}}"
+            [title]="'lang.doNotDefine' | translate">
+            {{ 'lang.doNotDefine' | translate}}</buton>
+        <mat-divider></mat-divider>
+    </mat-menu>
+    <mat-divider></mat-divider>
+    <app-folder-menu [resIds]="selectedRes" [currentFolders]="folderList" (refreshList)="refreshList()"
+        (refreshFolders)="refreshFolders()"></app-folder-menu>
+</mat-menu>

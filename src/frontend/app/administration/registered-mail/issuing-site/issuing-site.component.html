@@ -1,0 +1,130 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form style="display: contents;" (ngSubmit)="onSubmit()" [formGroup]="adminFormGroup">
+                        <div>
+                            <mat-form-field>
+                                <mat-label>{{'lang.siteName' | translate}}</mat-label>
+                                <input matInput formControlName="label">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{'lang.coclicoNumber' | translate}}</mat-label>
+                                <input type="text" pattern="[0-9]+" maxlength="10" matInput formControlName="accountNumber">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{'lang.postOffice' | translate}}</mat-label>
+                                <input matInput formControlName="postOfficeLabel">
+                            </mat-form-field>
+                            <div class="formType ratio-1 col-sm-12">
+                                <div class="formType-title">
+                                    {{'lang.address' | translate}}
+                                </div>
+                                <mat-form-field appearance='outline' class="smallInput">
+                                    <button type="button" mat-button matSuffix [matMenuTriggerFor]="menuDep"
+                                        (click)="$event.stopPropagation();"
+                                        [title]="'lang.targetDepartment' | translate">
+                                        {{addressBANCurrentDepartment}}&nbsp;<i class="fa fa-chevron-down"></i>
+                                    </button>
+                                    <mat-menu #menuDep="matMenu">
+                                        <button mat-menu-item *ngFor="let dep of departmentList"
+                                            (click)="addressBANCurrentDepartment = dep">{{dep}}</button>
+                                    </mat-menu>
+                                    <mat-icon color="primary" class="fa fa-search" matPrefix style="font-size: 15px;">
+                                    </mat-icon>
+                                    <input type="text" #autoCompleteInput
+                                        [placeholder]="'lang.searchAddressBan' | translate" matInput
+                                        [formControl]="addressBANControl" [matAutocomplete]="auto"
+                                        (click)="$event.stopPropagation()" (focus)="resetAutocompleteAddressBan()"
+                                        maxlength="128">
+                                    <mat-autocomplete #auto="matAutocomplete"
+                                        (optionSelected)="selectAddressBan($event)">
+                                        <ng-container *ngIf="addressBANResult.length > 0 && !addressBANLoading">
+                                            <mat-option
+                                                *ngFor="let addressBANResult of addressBANFilteredResult | async"
+                                                [value]="addressBANResult">
+                                                {{addressBANResult.address}}
+                                            </mat-option>
+                                        </ng-container>
+                                        <mat-option class="autoCompleteInfoResult smallInputInfo"
+                                            *ngIf="addressBANResult.length === 0 && !addressBANLoading" disabled
+                                            [innerHTML]="addressBANInfo">
+                                        </mat-option>
+                                        <mat-option *ngIf="addressBANLoading" disabled>
+                                            <mat-spinner diameter="20"></mat-spinner>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.contactsParameters_addressAdditional1' | translate}}</mat-label>
+                                    <input matInput formControlName="addressAdditional1">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.contactsParameters_addressNumber' | translate}}</mat-label>
+                                    <input matInput formControlName="addressNumber">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.contactsParameters_addressStreet' | translate}}</mat-label>
+                                    <input matInput formControlName="addressStreet">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.contactsParameters_addressAdditional2' | translate}}</mat-label>
+                                    <input matInput formControlName="addressAdditional2">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.contactsParameters_addressPostcode' | translate}}</mat-label>
+                                    <input matInput formControlName="addressPostcode">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.contactsParameters_addressTown' | translate}}</mat-label>
+                                    <input matInput formControlName="addressTown">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.contactsParameters_addressCountry' | translate}}</mat-label>
+                                    <input matInput #autoCompleteInput [matAutocomplete]="matAutocompleteCountries"
+                                        formControlName="addressCountry">
+                                    <mat-autocomplete #matAutocompleteCountries="matAutocomplete"
+                                        (optionSelected)="adminFormGroup.controls['addressCountry'].setValue($event.option.value)" isOpen="true">
+                                        <mat-option *ngFor="let country of countriesFilteredResult | async"
+                                            [value]="country">
+                                            {{country}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            <button mat-raised-button color="primary" type="submit"
+                                [disabled]="!adminFormGroup.valid">{{'lang.save' | translate}}</button>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="!appService.getViewMode()" style="overflow-x:hidden;width:400px;">
+        <mat-list>
+            <h3 mat-subheader>{{'lang.chooseEntityAssociationModel' | translate}}</h3>
+            <div style="padding:10px;">
+                <app-maarch-flat-tree #maarchTree></app-maarch-flat-tree>
+            </div>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

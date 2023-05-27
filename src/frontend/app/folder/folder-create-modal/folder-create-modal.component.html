@@ -1,0 +1,14 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.addFolder' | translate}}</h1>
+    <div mat-dialog-content>
+        <mat-form-field appearance="outline">
+            <input type="text" matInput [(ngModel)]="folderName" [placeholder]="'lang.folderName' | translate">
+        </mat-form-field>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || folderName === ''"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

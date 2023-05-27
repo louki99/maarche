@@ -1,0 +1,11 @@
+<button mat-mini-fab (click)="openSummarySheet();" [disabled]="selectedRes.length == 0" title="{{'lang.summarySheets' | translate}}">
+    <mat-icon class="fas fa-scroll"></mat-icon>
+</button>
+
+<button mat-mini-fab (click)="openExport();" [disabled]="selectedRes.length == 0" title="{{'lang.exportDatas' | translate}}">
+    <mat-icon class="fa fa-file-download"></mat-icon>
+</button>
+
+<button mat-mini-fab (click)="openPrintedFolderPrompt();" [disabled]="selectedRes.length == 0" [title]="'lang.printedFolder' | translate">
+    <mat-icon class="fa fa-print"></mat-icon>
+</button>

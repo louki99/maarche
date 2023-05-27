@@ -1,0 +1,15 @@
+.mat-dialog-content {
+    padding-top: 0px;
+}
+
+.lang-container {
+    ::ng-deep.mat-tab-header {
+        position: sticky;
+        top: 0px;
+        z-index: 2;
+    }
+
+    ::ng-deep.mat-tab-label-container {
+        background: white;
+    }
+}

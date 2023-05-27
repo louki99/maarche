@@ -1,0 +1,181 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <a mat-list-item (click)="openHistoryExport()">
+                <mat-icon color="primary" mat-list-icon class="fa fa-file-export"></mat-icon>
+                <p mat-line>
+                    {{'lang.exportHistory' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+        <mat-divider></mat-divider>
+        <mat-nav-list>
+            <a mat-list-item *ngFor="let menu of subMenus" [class.active]="menu.current" [routerLink]="menu.route">
+                <mat-icon color="primary" mat-list-icon [class]="menu.icon"></mat-icon>
+                <p mat-line>
+                    {{menu.label}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+                <div style="display: grid;grid-template-columns: repeat(2, 1fr);grid-gap: 10px;width: 100%;">
+                    <mat-form-field (click)="startPicker.open()" style="cursor:pointer;" class="dateFilter">
+                        <mat-label style="color:white;">{{'lang.since' | translate}}
+                        </mat-label>
+                        <input [(ngModel)]="startDateFilter" matInput [matDatepicker]="startPicker"
+                            [placeholder]="'lang.since' | translate" [max]="endDateFilter" readonly style="cursor:pointer;"
+                            (dateChange)="filterStartDate()">
+                        <mat-datepicker-toggle matSuffix [for]="startPicker" *ngIf="!startDateFilter">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker [touchUi]="appService.getViewMode()" #startPicker>
+                        </mat-datepicker>
+                        <button mat-button color="warn" matSuffix mat-icon-button *ngIf="startDateFilter"
+                            (click)="$event.stopPropagation();startDateFilter = '';filterStartDate()"
+                            [title]="'lang.eraseValue' | translate">
+                            <mat-icon color="warn" class="fa fa-calendar-times">
+                            </mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <mat-form-field (click)="endPicker.open()" style="cursor:pointer;" class="dateFilter">
+                        <mat-label style="color:white;">{{'lang.until' | translate}}
+                        </mat-label>
+                        <input [(ngModel)]="endDateFilter" matInput [matDatepicker]="endPicker"
+                            [placeholder]="'lang.until' | translate" [min]="startDateFilter" readonly style="cursor:pointer;"
+                            (dateChange)="filterEndDate()">
+                        <mat-datepicker-toggle matSuffix [for]="endPicker" *ngIf="!endDateFilter">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker [touchUi]="appService.getViewMode()" #endPicker>
+                        </mat-datepicker>
+                        <button mat-button color="warn" matSuffix mat-icon-button *ngIf="endDateFilter"
+                            (click)="$event.stopPropagation();endDateFilter = '';filterEndDate()"
+                            [title]="'lang.eraseValue' | translate">
+                            <mat-icon color="warn" class="fa fa-calendar-times">
+                            </mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div class="example-loading-shade" *ngIf="isLoadingResults">
+                    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+                </div>
+                <div class="table-head">
+                    <div class="table-head-result">
+                        <form (ngSubmit)="directSearchHistory()">
+                            <mat-form-field floatLabel="never" style="font-size: 13px;">
+                                <input type="text" #autoCompleteInput [matAutocomplete]="auto" [placeholder]="'lang.filterBy' | translate"
+                                    matInput [formControl]="searchHistory" (click)="$event.stopPropagation()"
+                                    maxlength="128">
+                                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addItemFilter($event.option)"
+                                    (opened)="initFilterListHistory()">
+                                    <mat-option disabled *ngIf="loadingFilters">
+                                        <div style="display: flex;justify-content: center;">
+                                            <mat-spinner diameter="35"></mat-spinner>
+                                        </div>
+                                    </mat-option>
+                                    <ng-container *ngIf="filterList!==null && !loadingFilters">
+                                        <ng-container *ngFor="let keyVal of filterList | keyvalue">
+                                            <mat-optgroup *ngIf="(filteredList[keyVal.key] | async)?.length > 0"
+                                                [label]="'lang.' + keyVal.key | translate" class="filterList">
+                                                <mat-option [id]="keyVal.key"
+                                                    [style.color]="!filter.used ? filterColor[keyVal.key] : ''"
+                                                    *ngFor="let filter of filteredList[keyVal.key] | async | sortBy : 'label'"
+                                                    [value]="filter" [disabled]="filter.used">
+                                                    {{filter.label}}
+                                                </mat-option>
+                                            </mat-optgroup>
+                                        </ng-container>
+                                    </ng-container>
+                                </mat-autocomplete>
+                                <button mat-button matSuffix mat-icon-button (click)="directSearchHistory()" [title]="'lang.search' | translate" style="float: right">
+                                    <mat-icon color="primary" class="fa fa-search">
+                                    </mat-icon>
+                                </button>
+                                <button *ngIf="searchHistory.value" mat-button matSuffix mat-icon-button 
+                                    (click)="searchHistory.setValue(''); directSearchHistory()" [title]="'lang.search' | translate" 
+                                    style="float: right" aria-label="Clear">
+                                    <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </form>
+                    </div>
+                    <div class="table-head-tool">
+                        <span style="position: relative;">
+                            <mat-paginator #paginatorHistoryList [length]="resultsLength" [pageSize]="10" [hidePageSize]="resultsLength === 0"
+                                [pageSizeOptions]="[10, 25, 50, 100, 150]" (page)="handlePageEvent($event)">
+                            </mat-paginator>
+                            <app-select-page [class.noResult]="resultsLength === 0" [paginator]="paginatorHistoryList"></app-select-page>
+                        </span>
+                    </div>
+                </div>
+                <div style="height:90%;overflow:auto;position:absolute;width:100%;">
+                    <div class="filterBadges">
+                        <ng-container *ngFor="let keyVal of filterUsed | keyvalue">
+                            <ng-container *ngIf="['startDate','endDate'].indexOf(keyVal.key) === -1">
+                                <span *ngFor="let filter of filterUsed[keyVal.key]; let i=index;" class="label"
+                                    [style.background]="filterColor[keyVal.key]" [title]="'lang.' + keyVal.key | translate"
+                                    (click)="removeItemFilter(filter,keyVal.key,i)">{{filter.label}}
+                                    <i class="fa fa-times-circle"></i></span>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <mat-table id="history-list" #tableHistoryListSort="matSort" [dataSource]="data" matSort
+                        matSortActive="event_date" matSortDirection="desc" style="width:100%;">
+                        <ng-container matColumnDef="event_date">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.event' | translate}}</mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element" [title]="element.event_date | fullDate">
+                                {{element.event_date  | timeAgo : 'full' | ucfirst}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="total_processed">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.totalProcessed' | translate | ucfirst}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" [class.empty]="element.total_processed === 0">
+                                {{element.total_processed}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="total_errors">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.totalErrors' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" [class.empty]="element.total_errors === 0"
+                                [class.error]="element.total_errors > 0">
+                                {{element.total_errors}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="info">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex: 2;">{{'lang.information' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="flex: 2;">
+                                {{element.info}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="module_name">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.module' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                {{element.module_name}} </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumnsHistory"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumnsHistory;">
+                        </mat-row>
+                    </mat-table>
+                    <div class="mat-paginator"
+                        style="min-height:48px;display: flex;justify-content: end;align-items: center;padding-right: 20px;">
+                        {{resultsLength}} {{'lang.elements' | translate}}</div>
+                </div>
+                <div class="table-head">
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

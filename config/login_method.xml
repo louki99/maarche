@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ROOT>
+    <METHOD>
+        <ID>standard</ID>
+        <ENABLED>true</ENABLED>
+    </METHOD>
+    <METHOD>
+        <ID>ldap</ID>
+        <ENABLED>false</ENABLED>
+    </METHOD>
+    <METHOD>
+        <ID>cas</ID>
+        <ENABLED>false</ENABLED>
+    </METHOD>
+    <METHOD>
+        <ID>sso</ID>
+        <ENABLED>false</ENABLED>
+    </METHOD>
+    <METHOD>
+        <ID>keycloak</ID>
+        <ENABLED>false</ENABLED>
+    </METHOD>
+    <METHOD>
+        <ID>openam</ID>
+        <ENABLED>false</ENABLED>
+    </METHOD>
+    <METHOD>
+        <ID>azure_saml</ID>
+        <ENABLED>false</ENABLED>
+    </METHOD>
+</ROOT>

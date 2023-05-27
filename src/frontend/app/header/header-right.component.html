@@ -1,0 +1,84 @@
+<div class="bg-head-title-tool">
+    <form *ngIf="hideSearchBar()" (ngSubmit)="goTo()" #criteriaFormUp="ngForm">
+        <mat-form-field floatLabel="never" class="basket-search">
+            <button mat-icon-button style="margin-right: 10px;" type="submit" matSuffix>
+                <mat-icon class="fas fa-search"></mat-icon>
+            </button>
+            <input class="metaSearch" type="text" matInput
+                [placeholder]="(selectedQuickSearchTarget === 'searchTerm' ? 'lang.searchMails' : getTargetDesc()) | translate" name="searchTarget" [(ngModel)]="searchTarget">
+            <button type="button" color="primary" style="margin-left: 5px; cursor: default;" mat-icon-button matPrefix [title]="getTargetDesc()">
+                <mat-icon [class]="getTargetIcon()" style="font-size: 15px; margin-bottom: 2px; margin-left: 10px; margin-right: 10px;"></mat-icon>
+            </button>
+            <button type="button" color="primary" style="margin-left: -4px; margin-right: 10px;" mat-icon-button matPrefix [matMenuTriggerFor]="target" [title]="'lang.quickSearchTargets' | translate">
+                <mat-icon class="fa fa-chevron-down" style="font-size: 15px; margin-bottom: 2px;"></mat-icon>
+            </button>
+            <mat-menu #target="matMenu" class="headerMaarchShortcut">
+                <ng-container *ngFor="let target of quickSearchTargets">
+                    <button type="button" [title]="target.desc" (click)="setTarget(target.id)" style="height: 100px;line-height:20px;"
+                        class="col-md-4 col-xs-6" [class.isSelected]="target.id === selectedQuickSearchTarget" mat-button color="primary">
+                        <mat-icon [class]="target.icon" style="margin-bottom: 5px;"></mat-icon>
+                        <br />{{target.label | translate}}
+                    </button>
+                </ng-container>
+            </mat-menu>
+        </mat-form-field>
+    </form>
+
+    <button mat-icon-button [matMenuTriggerFor]="applications" *ngIf="!appService.getViewMode()" matTooltip="{{'lang.menu' | translate}}">
+        <mat-icon class="fa fa-th" style="font-size:22px;"></mat-icon>
+    </button>
+    <mat-menu #applications="matMenu" class="headerMaarchShortcut">
+        <ng-container *ngFor="let shortcut of menus | sortBy: 'label'">
+            <button (click)="gotToMenu(shortcut);" style="white-space:inherit;height: 100px;line-height:20px;"
+                class="col-md-4 col-xs-6" mat-button color="primary" matTooltip="{{shortcut.comment | translate}}">
+                <i class="{{shortcut.style}} fa-2x"></i>
+                <br />{{shortcut.label | translate}}
+            </button>
+        </ng-container>
+        <div *ngIf="functions.empty(menus)" class="noAvailableMenu">
+            {{'lang.noAvailableMenu' | translate}}
+        </div>
+    </mat-menu>
+    <button *ngIf="!appService.getViewMode()" mat-button [matMenuTriggerFor]="menu">
+        <mat-icon mat-list-icon class="fa fa-user fa-2x" style="color:white; margin:0px 12px 8px 0px;"></mat-icon>
+        <span>{{headerService.user.firstname | titlecase }}</span>&nbsp;<b>{{headerService.user.lastname | uppercase}}</b>
+    </button>
+    <button *ngIf="appService.getViewMode()" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon mat-list-icon class="fa fa-user fa-2x" style="color:white;height: auto;"></mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" class="headerMaarch">
+        <canvas class="header-bg" width="250" height="70"
+            style="margin-top:-8px;background-size:cover;border-bottom: solid 1px white; width: 100%;" [style.background-image]="'url(../rest/images?image=loginPage)'"></canvas>
+        <mat-icon color="primary" class="fas fa-info-circle aboutUsIcon" [title]="'lang.aboutUs' | translate" (click)="openAboutModal()"></mat-icon>
+        <i title="{{'lang.myProfileAccess' | translate}}" routerLink="/profile"
+            style="cursor:pointer;z-index:1;color:white;position: absolute;left: 34%;top: 17px;width: 70px;height: 70px;background-size: cover;background-position: top center;border-radius: 50%;border: solid white;background-color:white;" [style.background-image]="'url(../rest/images?image=onlyLogo)'"></i>
+        <div class="content" style="padding-top:20px;color:white;max-height:250px;overflow-y:auto;overflow-x:hidden;">
+            <p routerLink="/profile" class="text-center" style="cursor:pointer;">{{headerService.user.firstname}}
+                {{headerService.user.lastname | uppercase}}</p>
+            <mat-list>
+                <h3 mat-subheader style="color:white;">{{'lang.groups' | translate}}</h3>
+                <mat-divider></mat-divider>
+                <mat-list-item *ngFor="let group of headerService.user.groups">
+                    <p mat-line style="color:white;opacity:0.5; white-space: normal;"> {{group.group_desc}} </p>
+                </mat-list-item>
+                <h3 mat-subheader style="color:white;">{{'lang.entities' | translate}}</h3>
+                <mat-divider></mat-divider>
+                <mat-list-item *ngFor="let entity of headerService.user.entities">
+                    <p mat-line style="color:white;opacity:0.5; white-space: normal;"> {{entity.entity_label}} </p>
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <div style="display:flex;padding: 5px;">
+            <div style="text-align:left;flex:1">
+                <a routerLink="/profile" style="color: white;padding-left: 10px;">
+                    <span class="badge action-header-profile">{{'lang.myProfile' | translate}}</span>
+                </a>
+            </div>
+            <div *ngIf="showLogout()" style="text-align:right;flex:2;">
+                <a (click)="authService.logout(true, false, true)" style="cursor:pointer; color: white;padding-right: 10px;">
+                    <span class="badge action-header-profile">{{'lang.logout' | translate}}</span>
+                </a>
+            </div>
+        </div>
+    </mat-menu>
+</div>

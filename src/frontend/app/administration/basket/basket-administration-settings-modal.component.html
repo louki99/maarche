@@ -1,0 +1,114 @@
+<div class="mat-dialog-content-container">
+    <h2 mat-dialog-title>{{'lang.actionParameters' | translate}}
+        <small>{{data.action.label_action}}</small>
+    </h2>
+    <mat-dialog-content>
+        <form #settingGroupsBasket="ngForm">
+            <div class="container-fluid">
+                <div class="col-md-6">
+                    <mat-checkbox id="usedInActionPage"
+                        name="usedInActionPage" color="primary" [(ngModel)]="data.action.used_in_action_page">
+                        {{'lang.usedInActionPage' | translate}}</mat-checkbox>
+                </div>
+                <div class="col-md-6">
+                    <mat-checkbox id="usedInBasketlist"
+                        name="usedInBasketlist" color="primary" [(ngModel)]="data.action.used_in_basketlist">
+                        {{'lang.usedInBasketlist' | translate}}</mat-checkbox>
+                </div>
+            </div>
+            <mat-tab-group>
+                <mat-tab *ngIf="data.action.keyword == 'redirect'">
+                    <ng-template mat-tab-label *ngIf="data.action.keyword == 'redirect'">
+                        {{'lang.redirects' | translate}}
+                    </ng-template>
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="initService()">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{'lang.toEntities' | translate}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <mat-form-field>
+                                <input matInput id="jstree_search" name="jstree_search" type="text"
+                                    placeholder="{{'lang.searchEntities' | translate}}">
+                            </mat-form-field>
+                            <div id="jstree"></div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="initService2()" *ngIf="data.action.keyword == 'redirect'">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{'lang.toUsersEntities' | translate}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <mat-form-field>
+                                <input matInput id="jstree_search2" name="jstree_search2" type="text"
+                                    placeholder="{{'lang.searchEntities' | translate}}">
+                            </mat-form-field>
+                            <div id="jstree2"></div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
+                <mat-tab label="{{'lang.otherParameters' | translate}}">
+                    <mat-form-field>
+                        <textarea matInput name="clause" title="{{'lang.whereClauseAction' | translate}}"
+                            placeholder="{{'lang.whereClauseAction' | translate}}" [(ngModel)]="data.action.where_clause"
+                            cdkTextareaAutosize matAutosizeMinRows="1"></textarea>
+                    </mat-form-field>
+                    <mat-accordion>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{'lang.keywordHelp' | translate}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <mat-list role="list" style="width: 400px;padding: 5px;">
+                                <p style="font-size:10px;">{{'lang.keywordHelpDesc_11' | translate}}</p>
+                                <div style="border:1px black solid; padding:3px;font-size:10px;">
+                                    <b>DESTINATION = @my_primary_entity or DESTINATION in
+                                        (@subentities[@my_primary_entity])</b>
+                                </div>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@user :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_1' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@user_id :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_12' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@email :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_2' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@my_entities :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_3' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@my_entities_id :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_13' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@my_primary_entity :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_4' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@my_primary_entity_id :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_14' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">
+                                    @subentities[('entity_1',...,'entity_n')] :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_5' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@subentities_id[(1, 2, ...)] :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_15' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@parent_entity['entity_id'] :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_6' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@sisters_entities['entity_id'] :
+                                </h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_7' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@entity_type['type'] :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_8' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">@all_entities :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_9' | translate}}</p>
+                                <h4 mat-line style="font-weight:bold;font-size:10px;">
+                                    @immediate_children['entity_1',..., 'entity_id'] :</h4>
+                                <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_10' | translate}}</p>
+                            </mat-list>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
+            </mat-tab-group>
+        </form>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <mat-dialog-actions>
+        <button mat-raised-button type="submit"
+            [disabled]="!data.action.used_in_basketlist && !data.action.used_in_action_page" color="primary"
+            style="margin:auto;" (click)="saveSettings()">{{'lang.validate' | translate}}</button>
+    </mat-dialog-actions>
+</div>

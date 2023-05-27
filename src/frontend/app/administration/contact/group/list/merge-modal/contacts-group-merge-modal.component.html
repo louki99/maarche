@@ -1,0 +1,31 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{'lang.merge' | translate}}
+        </span>
+    </h1>
+    <mat-dialog-content class="modal-container">
+        <div class="alert-message alert-message-info" style="margin-top: 0;max-height: 150px;overflow: auto;">
+            {{'lang.mergeCorrespondentsGroupInfo' | translate}} :
+            <ul style="margin: 0;padding-bottom: 0px;">
+                <li *ngFor="let item of itemsToMerge">
+                    <b>{{item.label}}</b> : {{item.nbCorrespondents}} {{'lang.correspondents' | translate}}
+                </li>
+            </ul>
+        </div>
+        <mat-form-field>
+            <input matInput [(ngModel)]="label" required type="text"
+                [placeholder]="'lang.newLabel' | translate" maxlength="255">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [(ngModel)]="description" required type="text"
+                [placeholder]="'lang.newDescription' | translate" maxlength="255">
+        </mat-form-field>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="primary" (click)="onSubmit()"
+            [disabled]="!isValid()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button color="default" (click)="dialogRef.close()">{{'lang.close' | translate}}</button>
+    </div>
+</div>

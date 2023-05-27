@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <config>
+        <ldap>
+            <!-- Appel la class_<type_ldap> en fonction du type d'annuaire -->
+            <type_ldap>adLDAP</type_ldap>
+            <!-- nom / ip du serveur ldap -->
+            <domain>192.168.1.1</domain>
+            <!-- base DN (que pour openLDAP, ne pas remplir si adLDAP) -->
+            <baseDN>DC=maarch,DC=com</baseDN>
+            <!-- prefixe les logins si saisi -->
+            <prefix_login>MAARCH</prefix_login>
+            <!-- suffix les logins si saisi -->
+            <suffix_login>@maarch-les-bains.com</suffix_login>
+            <!-- cryptage de la communication ( true or false) -->
+            <ssl>false</ssl>
+            <standardConnect>false</standardConnect>
+            <!-- login admnistrateur du domaine (uniquement pour la synchro) -->
+            <login_admin>Administrateur</login_admin>
+            <!-- mot de passe administrateur annuaire ldap (uniquement pour la synchro) -->
+            <pass>ThePassword</pass>
+        </ldap>
+    </config>
+    <!-- Synchronisation Ldap -->
+    <userWS>superadmin</userWS>
+    <passwordWS>superadmin</passwordWS>
+    <synchronizeUsers>true</synchronizeUsers>
+    <synchronizeEntities>true</synchronizeEntities>
+    <mapping>
+        <user>
+            <user_id>samaccountname</user_id>
+            <firstname>givenname</firstname>
+            <lastname>sn</lastname>
+            <phone>telephonenumber</phone>
+            <mail>mail</mail>
+            <user_entity>memberof</user_entity>
+            <defaultEntity>PJS</defaultEntity>
+        </user>
+        <entity>
+            <entity_id>objectguid</entity_id>
+            <entity_label>samaccountname</entity_label>
+            <parent_entity_id>memberof</parent_entity_id>
+        </entity>
+    </mapping>
+    <filter>
+        <!-- Chemin ou se trouve les utilisateurs de l'application -->
+         <dn id="OU=Utilisateurs,DC=maarch,DC=com" type="users">
+             <user>(cn=*)</user>
+        </dn>
+        <!-- Chemin ou se trouve les entités de l'application -->
+        <dn id="OU=Services,DC=maarch,DC=com" type="entities">
+            <user>(cn=*)</user>
+        </dn>
+    </filter>
+</root>

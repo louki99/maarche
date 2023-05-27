@@ -1,0 +1,119 @@
+
+.mat-form-field-appearance-outline {
+    font-size: 11px;
+}
+
+.currentRoleButton {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    width: 120px;
+    text-align: center;
+}
+
+.emptyContent {
+    opacity: 0.5;
+    text-align: center;
+    font-size: 10px;
+    padding: 10px;
+}
+
+.history {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: auto !important;
+    margin-bottom: 10px;
+    background: rgba(216, 216, 216, 0.1);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.historyLine {
+    display: flex !important;
+    align-items: center;
+
+    &Container {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &Label {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    &SubLabel {
+        font-size: 80%;
+        opacity: 0.5;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    &ProcessDate {
+        flex: 1;
+        text-align: left;
+        font-size: 80%;
+    }
+
+    .mat-raised-button[disabled] {
+        background: none;
+        color: var(--maarch-color-primary) !important;
+        opacity: 1;
+    }
+}
+
+.primary {
+    color: var(--maarch-color-primary);
+}
+
+.matChip {
+    font-size: 13px !important;
+    padding: 5px !important;
+    min-height: auto;
+    height: auto;
+    border-radius: 5px;
+}
+
+.formType {
+    align-items: center;
+    border-radius: 4px;
+    border: solid 1px #ccc;
+    position: relative;
+    padding: 10px;
+
+    &-title {
+        white-space: pre;
+        overflow: hidden;
+        max-width: 85%;
+        text-overflow: ellipsis;
+        z-index: 1;
+        font-size: 10px;
+        font-weight: bold;
+        background: white;
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        padding: 0px;
+        margin: 0px;
+        color: var(--maarch-color-primary);
+    }
+}
+
+.typeFileTitle {
+    font-weight: bold;
+    color: var(--maarch-color-primary);
+}
+
+.recipients {
+    margin-top: 4px;
+    margin-left: 4px;
+    margin-bottom: -8px;
+}
+
+.fileSize {
+    color: var(--maarch-color-primary);
+    font-size: 10px;
+    margin-top: 2px;
+}

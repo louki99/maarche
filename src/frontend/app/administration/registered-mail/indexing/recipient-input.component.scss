@@ -1,0 +1,40 @@
+
+.smallInput {
+    width: 230px !important;
+    font-size: 11px;
+
+    .mat-button {
+        width: 30px;
+        height: 25px;
+        color: var(--maarch-color-primary);
+
+        ::ng-deep.mat-button-wrapper {
+            display: flex;
+            line-height: initial;
+            align-items: center;
+        }
+    }
+
+    ::ng-deep.mat-form-field-infix {
+        padding: 0px;
+        padding-bottom: 5px;
+    }
+}
+
+.address-icon {
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+    right: 0px;
+    font-size: 14px;
+    top: 0px;
+}
+
+.map-icon {
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+    right: 0px;
+    font-size: 14px;
+    bottom: 0px;
+}

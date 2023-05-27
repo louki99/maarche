@@ -1,0 +1,80 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card class="card-app-content" style="margin: 0;">
+                    <form (ngSubmit)="onSubmit()" #multigestForm="ngForm">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="multigest.label" required name="label" id="label"
+                                title="{{'lang.label' | translate}}" type="text" placeholder="{{'lang.label' | translate}}" maxlength="64">
+                        </mat-form-field>
+                        <div class="form-group" style="flex-direction: row; flex-wrap: wrap;">
+                            <div class="formType ratio-2 col-sm-12">
+                                <div class="formType-title">
+                                    {{'lang.multigestAccount' | translate}}
+                                </div>
+                                <div style="width: 100%;text-align: center;">
+                                    <mat-form-field>
+                                        <input matInput [(ngModel)]="multigest.account.id" required name="accountId"
+                                            id="accountId" title="{{'lang.id' | translate}}" type="text" placeholder="{{'lang.id' | translate}}">
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input matInput [(ngModel)]="multigest.account.password"
+                                            [required]="creationMode" name="password" id="password"
+                                            [title]="creationMode ? ('lang.password' | translate) : ('lang.changePassword' | translate)"
+                                            [type]="hidePassword ? 'password' : 'text'"
+                                            [placeholder]="creationMode ? ('lang.password' | translate) : ('lang.changePassword' | translate)">
+                                        <mat-icon color="primary" style="cursor: pointer; font-size: 18px;" matSuffix
+                                            (click)="hidePassword = !hidePassword" class="fa fa-2x"
+                                            [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="formType ratio-1 col-sm-12">
+                                <div class="formType-title">
+                                    {{'lang.sasMultigestFolder' | translate}}
+                                </div>
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="multigest.rootFolder" required name="rootFolder"
+                                        id="rootFolder" [title]="'lang.id' | translate" type="text" [placeholder]="'lang.sasMultigestFolder' | translate">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 text-center" style="padding:10px;">
+                            <button mat-raised-button type="button" color="primary" (click)="checkAccount()"
+                                [disabled]="loading || functionsService.empty(multigest.account.id) || (functionsService.empty(multigest.account.password) && creationMode)">{{'lang.test' | translate}}</button>
+
+                            <button mat-raised-button type="submit" color="primary"
+                                [disabled]="loading || !multigestForm.valid || !validAccount()">{{'lang.validate' | translate}}</button>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="!appService.getViewMode()" style="overflow-x:hidden;width:400px;">
+        <mat-list>
+            <h3 mat-subheader>{{'lang.chooseEntityAssociationAccount' | translate}}</h3>
+            <div style="padding:10px;">
+                <app-maarch-flat-tree #maarchTree></app-maarch-flat-tree>
+            </div>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

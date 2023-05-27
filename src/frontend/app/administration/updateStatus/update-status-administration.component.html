@@ -1,0 +1,79 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form class="form-horizontal" (ngSubmit)="onSubmit()" #updateStatusForm="ngForm">
+                        <mat-tab-group (selectedTabChange)="resetInput($event)" >
+                            <mat-tab label="{{'lang.chronoNumber' | translate}}" >
+                                <div class="alert alert-info" role="alert">
+                                    {{'lang.updateStatusInformationsChrono' | translate}}
+                                </div>
+                                <mat-form-field>
+                                    <input matInput name="chrono" title="{{'lang.chronoNumber' | translate}}" placeholder="{{'lang.chronoNumber' | translate}}" [(ngModel)]="chrono">
+                                </mat-form-field>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-md-12 text-left" style="padding:10px;">
+                                            <button mat-raised-button [disabled]="!chrono" type="button" color="primary" (click)="addChrono()" >{{'lang.add' | translate}}</button>
+                                        </div>
+                                    </div>
+                                    <mat-chip-list [(ngModel)]="chronoList" name="chronoChips" #chipList>
+                                        <mat-chip *ngFor="let chrono of chronoList" color="primary" [removable]="true" (removed)="removeChrono(chrono)">
+                                            <span class="badge badge-pill badge-dark">{{chronoList.indexOf(chrono)+1}}</span> &nbsp;{{chrono}}
+                                            <mat-icon matChipRemove class="fa fa-times-circle"></mat-icon>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                                <mat-divider></mat-divider>
+                            </mat-tab>
+                            <mat-tab label="{{'lang.resId' | translate}}" >
+                                <div class="alert alert-info" role="alert">
+                                    {{'lang.updateStatusInformationsGed' | translate}}
+                                </div>
+                                <mat-form-field>
+                                    <input type="number" id="" matInput name="resId" title="{{'lang.resId' | translate}}" placeholder="{{'lang.resId' | translate}}" [(ngModel)]="resId">
+                                </mat-form-field>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-md-12 text-left" style="padding:10px;">
+                                            <button mat-raised-button [disabled]="!resId" color="primary" type="button" (click)="addResId();">{{'lang.add' | translate}}</button>
+                                        </div>
+                                    </div>
+                                    <mat-chip-list [(ngModel)]="resIdList" name="resIdChips" #chipList>
+                                        <mat-chip *ngFor="let resId of resIdList" color="primary" [removable]="true" (removed)="removeResId(resId)">
+                                            <span class="badge badge-pill badge-dark">{{resIdList.indexOf(resId)+1}}</span> &nbsp;{{resId}}
+                                            <mat-icon matChipRemove class="fa fa-times-circle"></mat-icon>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                                <mat-divider></mat-divider>
+                            </mat-tab>
+                        </mat-tab-group>
+                        <app-plugin-autocomplete [labelPlaceholder]="'lang.availableStatuses' | translate" [datas]="statuses" [targetSearchKey]="'idToDisplay'" [subInfoKey]="'id'" (triggerEvent)="setStatus($event)" singleMode required></app-plugin-autocomplete>
+                        <div class="form-group">
+                            <div class="col-md-12 text-center" style="padding:10px;">
+                                <button mat-raised-button [disabled]="(resIdList.length == 0 && chronoList.length == 0) || (resIdList.length > 0 && chronoList.length > 0) || !statusId" color="primary">{{'lang.save' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

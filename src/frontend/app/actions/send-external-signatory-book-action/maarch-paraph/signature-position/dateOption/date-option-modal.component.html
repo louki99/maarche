@@ -1,0 +1,38 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.options' | translate}}</h1>
+    <div mat-dialog-content>
+        <div class="alert-message alert-message-info" role="alert" style="margin-top: 0px;"
+            [innerHTML]="'lang.datePosMsg' | translate"></div>
+        <mat-card style="margin-bottom: 10px;">
+            <div style="text-align: center;font-weight: normal;font-size: 40px;" [class]="getFontLabel(date.font)"
+                [style.color]="date.color">
+                {{today | date : date.format : undefined : ('lang.langISO' | translate)}}
+            </div>
+        </mat-card>
+        <mat-form-field>
+            <mat-label>{{'lang.format' | translate}}</mat-label>
+            <mat-select [(ngModel)]="date.format">
+                <mat-option *ngFor="let format of dateformats" [value]="format">
+                    {{today | date : format : undefined : ('lang.langISO' | translate)}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>{{'lang.color' | translate}}</mat-label>
+            <input matInput type="color" [(ngModel)]="date.color">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>{{'lang.font' | translate}}</mat-label>
+            <mat-select [(ngModel)]="date.font" (selectionChange)="select($event.value)">
+                <mat-option *ngFor="let font of datefonts" [value]="font" [class]="getFontLabel(font)">
+                    {{font}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" (click)="onSubmit()">{{'lang.save' | translate}}</button>
+        <button mat-raised-button mat-button color="default" (click)="dismissModal()">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

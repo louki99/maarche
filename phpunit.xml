@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" bootstrap="test/unitTests/define.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix="Test.php">test</directory>
+      <directory suffix=".php">src</directory>
+    </include>
+    <report>
+      <clover outputFile="test/unitTests/build/tests-clover.xml"/>
+      <html outputDirectory="test/unitTests/build" lowUpperBound="35" highLowerBound="70"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Maarch Test Suite">
+      <directory>test/unitTests/core/</directory>
+      <file>test/unitTests/app/home/HomeControllerTest.php</file>
+      <file>test/unitTests/app/action/ActionControllerTest.php</file>
+      <file>test/unitTests/app/administration/AdministrationControllerTest.php</file>
+      <file>test/unitTests/app/attachment/AttachmentControllerTest.php</file>
+      <file>test/unitTests/app/attachment/AttachmentTypeControllerTest.php</file>
+      <file>test/unitTests/app/basket/BasketControllerTest.php</file>
+      <file>test/unitTests/app/contact/ContactControllerTest.php</file>
+      <file>test/unitTests/app/contact/ContactCustomFieldControllerTest.php</file>
+      <file>test/unitTests/app/contact/ContactGroupControllerTest.php</file>
+      <file>test/unitTests/app/customField/CustomFieldControllerTest.php</file>
+      <file>test/unitTests/app/contentManagement/ContentManagementControllerTest.php</file>
+      <file>test/unitTests/app/docserver/DocserverControllerTest.php</file>
+      <file>test/unitTests/app/doctype/DoctypeControllerTest.php</file>
+      <file>test/unitTests/app/entity/EntityControllerTest.php</file>
+      <file>test/unitTests/app/entity/EntitySeparatorControllerTest.php</file>
+      <file>test/unitTests/app/group/GroupControllerTest.php</file>
+      <file>test/unitTests/app/group/PrivilegeControllerTest.php</file>
+      <file>test/unitTests/app/indexingModel/IndexingModelControllerTest.php</file>
+      <file>test/unitTests/app/notification/NotificationControllerTest.php</file>
+      <file>test/unitTests/app/notification/NotificationScheduleControllerTest.php</file>
+      <file>test/unitTests/app/parameter/ParameterControllerTest.php</file>
+      <file>test/unitTests/app/priority/PriorityControllerTest.php</file>
+      <file>test/unitTests/app/resource/ResControllerTest.php</file>
+      <file>test/unitTests/app/resource/ResourceListControllerTest.php</file>
+      <file>test/unitTests/app/entity/ListTemplateControllerTest.php</file>
+      <file>test/unitTests/app/indexing/IndexingControllerTest.php</file>
+      <file>test/unitTests/app/resource/ExportControllerTest.php</file>
+      <file>test/unitTests/app/resource/LinkControllerTest.php</file>
+      <file>test/unitTests/app/entity/ListInstanceControllerTest.php</file>
+      <file>test/unitTests/app/resource/SummarySheetControllerTest.php</file>
+      <file>test/unitTests/app/status/StatusControllerTest.php</file>
+      <file>test/unitTests/app/shipping/ShippingControllerTest.php</file>
+      <file>test/unitTests/app/user/UserControllerTest.php</file>
+      <file>test/unitTests/app/versionUpdate/VersionUpdateControllerTest.php</file>
+      <file>test/unitTests/app/template/TemplateControllerTest.php</file>
+      <file>test/unitTests/app/note/NoteControllerTest.php</file>
+      <file>test/unitTests/app/folder/FolderControllerTest.php</file>
+      <file>test/unitTests/app/configuration/ConfigurationControllerTest.php</file>
+      <file>test/unitTests/app/tag/TagControllerTest.php</file>
+      <file>test/unitTests/app/resource/UserFollowedResourceControllerTest.php</file>
+      <file>test/unitTests/app/resource/FolderPrintControllerTest.php</file>
+      <!--            <file>test/unitTests/app/search/SearchControllerTest.php</file>-->
+      <file>test/unitTests/app/template/DatasourceControllerTest.php</file>
+      <file>test/unitTests/app/signatureBook/SignatureBookControllerTest.php</file>
+      <file>test/unitTests/app/acknowledgementReceipt/AcknowledgementReceiptControllerTest.php</file>
+      <file>test/unitTests/app/notification/DiffusionTypesControllerTest.php</file>
+      <file>test/unitTests/app/registeredMail/IssuingSiteControllerTest.php</file>
+      <file>test/unitTests/app/registeredMail/RegisteredNumberRangeControllerTest.php</file>
+      <file>test/unitTests/app/home/TileControllerTest.php</file>
+<!--      &lt;!&ndash; The last one should be history &ndash;&gt;-->
+      <file>test/unitTests/app/history/HistoryControllerTest.php</file>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <junit outputFile="test/unitTests/build/tests-phpunit.xml"/>
+  </logging>
+</phpunit>

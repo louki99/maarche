@@ -1,0 +1,10 @@
+<div class="mat-dialog-content-container">
+    <h1 *ngIf="data.title !== ''" mat-dialog-title>{{data.title}}</h1>
+    <div *ngIf="!functions.empty(data.msg)" mat-dialog-content>
+        <div class="alert-message {{data.mode}}" [innerHTML]="data.msg"></div>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions *ngIf="!data.hideButton">
+        <button id="alertComponentClose" class="actions" color="primary" mat-raised-button (click)="close()">{{(data?.buttonValidate !== undefined ? data.buttonValidate : 'lang.ok') | translate}}</button>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.redirects' | translate}}</h1>
+    <mat-dialog-content>
+        <form #redirectConfForm="ngForm">
+
+            <div class="alert-message alert-message-info" role="alert" *ngIf="data.hasConfidentialityInstances"
+                [innerHTML]="'lang.redirectConfidentialInfo' | translate">
+            </div>
+            <div class="alert-message alert-message-info" role="alert" *ngIf="data.hasListTemplates"
+                [innerHTML]="'lang.redirectModelInfo' | translate">
+            </div>
+            <div class="input-group">
+                <mat-radio-group id="processMode" name="processMode"
+                    style="display: inline-flex;flex-direction: column;" [(ngModel)]="this.processMode" color="primary">
+                    <mat-radio-button value="" checked="true" color="primary">
+                        {{'lang.doNothingRedirect' | translate}}
+                    </mat-radio-button>
+                    <mat-radio-button value="delete" color="primary">
+                        {{'lang.removeUserRedirect' | translate}}
+                    </mat-radio-button>
+                    <mat-radio-button value="reaffect" color="primary">
+                        {{'lang.reaffectUserRedirect' | translate}}
+                    </mat-radio-button>
+                </mat-radio-group>
+                <app-plugin-autocomplete *ngIf="this.processMode == 'reaffect'" [labelPlaceholder]="'lang.userReplacement' | translate"
+                    [routeDatas]="['/rest/autocomplete/users']"
+                    [targetSearchKey]="'idToDisplay'" [subInfoKey]="'descriptionToDisplay'"
+                    (triggerEvent)="setRedirectUser($event)" singleMode required></app-plugin-autocomplete>
+
+                <div class="alert-message alert-message-info" role="alert" style="max-width: inherit;">
+                    <span *ngIf="this.processMode == ''"><em>{{'lang.doNothingRedirectInformations' | translate}}</em></span>
+                    <span *ngIf="this.processMode == 'delete'" [innerHTML]="'lang.removeUserRedirectInformations' | translate"></span>
+                    <span
+                        *ngIf="this.processMode == 'reaffect'"><em>{{'lang.reaffectUserRedirectInformations' | translate}}</em></span>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary" type="submit"
+            [disabled]="!this.redirectUser && this.processMode == 'reaffect'"
+            (click)="dialogRef.close({newUser:this.redirectUser,processMode:this.processMode})">{{'lang.validate' | translate}}</button>
+    </mat-dialog-actions>
+</div>

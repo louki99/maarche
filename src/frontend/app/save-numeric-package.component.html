@@ -1,0 +1,39 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading">
+                    <i class="fa fa-spinner fa-spin fa-5x" style="margin-left: 50%;margin-top: 16%;font-size: 8em"></i>
+                </div>
+                <div *ngIf="!loading">
+                    <div class="row row-eq-height">
+                        <div class="col-md-5 col-md-offset-3" style="margin-top: 50px;border-top: solid 2px #F99830;border-bottom: solid 2px #F99830;padding:10px;">
+                            <h2>{{'lang.saveNumericPackage' | translate}}</h2>
+                            <form class="form-horizontal" (ngSubmit)="submitNumericPackage()" #saveNumericPackageForm="ngForm">
+                                <input id="numericPackageFilePath" type="file" name="files[]"(change)="uploadNumericPackage($event)">
+                                <br>
+                                <div class="form-group">
+                                    <div style="text-align:center;">
+                                        <button mat-raised-button color="primary" type="submit" [disabled]="!saveNumericPackageForm.form.valid">{{'lang.save' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

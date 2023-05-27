@@ -1,0 +1,22 @@
+.hide {
+  display: none;
+}
+
+.opt-group {
+  position: sticky;
+  top: -1px;
+  background: white;
+  z-index: 1;
+  ::ng-deep.mat-pseudo-checkbox {
+    display: none;
+  }
+}
+
+::ng-deep .appSelectFilterContainer {
+  /* allow absolute positioning relative to outer options container */
+  transform: none !important;
+  padding-top: 50px !important;
+  min-height: 20px;
+  overflow-x: hidden !important;
+  max-height: 350px !important;
+}

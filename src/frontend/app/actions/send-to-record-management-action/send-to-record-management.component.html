@@ -1,0 +1,170 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="checking" class="checking" color="primary"
+            style="display:flex;height:100%;justify-content: center;padding: 30px;">
+            <mat-spinner diameter="24"></mat-spinner>&nbsp;{{'lang.checkInProgress' | translate}} ...
+        </div>
+        <div *ngIf="loading" class="loading" color="primary">
+            <mat-spinner></mat-spinner>
+        </div>
+        <div *ngIf="!checking">
+            {{'lang.makeActionOn' | translate}}
+            <b *ngIf="data.resIds.length === 0" color="primary"
+                class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+            <b *ngIf="data.resIds.length === 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+            <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                {{'lang.elements' | translate}}</b> ?
+        </div>
+        <div *ngIf="resourcesErrors.length > 0" class="alert-message alert-message-danger" style="max-width: 100%;">
+            <p>
+                {{'lang.canNotMakeAction' | translate}} :
+            </p>
+            <ul style="max-height: 100px;overflow: auto;">
+                <li *ngFor="let ressource of resourcesErrors">
+                    <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="criticalError !== null" class="alert-message alert-message-danger" style="max-width: 100%;">
+            {{criticalError}}
+        </div>
+        <ng-container *ngIf="!checking && resources.length > 0">
+            <div class="row" style="padding-top: 10px;">
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-label>{{'lang.archivalAgreement' | translate}}</mat-label>
+                        <mat-select [(ngModel)]="archivalAgreement" required>
+                            <mat-option *ngFor="let agreement of archivalAgreements" [value]="agreement.id">
+                                {{agreement.label}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{'lang.archivalAgency' | translate}}</mat-label>
+                        <mat-select [(ngModel)]="entityArchiveRecipient" required>
+                            <mat-option *ngFor="let entity of recipientArchiveEntities" [value]="entity.id">
+                                {{entity.label}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-label>{{'lang.senderArchiveEntity' | translate}}</mat-label>
+                        <input type="text" matInput [(ngModel)]="senderArchiveEntity" required disabled>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="folders.length > 0">
+                        <mat-label>{{'lang.folder' | translate}}</mat-label>
+                        <mat-select [(ngModel)]="resources[0].folder" required>
+                            <mat-option *ngFor="let folder of folders" [value]="folder">
+                                {{folder.label}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <mat-expansion-panel *ngIf="linkedResources.length > 0" style="margin-bottom: 20px;">
+                <mat-expansion-panel-header>
+                    <mat-panel-title color="primary" style="font-size:14px;">
+                        {{'lang.linkedMails' | translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div style="max-height: 350px;overflow: auto;display: grid;grid-template-columns: auto 1fr;grid-gap:10px;">
+                    <ng-container *ngFor="let res of linkedResources">
+                        <div color="primary" style="border-bottom: solid 1px rgba(0,0,0,0.12);">
+                            {{res.chrono}}
+                        </div>
+                        <div style="border-bottom: solid 1px rgba(0,0,0,0.12);">
+                            {{res.object}}
+                        </div>
+                    </ng-container>
+                </div>
+            </mat-expansion-panel>
+            <div class="formType ratio-1 col-sm-12">
+                <div class="formType-title">
+                    {{'lang.mailsToSendToRecordManagement' | translate}}
+                </div>
+                <div style="width: 100%;">
+                    <mat-paginator [length]="100" [hidePageSize]="true" [pageSize]="10"
+                        [style.display]="resources.length > 10 ? 'initial': 'none'"></mat-paginator>
+                    <table *ngIf="!checking" mat-table [dataSource]="dataSource" multiTemplateDataRows
+                        class="mat-elevation-z8" style="width:100%;box-shadow: none;">
+                        <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+                            <th mat-header-cell *matHeaderCellDef style="padding-left: 10px;padding-right: 10px;">
+                                {{column !=='countArchives' ? ('lang.' + column | translate) : ''}}
+                            </th>
+                            <td mat-cell *matCellDef="let element" style="padding-left: 10px;padding-right: 10px;" [title]="element[column]">
+                                <ng-container *ngIf="column !== 'countArchives'; else elseCount">
+                                    {{element[column] | shorten : 50:'...'}}
+                                </ng-container>
+                                <ng-template #elseCount>
+                                    <span class="badge" style="cursor: pointer;" [title]="'lang.associatedArchives' | translate" (click)="archives = archives === element ? null : element">
+                                        {{element[column]}}
+                                        <i class="fa fa-chevron-down" *ngIf="archives !== element"></i>
+                                        <i class="fa fa-chevron-up" *ngIf="archives === element"></i>
+                                    </span>
+                                </ng-template>
+                            </td>
+                        </ng-container>
+
+                        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                        <ng-container matColumnDef="expandedDetail">
+                            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length" style="border-bottom: none;padding:0px;">
+                                <div class="example-element-detail"
+                                    [@detailExpand]="element == archives ? 'expanded' : 'collapsed'">
+                                    <div  style="padding-bottom: 10px;">
+                                        <span class="label label-primary">
+                                            <i class="fa fa-file"></i>&nbsp;{{element.doctype}}
+                                        </span>
+                                        <span class="label label-primary">
+                                            <i class="fa fa-sitemap"></i>&nbsp;{{element.entity}}
+                                        </span>
+                                        <span class="label label-primary" *ngIf="element.folder !== null">
+                                            <i class="fa fa-folder-open"></i>&nbsp;{{element.folder.label}}
+                                        </span>
+                                    </div>
+                                    
+                                    <div style="max-height: 150px;overflow: auto;width: 100%;display: grid;grid-template-columns: auto auto 1fr;grid-gap:10px;font-size: 90%;padding-left: 20px;padding-right: 20px;">
+                                        <ng-container *ngFor="let archive of element.archives;let i=index;">
+                                            <div style="border-bottom: solid 1px rgba(0,0,0,0.12);color:#666" [title]="archive.otherInfo">
+                                                {{archive.otherInfo}}
+                                            </div>
+                                            <div color="primary" style="border-bottom: solid 1px rgba(0,0,0,0.12);">
+                                                {{'lang.' + archive.type | translate}}
+                                            </div>
+                                            <div style="border-bottom: solid 1px rgba(0,0,0,0.12);" [title]="archive.label">
+                                                {{archive.label}}
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+                            [class.example-expanded-row]="archives === element">
+                        </tr>
+                        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                    </table>
+                </div>
+            </div>
+            <ng-container *ngIf="showToggle">
+                <div class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                </div>
+                <mat-divider></mat-divider>
+            </ng-container>
+        </ng-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || checking || !isValid()"
+            (click)="onSubmit('send')">{{'lang.send' | translate}}</button>
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || checking || !isValid()"
+            (click)="onSubmit('download')">{{'lang.download' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading || checking"
+            [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

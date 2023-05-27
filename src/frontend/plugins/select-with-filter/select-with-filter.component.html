@@ -1,0 +1,18 @@
+<mat-form-field [appearance]="appearance" [title]="getSelectedItemsLabel()">
+  <mat-label *ngIf="label !== null">{{label}}</mat-label>
+  <mat-select #select [placeholder]="placeholder" [panelClass]="array.length > 5 ? 'appSelectFilterContainer' : ''" [(ngModel)]="data"
+    (openedChange)="togglePanel($event)" [required]="isRequired()"
+    [multiple]="multiple" [disabled]="isDisabled()" [ngModelOptions]="{standalone: true}"
+    (selectionChange)="onChange($event.value)">
+    <app-filter *ngIf="array.length > 5" style="display:contents" #appFilter [currentValues]="data" [array]="array"
+      (filteredReturn)="filteredList=$event" [displayMember]="'label'">
+    </app-filter>
+    <mat-option *ngIf="showResetOption" [value]="''">({{'lang.emptyValue' | translate}})</mat-option>
+    <mat-option *ngFor="let item of array" [value]="item.id" [class.hide]="!inFilteredItems(item)"
+      [title]="item.title !== undefined ? item.title : item.label" [disabled]="item.disabled"
+      [class.opt-group]="item.isTitle" [style.color]="item.color">
+      <span [innerHTML]="item.label"></span>
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="showError && showMsgErrors" [innerHTML]="errors"></mat-error>
+</mat-form-field>

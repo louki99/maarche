@@ -1,0 +1,12 @@
+<div class="contact-list-container contact-list-container-{{contacts.length}}">
+    <ng-container *ngIf="loading; else elseTemplate">
+        <div class="loading">
+            <mat-spinner></mat-spinner>
+        </div>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <div *ngFor="let contact of contacts">
+            <app-contact-detail #appContactDetail [contact]="contact"></app-contact-detail>
+        </div>
+    </ng-template>
+</div>

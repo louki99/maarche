@@ -1,0 +1,85 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div style="display: flex;">
+                        <mat-form-field>
+                            <mat-label>{{'lang.category_id' | translate}}</mat-label>
+                            <mat-select name="category" [(ngModel)]="indexingModel.category"
+                                [placeholder]="'lang.category_id' | translate" required (selectionChange)="changeCategory($event)">
+                                <mat-option *ngFor="let category of categoriesList;let i=index" [value]="category.id">
+                                    {{category.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div style="display: flex;">
+                        <div style="flex:1;">
+                            <mat-form-field class="indexingModelLabel" appearance="outline">
+                                <mat-label>{{'lang.modelName' | translate}}</mat-label>
+                                <input matInput name="label" [(ngModel)]="indexingModel.label">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="options">
+                        <div class="title" >
+                            {{'lang.options' | translate}}
+                            <div class="title-divider"></div>
+                        </div>
+                        <div class="col-sm-6" style="white-space:nowrap;text-align:center;">
+                            <mat-slide-toggle color="primary" name="default" [(ngModel)]="indexingModel.default">
+                                {{'lang.defaultModel' | translate}}
+                            </mat-slide-toggle>
+                        </div>
+                        <div class="col-sm-6" style="white-space:nowrap;text-align:center;">
+                            <div>
+                                <mat-slide-toggle color="primary" name="mandatoryFile" [(ngModel)]="indexingModel.mandatoryFile">
+                                    {{'lang.mandatoryFile' | translate}}
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-tab-group>
+                        <mat-tab [label]="'lang.indexingForm' | translate">
+                            <app-indexing-form #indexingForm [indexingFormId]="indexingModel.id" [adminMode]="true">
+                            </app-indexing-form>
+                            <div style="position: fixed; bottom: 0px; z-index: 1; background-color: white; width: 100%;">
+                                <button mat-raised-button color="primary" (click)="onSubmit()" style="left: 20%;"
+                                    [disabled]="(!indexingForm.isModified() && !isModified()) || indexingModel.label === ''">{{creationMode ? ('lang.save' | translate) : ('lang.update' | translate)}}</button>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' opened class="col-md-4 col-sm-12">
+        <mat-tab-group>
+            <mat-tab [label]="'lang.availableFields' | translate">
+                <app-field-list *ngIf="indexingForm !== undefined" [dataFields]="indexingForm.getAvailableFields()">
+                </app-field-list>
+            </mat-tab>
+            <mat-tab [label]="'lang.availableCustomFields' | translate">
+                <app-field-list *ngIf="indexingForm !== undefined"
+                    [dataCustomFields]="indexingForm.getAvailableCustomFields()"></app-field-list>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-sidenav>
+</mat-sidenav-container>

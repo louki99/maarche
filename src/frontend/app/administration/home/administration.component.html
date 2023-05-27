@@ -1,0 +1,65 @@
+<mat-sidenav-container class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool" stepNumber="1" joyrideStep="firstStep" title="demoTour">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content" style="display: flex;flex-direction: column;">
+                <div class="loading" *ngIf="loading">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <div
+                    style="display: grid;grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));gap: 20px;padding:20px;">
+                    <mat-card class="countCard" *ngFor="let shortcut of shortcutsAdmin" matRipple
+                        (click)="goToSpecifiedAdministration(shortcut)">
+                        <div mat-card-avatar class="avatarCount" style="margin-right: 10px;">
+                            <i class="{{shortcut.style}}" style="position: absolute;"></i>
+                        </div>
+                        <span style="font-size: 40px;">{{shortcut.count}}</span>&nbsp;
+                        {{shortcut.label | translate}}
+                    </mat-card>
+                </div>
+                <mat-divider></mat-divider>
+                <mat-form-field style="padding:10px;font-size: 10px;width: 250px !important;">
+                    <input matInput #searchServiceInput [formControl]="searchService"
+                        [placeholder]="'lang.filterBy' | translate">
+                    <button mat-button *ngIf="searchService.value" matSuffix
+                        mat-icon-button aria-label="Clear" (click)="searchService.setValue('')"
+                        [title]="'lang.clearFilter' | translate">
+                        <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                    </button>
+                </mat-form-field>
+                <div
+                    style="margin: 20px;display: grid;grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));gap: 20px;padding:20px;padding-top:0px;margin-top:0px;">
+                    <button [joyrideStep]="administration.id" mat-button
+                        *ngFor="let administration of filteredAdministrations | async | sortBy : 'label'"
+                        [title]="administration.comment | translate" style="font-size:20px;height:80px;"
+                        (click)="goToSpecifiedAdministration(administration)">
+                        <div style="display: flex;align-items: center;">
+                            <span style="padding-right: 10px;">
+                                <i class="avatarCount2 {{administration.style}}"></i>
+                            </span>
+                            <span class="countLabel" style="white-space: initial;text-align: left;">
+                                {{administration.label}}
+                            </span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [fixedInViewport]="appService.getViewMode()" position='end'
+        [opened]="appService.getViewMode() ? false : false" [mode]="appService.getViewMode() ? 'over' : 'side'"
+        class="panel-right" style="overflow-x:hidden;" [ngStyle]="{'width': appService.getViewMode() ? '80%' : '30%'}"
+        autoFocus="false">
+    </mat-sidenav>
+</mat-sidenav-container>

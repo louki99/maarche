@@ -1,0 +1,100 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.addTile' | translate}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <mat-form-field class="select-tile-type" appearance="outline">
+            <button mat-icon-button matSuffix [title]="'lang.tileColor' | translate" (click)="$event.stopPropagation()"
+                [matMenuTriggerFor]="menuColor">
+                <mat-icon class="fa fa-circle" [style.color]="selectedColor"></mat-icon>
+            </button>
+            <mat-menu #menuColor="matMenu">
+                <color-github color="#ef9a9a" width="100%" [colors]="dashboardService.getColors()" [triangle]="'hide'"
+                    (onChangeComplete)="handleChange($event)"></color-github>
+            </mat-menu>
+            <mat-label>{{'lang.tileType' | translate}}</mat-label>
+            <mat-select [(ngModel)]="selectedTileType" (selectionChange)="getViews()">
+                <mat-option *ngFor="let tileType of tileTypes | sortBy : 'label'"
+                    [value]="tileType.id"
+                    [disabled]="!canDisplayType(tileType)"
+                    [title]="getTitle(tileType)">
+                    {{tileType.label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="selectedTileType === 'basket'" appearance="outline">
+            <mat-label>{{'lang.basket' | translate}}</mat-label>
+            <mat-select [compareWith]="this.compareBaskets" (selectionChange)="setBasket($event.value)" [(ngModel)]="extraParams">
+                <mat-optgroup class="basket-group" *ngFor="let grpBasket of baskets" [label]="grpBasket.groupDesc">
+                    <mat-option *ngFor="let basket of grpBasket.baskets"
+                        [value]="{groupId:grpBasket.groupSerialId,groupName:grpBasket.groupDesc,basketId:basket.id,basketName:basket.basket_name}">
+                        {{basket.basket_name}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="selectedTileType === 'folder'">
+            <mat-label>{{'lang.folderPinned' | translate}}</mat-label>
+            <mat-select [compareWith]="this.compareFolders" [(ngModel)]="extraParams">
+                <mat-option *ngFor="let folder of folders | sortBy : 'label'" [value]="{folderId:folder.id}">
+                    {{folder.label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <app-plugin-select-search *ngIf="selectedTileType === 'shortcut'" [appearance]="'outline'" [showLabel]="true"
+            [class]="''" [label]="'lang.navigation' | translate" [datas]="menus" [formControlSelect]="menusControl"  [returnValue]="'object'" [dataKey]="'id'"
+            (afterSelected)="setMenu($event)">
+        </app-plugin-select-search>
+        <mat-form-field appearance="outline" *ngIf="extraParams.privilegeId === 'indexing'">
+            <mat-label>{{'lang.group' | translate}}</mat-label>
+            <mat-select [compareWith]="this.compareGroups" [(ngModel)]="extraParams.groupId" (selectionChange)="setIndexingGroup($event.value)">
+                <mat-option *ngFor="let group of menusControl.value.groups | sortBy : 'label'" [value]="group">
+                    {{group.label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <app-plugin-select-search *ngIf="selectedTileType === 'searchTemplate'" [appearance]="'outline'" [showLabel]="true"
+            [class]="''" [label]="'lang.model' | translate" [datas]="searchTemplates" [formControlSelect]="searchTemplatesControl"  [returnValue]="'object'" [dataKey]="'id'"
+            (afterSelected)="setSearchTemplate($event)">
+        </app-plugin-select-search>
+        <!-- Display of enabled signatory book
+            <mat-form-field appearance="outline" *ngIf="views.length > 0 && selectedTileType === 'externalSignatoryBook'">
+                <mat-label>{{ 'lang.enabledSignatoryBook' | translate }}</mat-label>
+                <input matInput [(ngModel)]="enabledSignatoryBook" readonly
+                    [title]="'lang.' + authService.externalSignatoryBook.id | translate">
+            </mat-form-field> 
+        -->
+        <mat-form-field appearance="outline" *ngIf="views.length > 0">
+            <mat-label>{{'lang.chartView' | translate}}</mat-label>
+            <mat-select [(ngModel)]="selectedView" (selectionChange)="resetExtraParams()">
+                <mat-option *ngFor="let view of views | sortBy : 'label'" [value]="view.id">
+                    {{view.label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="selectedView === 'chart'" appearance="outline">
+            <mat-label>{{'lang.type' | translate}}</mat-label>
+            <mat-select [(ngModel)]="extraParams.chartType" (selectionChange)="setChartModes()">
+                <mat-option *ngFor="let charType of chartTypes | sortBy: 'label'" [value]="charType.type">
+                    {{'lang.chart_' + charType.type | translate}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="!functionsService.empty(extraParams.chartType)" appearance="outline">
+            <mat-label>{{'lang.displayMode' | translate}}</mat-label>
+            <mat-select [(ngModel)]="extraParams.chartMode">
+                <mat-option *ngFor="let mode of chartModes | sortBy: 'label'" [value]="mode.id">
+                    {{mode.label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || !isValid()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading"
+            [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

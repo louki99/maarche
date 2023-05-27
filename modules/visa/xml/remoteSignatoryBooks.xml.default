@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <signatoryBookEnabled>maarchParapheur</signatoryBookEnabled>
+    <signatoryBook>
+        <id>maarchParapheur</id>
+        <userId>ccornillac@maarch.com</userId>
+        <password>maarch</password>
+        <url>https://preview.maarchparapheur.com/</url>
+    </signatoryBook>
+    <signatoryBook>
+        <id>ixbus</id>
+        <tokenAPI></tokenAPI>
+        <url></url>
+    </signatoryBook>
+    <signatoryBook>
+        <id>iParapheur</id>
+        <userId></userId>
+        <password></password>
+        <url>https://secure-iparapheur-partenaires.libriciel.fr/ws-iparapheur</url>
+        <certPath>serveur_iparapheur.demonstrations.adullact.org.pem</certPath>
+        <certPass></certPass>
+        <certType>pem</certType>
+        <defaultType>Courrier</defaultType>
+        <defaultSousType>signature via service achat</defaultSousType>
+        <errorCode>KO</errorCode>
+        <visaState>Vise</visaState>
+        <signState>Signe</signState>
+        <refusedVisa>RejetVisa</refusedVisa>
+        <refusedSign>RejetSignataire</refusedSign>
+    </signatoryBook>
+    <signatoryBook>
+        <id>fastParapheur</id>
+        <integratedWorkflow>true</integratedWorkflow>
+        <subscriberId></subscriberId>
+        <signatureModes>
+            <mode>
+                <id>visa</id>
+                <label>Visa</label>
+            </mode>
+            <mode>
+                <id>signature</id>
+                <label>Signataire</label>
+            </mode>
+            <!-- <mode>
+                <id>serverSignature</id>
+                <label>Signature Serveur</label>
+            </mode> -->
+        </signatureModes>
+        <workflowTypes>
+            <type>
+                <id>BUREAUTIQUE_PDF</id>
+                <label>Signature PADES</label>
+            </type>
+            <type>
+                <id>BUREAUTIQUE_XML</id>
+                <label>Signature XADES détaché</label>
+            </type>
+            <type>
+                <id>HELIOS_AVEC_TELETRANSMISSION</id>
+                <label>Signature PES avec télétransmission vers la DGFIP</label>
+            </type>
+            <type>
+                <id>HELIOS_SANS_TELETRANSMISSION</id>
+                <label>Signature PES sans télétransmission</label>
+            </type>
+        </workflowTypes>
+        <url>https://demo-parapheur.dfast.fr/parapheur-ws/rest/v1</url>
+        <certPath>fast-user-depot.p12</certPath>
+        <certPass></certPass>
+        <certType>P12</certType>
+        <validatedState>Signé</validatedState>
+        <refusedState>Refusé</refusedState>
+        <validatedVisaState>Visa approuvé</validatedVisaState>
+        <refusedVisaState>Visa désapprouvé</refusedVisaState>
+    </signatoryBook>
+    <signatoryBook>
+        <id>xParaph</id>
+        <url>https://preprodssl.ssl.spl-xdemat.fr/Xparaph/wsdl/wsdl.php</url>
+        <userGeneric>
+            <siret></siret>
+            <login></login>
+            <password></password>
+        </userGeneric>
+        <docutype>101</docutype>
+        <docustype>9</docustype>
+    </signatoryBook>
+</root>

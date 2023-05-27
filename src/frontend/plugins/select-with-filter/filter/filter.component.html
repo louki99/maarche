@@ -1,0 +1,14 @@
+<form [formGroup]="searchForm" class="mat-filter">
+  <div style="display:flex;align-items: center;">
+    <input #input class="mat-filter-input" matInput autocomplete="off" placeholder="{{placeholder}}" formControlName="value" (keydown)="handleKeydown($event)">
+    <button class="actionButton" *ngIf="isEmptyCurrentValues()" mat-icon-button [title]="'lang.displaySelectedValues' | translate" (click)="showSelectedItems()">
+        <mat-icon class="actionButtonIcon fas fa-check-double" [class.selectedItemsMode]="selectedItemsMode"></mat-icon>
+  </button>
+    <button class="actionButton" *ngIf="input.value!==''" mat-icon-button (click)="searchForm.reset()">
+        <mat-icon class="actionButtonIcon fa fa-times"></mat-icon>
+      </button>
+  </div>
+</form>
+  <div *ngIf="noResults" class="noResultsMessage">
+    {{noResultsMessage}}
+  </div>

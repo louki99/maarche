@@ -1,0 +1,60 @@
+<ManagementMetadata>
+    <?merge $managementMetadata.ArchivalProfile.bool() ?><ArchivalProfile><?merge $managementMetadata.ArchivalProfile.value ?></ArchivalProfile>
+    <?merge $managementMetadata.ServiceLevel.bool() ?><ServiceLevel><?merge $managementMetadata.ServiceLevel.value ?></ServiceLevel>
+    <?merge $managementMetadata.StorageRule.bool() ?>
+    <StorageRule>
+        <?merge $managementMetadata.StorageRule.Rule.bool() ?><Rule><?merge $managementMetadata.StorageRule.Rule.value ?></Rule>
+        <?merge $managementMetadata.StorageRule.StartDate.bool() ?><StartDate><?merge $managementMetadata.StorageRule.StartDate.value ?></StartDate>
+        <PreventInheritance><?merge $managementMetadata.StorageRule.PreventInheritance ?></PreventInheritance>
+        <RefNonRuleId><?merge $managementMetadata.StorageRule.RefNonRuleId ?></RefNonRuleId>
+        <FinalAction><?merge $managementMetadata.StorageRule.FinalAction ?></FinalAction>
+    </StorageRule>
+    <?merge $managementMetadata.AppraisalRule.bool() ?>
+    <AppraisalRule>
+        <?merge $managementMetadata.AppraisalRule.Rule.bool() ?><Rule><?merge $managementMetadata.AppraisalRule.Rule.value ?></Rule>
+        <?merge $managementMetadata.AppraisalRule.StartDate.bool() ?><StartDate><?merge $managementMetadata.AppraisalRule.StartDate.value ?></StartDate>
+        <PreventInheritance><?merge $managementMetadata.AppraisalRule.PreventInheritance ?></PreventInheritance>
+        <RefNonRuleId><?merge $managementMetadata.AppraisalRule.RefNonRuleId ?></RefNonRuleId>
+        <FinalAction><?merge $managementMetadata.AppraisalRule.FinalAction ?></FinalAction>
+    </AppraisalRule>
+    <?merge $managementMetadata.AccessRule.bool() ?>
+    <AccessRule>
+        <?merge $managementMetadata.AccessRule.Rule.bool() ?><Rule><?merge $managementMetadata.AccessRule.Rule.value ?></Rule>
+        <?merge $managementMetadata.AccessRule.StartDate.bool() ?><StartDate><?merge $managementMetadata.AccessRule.StartDate.value ?></StartDate>
+        <PreventInheritance><?merge $managementMetadata.AccessRule.PreventInheritance ?></PreventInheritance>
+        <RefNonRuleId><?merge $managementMetadata.AccessRule.RefNonRuleId ?></RefNonRuleId>
+    </AccessRule>
+    <?merge $managementMetadata.DisseminationRule.bool() ?>
+    <DisseminationRule>
+        <?merge $managementMetadata.DisseminationRule.Rule.bool() ?><Rule><?merge $managementMetadata.DisseminationRule.Rule.value ?></Rule>
+        <?merge $managementMetadata.DisseminationRule.StartDate.bool() ?><StartDate><?merge $managementMetadata.DisseminationRule.StartDate.value ?></StartDate>
+        <PreventInheritance><?merge $managementMetadata.DisseminationRule.PreventInheritance ?></PreventInheritance>
+        <RefNonRuleId><?merge $managementMetadata.DisseminationRule.RefNonRuleId ?></RefNonRuleId>
+    </DisseminationRule>
+    <?merge $managementMetadata.ReuseRule.bool() ?>
+    <ReuseRule>
+        <?merge $managementMetadata.ReuseRule.Rule.bool() ?><Rule><?merge $managementMetadata.ReuseRule.Rule.value ?></Rule>
+        <?merge $managementMetadata.ReuseRule.StartDate.bool() ?><StartDate><?merge $managementMetadata.ReuseRule.StartDate.value ?></StartDate>
+        <PreventInheritance><?merge $managementMetadata.ReuseRule.PreventInheritance ?></PreventInheritance>
+        <RefNonRuleId><?merge $managementMetadata.ReuseRule.RefNonRuleId ?></RefNonRuleId>
+    </ReuseRule>
+    <?merge $managementMetadata.ClassificationRule.bool() ?>
+    <ClassificationRule>
+        <?merge $managementMetadata.ClassificationRule.Rule.bool() ?><Rule><?merge $managementMetadata.ClassificationRule.Rule.value ?></Rule>
+        <?merge $managementMetadata.ClassificationRule.StartDate.bool() ?><StartDate><?merge $managementMetadata.ClassificationRule.StartDate.value ?></StartDate>
+        <PreventInheritance><?merge $managementMetadata.ClassificationRule.PreventInheritance ?></PreventInheritance>
+        <RefNonRuleId><?merge $managementMetadata.ClassificationRule.RefNonRuleId ?></RefNonRuleId>
+        <ClassificationLevel><?merge $managementMetadata.ClassificationRule.ClassificationLevel ?></ClassificationLevel>
+        <ClassificationOwner><?merge $managementMetadata.ClassificationRule.ClassificationOwner ?></ClassificationOwner>
+        <ClassificationReassessingDate><?merge $managementMetadata.ClassificationRule.ClassificationReassessingDate ?></ClassificationReassessingDate>
+        <NeedReassessingAuthorization><?merge $managementMetadata.ClassificationRule.NeedReassessingAuthorization ?></NeedReassessingAuthorization>
+    </ClassificationRule>
+    <?merge $managementMetadata.NeedAuthorization.bool() ?>
+    <NeedAuthorization>
+        <?merge $managementMetadata.NeedAuthorization ?>
+    </NeedAuthorization>
+    <?merge $managementMetadata.OtherManagementAbstract.bool() ?>
+    <OtherManagementAbstract>
+        <?merge $managementMetadata.OtherManagementAbstract ?>
+    </OtherManagementAbstract>
+</ManagementMetadata>

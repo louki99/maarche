@@ -1,0 +1,43 @@
+
+
+.stepContent {
+    // max-width: 850px;
+    margin: auto;
+
+    .stepContentTitle {
+        color: var(--maarch-color-primary);
+        margin-bottom: 30px;
+        border-bottom: solid 1px;
+        padding: 0;
+    }
+}
+
+.backgroundList {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+}
+
+.selected {
+    transition: all 0.3s;
+    opacity: 1 !important;
+    border: solid 10px var(--maarch-color-secondary) !important;
+}
+
+.backgroundItem {
+    border: solid 0px var(--maarch-color-secondary);
+    opacity: 0.5;
+    transition: all 0.3s;
+    cursor: pointer;
+    height: 120px;
+    background-size: cover !important;
+}
+
+.disabled {
+    cursor: default !important;
+}
+
+.backgroundItem:not(.disabled):hover {
+    transition: all 0.3s;
+    opacity: 1 !important;
+}

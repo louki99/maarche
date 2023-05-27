@@ -1,0 +1,96 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <a mat-list-item routerLink="/administration/alfresco/new">
+                <mat-icon color="primary" mat-list-icon class="fa fa-plus"></mat-icon>
+                <p mat-line>
+                    {{'lang.add' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field appearance="outline">
+                                <mat-label>{{'lang.alfrescoAPI' | translate}}</mat-label>
+                                <input matInput required name="accountId" [(ngModel)]="alfrescoUrl"
+                                    id="accountId" [title]="alfrescoUrl" type="text" placeholder="https://alfresco/api/" (blur)="saveUrl()">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <mat-form-field>
+                                <input matInput [formControl]="adminService.getFilterField()"
+                                    placeholder="{{'lang.filterBy' | translate}}">
+                                <button mat-button *ngIf="adminService.searchTerm.value !== ''" matSuffix
+                                    mat-icon-button aria-label="Clear" (click)="adminService.searchTerm.setValue('')"
+                                    [title]="'lang.clearFilter' | translate">
+                                    <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <div class="table-head table-head-tool">
+                                <span style="position: relative;">
+                                    <mat-paginator #paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100, 150]"></mat-paginator>
+                                    <app-select-page [paginator]="paginator"></app-select-page>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-table #table [dataSource]="adminService.getDataSource()" matSortDisableClear matSort>
+                        <ng-container matColumnDef="label">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header
+                                [class.hide-for-mobile]="appService.getViewMode()">{{'lang.label' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element" [class.hide-for-mobile]="appService.getViewMode()">
+                                {{element.label}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="entitiesLabel">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex: 2">{{'lang.linkedEntities' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="flex: 2">
+                                <div>
+                                    <span class="label" *ngFor="let entity of element.entitiesLabel">{{entity}}</span>
+                                </div>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="actions">
+                            <mat-header-cell *matHeaderCellDef style="flex:none"></mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="flex:none;justify-content: flex-end;">
+                                <button mat-icon-button color="warn" matTooltip="{{'lang.delete' | translate}}"
+                                    (click)="$event.stopPropagation();deleteAccount(element.id)">
+                                    <mat-icon class="fa fa-trash-alt fa-2x" aria-hidden="true"></mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"
+                            routerLink="/administration/alfresco/{{row.id}}" style="cursor:pointer;"
+                            matTooltip="{{'lang.view' | translate}}"></mat-row>
+                    </mat-table>
+                    <div class="mat-paginator"
+                        style="min-height:48px;display: flex;justify-content: end;align-items: center;padding-right: 20px;">
+                        {{accounts.length}} {{'lang.accounts' | translate}}</div>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

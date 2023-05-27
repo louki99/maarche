@@ -1,0 +1,52 @@
+<form>
+    <input type="hidden" [formControl]="controlAutocomplete">
+    <mat-form-field floatLabel="never" class="input-form depList" *ngIf="!controlAutocomplete.disabled">
+        <button mat-button matPrefix [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()" [disabled]="adminMode">
+            {{addressBANCurrentDepartment}} <i class="fas fa-angle-down"></i>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let dep of departmentList" (click)="addressBANCurrentDepartment = dep">
+                <span>{{dep}}</span>
+            </button>
+        </mat-menu>
+        <input type="text" #autoCompleteInput [placeholder]="'lang.searchAddressBan' | translate" matInput [formControl]="myControl"
+            [matAutocomplete]="auto" (click)="$event.stopPropagation()" (focus)="resetAutocomplete()">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectOpt($event)">
+            <ng-container *ngIf="options.length > 0 && !loading">
+                <mat-option *ngFor="let option of filteredOptions | async | sortBy: key" [value]="option"
+                    [title]="option[key]">
+                    <span color="primary">{{option[key]}}</span>
+                </mat-option>
+            </ng-container>
+            <mat-option class="autoCompleteInfoResult smallInputInfo" *ngIf="options.length === 0 && !loading" disabled
+                [innerHTML]="listInfo">
+            </mat-option>
+            <mat-option *ngIf="loading" disabled>
+                <mat-spinner diameter="20"></mat-spinner>
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <div class="itemList">
+        <mat-chip-list *ngIf="controlAutocomplete.value.length > 0" class="mat-chip-list-stacked itemChip"
+            color="default">
+            <mat-chip *ngFor="let item of controlAutocomplete.value;let i=index" class="activeListAutocomplete"
+                style="height:auto;" color="default" [removable]="!controlAutocomplete.disabled"
+                (removed)="removeItem(i)">
+                <div>
+                    <span style="display: flex;flex: 1;align-items: center;cursor: pointer;"
+                    [title]="this.valuesToDisplay[item.id]" (click)="goTo(item)">
+                    {{this.valuesToDisplay[item.id]}}
+                    </span>
+                    <span *ngIf="!functions.empty(controlAutocomplete.value[0].sector)" class="sector"
+                    [title]="this.valuesToDisplay[item.id]">
+                    {{'lang.contactsParameters_sector' | translate}} : {{controlAutocomplete.value[0].sector}}
+                </span>
+                </div>
+                <mat-icon matChipRemove class="fa fa-times" *ngIf="!controlAutocomplete.disabled"></mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+        <div class="noResult" *ngIf="controlAutocomplete.value.length === 0">
+            {{'lang.noSelectedAddress' | translate}}
+        </div>
+    </div>
+</form>

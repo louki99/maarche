@@ -1,0 +1,77 @@
+
+.mat-dialog-title {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.modal-container {
+    min-height: 250px;
+    height: auto;
+    padding-bottom: 5px;
+}
+
+.modal-body {
+    min-height: auto;
+}
+
+.loading {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    top: 0px;
+    left: 0px;
+}
+
+.printedFolderElement {
+
+
+    &-title {
+        position: sticky;
+        top: -10px;
+        padding: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--maarch-color-primary);
+        background: white;
+        z-index: 1;
+    }
+
+    &-option {
+        &:nth-child(2n) {
+            background: var(--maarch-color-primary-opacity-10);
+        }
+    }
+
+    &-item {
+        font-size: 14px !important;
+        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        grid-gap: 20px;
+    }
+}
+
+.attachments {
+    grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+}
+
+.linkedResourcesAttachments {
+    grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
+}
+
+.printedFolderContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+}
+
+.mat-expansion-panel-header[aria-disabled="true"] {
+    color: initial !important;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

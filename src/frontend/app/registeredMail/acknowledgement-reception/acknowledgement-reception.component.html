@@ -1,0 +1,97 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form style="display: contents;" [formGroup]="adminFormGroup">
+                        <div>
+                            <mat-form-field>
+                                <mat-select [(ngModel)]="type" (ngModelChange)="changeType($event);focusRegisteredMailNumber();receivedDate = today" placeholder="{{'lang.returnType' | translate}}" formControlName="type">
+                                    <mat-option [value]="'distributed'">{{'lang.registeredMailDistributed' | translate}}</mat-option>
+                                    <mat-option [value]="'notDistributed'">{{'lang.registeredMailNotDistributed' | translate}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field  *ngIf="type === 'notDistributed' || type === 'distributed'" (click)="picker.open()" appearance="outline" style="cursor:pointer;margin-top: 10px;">
+                                <mat-label>{{'lang.registeredMailReceivedDate' | translate}}</mat-label>
+                                <input matInput [(ngModel)]="receivedDate" [matDatepicker]="picker"
+                                       [placeholder]="'lang.chooseDate' | translate" [max]="today" readonly style="cursor:pointer;" formControlName="receivedDate" required>
+                                <mat-datepicker-toggle matSuffix [for]="picker" *ngIf="!receivedDate">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+
+                            <mat-form-field *ngIf="type === 'notDistributed'" >
+                                <mat-select [(ngModel)]="reason" formControlName="returnReason" placeholder="{{'lang.returnReason' | translate}}" required>
+                                    <mat-option *ngFor="let reason of returnReasons" [value]="reason">{{reason}}</mat-option>
+                                    <mat-option value="{{'lang.others' | translate}}">{{'lang.others' | translate}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field *ngIf="type === 'notDistributed' && reason === ('lang.others' | translate)">
+                                <mat-label>{{'lang.precise' | translate}}</mat-label>
+                                <input matInput name="returnReasonOther" formControlName="returnReasonOther" [(ngModel)]="reasonOther">
+                            </mat-form-field>
+
+                            <mat-form-field *ngIf="type === 'notDistributed' || type === 'distributed'">
+                                <mat-label>{{'lang.registeredMailNumber' | translate}}</mat-label>
+                                <input #numberInput type="text" matInput required [(ngModel)]="number" formControlName="number">
+                            </mat-form-field>
+
+                            <div style="text-align:center;">
+                                <button mat-raised-button color="primary" type="button" (click)="receiveAcknowledgement();focusRegisteredMailNumber()"
+                                        [disabled]="!adminFormGroup.valid">{{'lang.validate' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <mat-table [dataSource]="dataSource">
+                        <ng-container matColumnDef="type">
+                            <mat-header-cell *matHeaderCellDef>{{'lang.returnType' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                {{(element.type === 'distributed' ? ('lang.registeredMailDistributed' | translate) : ('lang.registeredMailNotDistributed' | translate))}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="number">
+                            <mat-header-cell *matHeaderCellDef>{{'lang.registeredMailNumber' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.number}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="receivedDate">
+                            <mat-header-cell *matHeaderCellDef>{{'lang.registeredMailReceivedDate' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.receivedDate}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="returnReason">
+                            <mat-header-cell *matHeaderCellDef>{{'lang.returnReason' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.returnReason}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="rollback">
+                            <mat-header-cell *matHeaderCellDef>{{'lang.cancel' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <button mat-icon-button (click)="rollbackReception(element)" color="primary" [title]="'lang.cancel' | translate">
+                                    <mat-icon class="fa fa-undo fa-2x"></mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </mat-table>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

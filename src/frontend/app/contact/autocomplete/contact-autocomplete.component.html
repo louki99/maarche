@@ -1,0 +1,150 @@
+<form>
+    <input type="hidden" [formControl]="controlAutocomplete">
+    <mat-form-field floatLabel="never" class="input-form"
+        *ngIf="(!controlAutocomplete.disabled && !singleMode) || (singleMode && controlAutocomplete.value.length === 0 && !controlAutocomplete.disabled)">
+        <mat-icon color="primary" class="fa fa-search" matPrefix style="padding-left: 20px;font-size: 15px;"></mat-icon>
+        <input [id]="id" type="text" #autoCompleteInput [placeholder]="'lang.searchContact' | translate" matInput [formControl]="myControl"
+            [matAutocomplete]="auto" (click)="$event.stopPropagation();noResultFound = null;" maxlength="128">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectOpt($event)">
+            <ng-container *ngIf="options?.length > 0 && !loading">
+                <mat-option [id]="id + '-' + option.id" *ngFor="let option of filteredOptions | async" [value]="option">
+                    <mat-card>
+                        <mat-card-header class="contact-header">
+                            <div mat-card-avatar class="contact-header-image fa"
+                                [class.fa-address-card]="option.type === 'contact'"
+                                [class.fa-users]="option.type ==='contactGroup'"
+                                [class.fa-sitemap]="option.type ==='entity'" [class.fa-user]="option.type ==='user'"
+                                [title]="'lang.contact_' + option.type | translate">
+                            </div>
+                            <mat-card-title *ngIf="!empty(option.firstname) || !empty(option.lastname)"
+                                [title]="option.civility.label + ' ' + option.firstname + ' ' + option.lastname">
+                                <sup style="color: #666;" *ngIf="!empty(option.civility.abbreviation)">{{option.civility.abbreviation}}&nbsp;</sup>{{option.firstname}}
+                                {{option.lastname}}</mat-card-title>
+                            <mat-card-title *ngIf="empty(option.firstname) && empty(option.lastname)"
+                                [title]="option.company">{{option.company}}</mat-card-title>
+                            <mat-card-subtitle [title]="option.function" *ngIf="!empty(option.function)">
+                                {{option.function}}&nbsp;
+                            </mat-card-subtitle>
+                            <i class="contact-filling fa fa-circle"
+                                *ngIf="option.type === 'contact' && !empty(option.fillingRate.rate)"
+                                [title]="('lang.contactsFillingRate' | translate) + ' : ' + option.fillingRate.rate + '%'" [style.color]="option.fillingRate.color"></i>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <mat-list>
+                                <mat-list-item class="contact-item"
+                                    *ngIf="(!empty(option.firstname) || !empty(option.lastname)) && !empty(option.company)">
+                                    <mat-icon mat-list-icon class="contact-group far fa-building"
+                                        [title]="'lang.contactsParameters_company' | translate"></mat-icon>
+                                    <p mat-line class="contact-content" [title]="option.company"> {{option.company}}
+                                    </p>
+                                </mat-list-item>
+                                <mat-list-item class="contact-item" *ngIf="!empty(option.department)">
+                                    <mat-icon mat-list-icon class="contact-group fa fa-sitemap"
+                                        [title]="'lang.contactsParameters_department' | translate"></mat-icon>
+                                    <p mat-line class="contact-content" [title]="option.department">
+                                        {{option.department}} </p>
+                                    <p mat-line class="contact-content" *ngIf="!empty(option.addressAdditional1)"
+                                        [title]="option.addressAdditional1"> ({{option.addressAdditional1}}) </p>
+                                </mat-list-item>
+                                <mat-list-item class="contact-item" *ngIf="!empty(option.email)">
+                                    <mat-icon mat-list-icon class="contact-group far fa-envelope" [title]="'lang.email' | translate">
+                                    </mat-icon>
+                                    <p mat-line class="contact-content" [title]="option.email"> {{option.email}} </p>
+                                </mat-list-item>
+                                <mat-list-item class="contact-item" *ngIf="!empty(option.phone)">
+                                    <mat-icon mat-list-icon class="contact-group fas fa-phone"
+                                        [title]="'lang.phoneNumber' | translate">
+                                    </mat-icon>
+                                    <p mat-line class="contact-content" [title]="option.phone"> {{option.phone}} </p>
+                                </mat-list-item>
+                                <mat-list-item class="contact-address" [title]="'lang.address' | translate"
+                                    *ngIf="!empty(option.addressNumber) || !empty(option.addressStreet) || !empty(option.addressAdditional2) || !empty(option.addressPostcode) || !empty(option.addressTown) || !empty(option.addressCountry)">
+                                    <mat-icon mat-list-icon class="contact-group fas fa-map-marker-alt"></mat-icon>
+                                    <p mat-line class="contact-content"
+                                        *ngIf="!empty(option.addressNumber) || !empty(option.addressStreet)"
+                                        [title]="option.addressStreet">
+                                        {{option.addressNumber}} {{option.addressStreet}} </p>
+                                    <p mat-line class="contact-content" *ngIf="!empty(option.addressAdditional2)"
+                                        [title]="option.addressAdditional2"> ({{option.addressAdditional2}}) </p>
+                                    <p mat-line class="contact-content"
+                                        *ngIf="!empty(option.addressPostcode) || !empty(option.addressTown)"
+                                        [title]="option.addressPostcode + ' ' + option.addressTown">
+                                        {{option.addressPostcode}}
+                                        {{option.addressTown}} </p>
+                                    <p mat-line class="contact-content" *ngIf="!empty(option.addressCountry)"
+                                        [title]="option.addressCountry"> {{option.addressCountry}} </p>
+                                    <p mat-line class="contact-content" *ngIf="!empty(option.sector)"
+                                        [title]="option.sector"> {{option.sector}} </p>
+                                </mat-list-item>
+                                <mat-list-item class="contact-item" *ngIf="!empty(option.notes)">
+                                    <mat-icon mat-list-icon class="contact-group far fa-sticky-note" [title]="'lang.note' | translate">
+                                    </mat-icon>
+                                    <p mat-line class="contact-content" [title]="option.notes"> {{option.notes}} </p>
+                                </mat-list-item>
+                                <ng-container *ngFor="let customField of option.customFields">
+                                    <mat-list-item class="contact-item" *ngIf="customField.value !== null">
+                                        <mat-icon mat-list-icon class="contact-group fas fa-hashtag"
+                                            [title]="customField.label">
+                                        </mat-icon>
+                                        <p mat-line class="contact-content" [title]="customField.value">
+                                            {{customField.value}} </p>
+                                    </mat-list-item>
+                                </ng-container>
+                            </mat-list>
+                        </mat-card-content>
+                    </mat-card>
+                </mat-option>
+            </ng-container>
+            <mat-option class="autoCompleteInfoResult smallInputInfo" *ngIf="options?.length === 0 && !loading" disabled
+                [innerHTML]="listInfo">
+            </mat-option>
+            <mat-option *ngIf="loading" disabled style="text-align: center;display: block;padding: 10px;">
+                <mat-spinner diameter="20"></mat-spinner>
+            </mat-option>
+            <div class="autoCompleteInfoResult smallInputInfo create-contact"
+                *ngIf="canAdd && (noResultFound !== null || options?.length > 0) && !loading && !fromExternalWorkflow" disabled>
+                <a style="cursor: pointer;" (click)="$event.stopPropagation();openContact()">
+                    <mat-icon matSuffix class="fas fa-plus-circle" style="padding-top: 5px"></mat-icon>
+                    {{'lang.createContact' | translate}}
+                </a>
+            </div>
+        </mat-autocomplete>
+    </mat-form-field>
+    <div style="text-align: right;" *ngIf="controlAutocomplete.value.length >= 2 && !controlAutocomplete.disabled && !inputMode">
+        <button mat-button color="warn" (click)="resetAll()" style="font-size: 10px;">{{'lang.deleteAll' | translate}}</button>
+    </div>
+    <div class="itemList" *ngIf="!inputMode">
+        <mat-chip-list *ngIf="controlAutocomplete.value.length > 0" class="mat-chip-list-stacked itemChip"
+            color="default">
+            <ng-container *ngIf="!loadingValues">
+                <mat-chip *ngFor="let item of controlAutocomplete.value;let i=index" class="listAutocomplete"
+                    color="default" [removable]="!controlAutocomplete.disabled" (removed)="removeItem(i)"
+                    (click)="openContact(item)">
+                    <div style="margin-right: auto;">
+                        <span style="display: flex;flex: 1;align-items: center;" class="userInfos">
+                            <i class="fa" [class.fa-address-card]="this.valuesToDisplay[item.type][item.id].type === 'contact'"
+                                [class.fa-sitemap]="this.valuesToDisplay[item.type][item.id].type ==='entity'"
+                                [class.fa-user]="this.valuesToDisplay[item.type][item.id].type ==='user'"
+                                [title]="'lang.' + this.valuesToDisplay[item.type][item.id].type | translate" style="padding-right:5px;"></i>
+                            <ng-container *ngIf="!empty(this.valuesToDisplay[item.type][item.id].firstname)">
+                                {{this.valuesToDisplay[item.type][item.id].firstname}}
+                            </ng-container>
+    
+                            {{this.valuesToDisplay[item.type][item.id].lastname}} <ng-container
+                                *ngIf="!empty(this.valuesToDisplay[item.type][item.id].company)">
+                                ({{this.valuesToDisplay[item.type][item.id].company}})</ng-container>
+                        </span>
+                        <span *ngIf="!empty(this.valuesToDisplay[item.type][item.id].sector)" class="sector">
+                            {{'lang.contactsParameters_sector' | translate}} : {{this.valuesToDisplay[item.type][item.id].sector}}
+                        </span>
+                    </div>
+                    <i *ngIf="!functions.empty(valuesToDisplay[item.type][item.id].fillingRate.color)" class="fa fa-circle" [style.color]="valuesToDisplay[item.type][item.id].fillingRate.color" style="font-size: 9px;"></i>
+                    <mat-icon matChipRemove class="fa fa-times" *ngIf="!controlAutocomplete.disabled"></mat-icon>
+                </mat-chip>
+            </ng-container>
+        </mat-chip-list>
+        <div class="noResult" *ngIf="controlAutocomplete.value.length === 0">
+            {{'lang.noSelectedContact' | translate}}
+        </div>
+    </div>
+</form>

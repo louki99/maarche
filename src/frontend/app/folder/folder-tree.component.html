@@ -1,0 +1,167 @@
+<ng-container *ngIf="!loading; else elseTemplate">
+    <div class="folderTools">
+        <div class="filter">
+            <app-plugin-autocomplete #autocomplete [size]="'small'" [labelPlaceholder]="'lang.searchFolder' | translate"
+                [routeDatas]="['/rest/autocomplete/folders']" [targetSearchKey]="'idToDisplay'"
+                (triggerEvent)="goTo($event)" appearance="outline"></app-plugin-autocomplete>
+        </div>
+        <div>
+            <button mat-icon-button color="primary" title="{{'lang.addRootFolder' | translate}}" (click)="openCreateFolderModal()">
+                <mat-icon class="fas fa-folder-plus"></mat-icon>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="dataSource.data.length === 0" class="noFolder">
+        {{'lang.noAvailableFolder' | translate}}
+    </div>
+    <mat-nav-list *ngIf="dataSource.data.length > 0">
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+            <!-- This is the tree node template for leaf nodes -->
+            <mat-tree-node cdkDropList [id]="'treefolder-list-'+node.id"
+                cdkDropListConnectedTo="['document-list','folder-list']" (cdkDropListDropped)="drop($event, node)"
+                (cdkDropListEntered)="dragEnter(node)" (cdkDropListExited)="node.drag=false" [@hideShow]
+                *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="20px">
+                <!-- use a disabled button to provide padding for tree leaf -->
+                <button class="expandButton" mat-icon-button disabled></button>
+                <a mat-list-item disableRipple class="folderTreeItem"
+                    [class.selectedFolder]="foldersService.getCurrentFolder().id == node.id"
+                    (mouseenter)="showAction(node)" (mouseleave)="hideAction(node)"
+                    (click)="foldersService.goToFolder(node)">
+                    <span style="width: 90%;overflow: hidden;text-overflow: ellipsis;">
+                        <span class="treeLabel" [title]="node.label" [class.drag]="node.drag">
+                            <i class="fa fa-users private" *ngIf="node.public" title="{{'lang.sharedFolder' | translate}}"></i>
+                            {{node.label}}
+                        </span>
+                    </span>
+                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                        (click)="$event.stopPropagation();showAction(node);checkRights(node);"
+                        [disabled]="!node.showAction" style="position: absolute;right:0px;">
+                        <mat-icon *ngIf="node.showAction" class="folderAction fa fa-ellipsis-v"></mat-icon>
+                        <span *ngIf="!node.showAction" class="countResources" [class.empty]="node.countResources === 0">
+                            {{node.countResources}}
+                        </span>
+                    </button>
+                    <mat-menu #menu="matMenu" [class]="'folderListMenu'">
+                        <button mat-menu-item (click)="togglePinFolder(node)">
+                            <mat-icon [class.pinnedActionIcon]="!node.pinned"
+                                [class.revertPinnedActionIcon]="node.pinned">
+                                <i class="fas fa-thumbtack"></i>
+                            </mat-icon>
+                            <span>{{node.pinned ? ('lang.unpinFolder' | translate) : ('lang.pinFolder' | translate)}}</span>
+                        </button>
+                        <button mat-menu-item [disabled]="createItemNode || !node.canAdd || node.level > 6"
+                            (click)="addNewItem(node)">
+                            <mat-icon style="width: auto;height: auto;">
+                                <i class="fas fa-folder-plus"></i>
+                            </mat-icon>
+                            <span>{{'lang.addSubFolder' | translate}}</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteNode(node)"
+                            [disabled]="!node.canDelete">
+                            <mat-icon style="width: auto;height: auto;">
+                                <i class="far fa-trash-alt"></i>
+                            </mat-icon>
+                            <span>
+                                {{'lang.delete' | translate}}
+                            </span>
+                        </button>
+                        <button mat-menu-item (click)="openFolderAdmin(node)"
+                            [disabled]="!node.edition">
+                            <mat-icon style="width: auto;height: auto;">
+                                <i class="fas fa-sliders-h"></i>
+                            </mat-icon>
+                            <span>
+                                {{'lang.properties' | translate}}
+                            </span>
+                        </button>
+                    </mat-menu>
+                </a>
+            </mat-tree-node>
+            <mat-tree-node *matTreeNodeDef="let node; when: hasNoContent" matTreeNodePadding
+                matTreeNodePaddingIndent="0px">
+                <form>
+                    <mat-form-field floatLabel="never" style="width: 100%;padding-left: 10px;padding-right: 10px;">
+                        <input matInput id="itemValue" #itemValue placeholder="{{'lang.addFolder' | translate}}...">
+                        <button type="submit" matSuffix mat-icon-button (click)="saveNode(node, itemValue.value)"
+                            [disabled]="itemValue.value === ''">
+                            <mat-icon class="fa fa-check" color="accent" [title]="'lang.add' | translate"></mat-icon>
+                        </button>
+                        <button type="button" matSuffix mat-icon-button (click)="removeTemporaryNode(node)">
+                            <mat-icon class="fa fa-times" style="color:#8e3e52" [title]="'lang.delete' | translate"></mat-icon>
+                        </button>
+                    </mat-form-field>
+                </form>
+            </mat-tree-node>
+            <!-- This is the tree node template for expandable nodes -->
+            <mat-tree-node cdkDropList [id]="'treefolder-list-'+node.id" cdkDropListConnectedTo="list-1"
+                (cdkDropListDropped)="drop($event, node)" (cdkDropListEntered)="dragEnter(node)"
+                (cdkDropListExited)="node.drag=false" [@hideShow] *matTreeNodeDef="let node;when: hasChild"
+                matTreeNodePadding matTreeNodePaddingIndent="20px">
+                <button class="expandButton" mat-icon-button matTreeNodeToggle
+                    [attr.aria-label]="'toggle ' + node.name">
+                    <mat-icon
+                        class="mat-icon-rtl-mirror fa {{treeControl.isExpanded(node) ? 'fa-chevron-down' : 'fa-chevron-right'}}">
+                    </mat-icon>
+                </button>
+                <a mat-list-item disableRipple class="folderTreeItem"
+                    [class.selectedFolder]="foldersService.getCurrentFolder().id == node.id"
+                    (mouseleave)="hideAction(node)" (mouseenter)="showAction(node)"
+                    (click)="foldersService.goToFolder(node)">
+                    <span style="width: 90%;overflow: hidden;text-overflow: ellipsis;">
+                        <span class="treeLabel" [title]="node.label" [class.drag]="node.drag">
+                            <i class="fa fa-users private" *ngIf="node.public" title="{{'lang.sharedFolder' | translate}}"></i>
+                            {{node.label}}
+                        </span>
+                    </span>
+                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                        (click)="$event.stopPropagation();checkRights(node);" [disabled]="!node.showAction"
+                        style="position: absolute;right:0px;">
+                        <mat-icon *ngIf="node.showAction" class="folderAction fa fa-ellipsis-v"></mat-icon>
+                        <span *ngIf="!node.showAction" class="countResources" [class.empty]="node.countResources === 0">
+                            {{node.countResources}}
+                        </span>
+                    </button>
+                    <mat-menu #menu="matMenu" [class]="'folderListMenu'">
+                        <button mat-menu-item (click)="togglePinFolder(node)">
+                            <mat-icon [class.pinnedActionIcon]="!node.pinned"
+                                [class.revertPinnedActionIcon]="node.pinned">
+                                <i class="fas fa-thumbtack"></i>
+                            </mat-icon>
+                            <span>{{node.pinned ? ('lang.unpinFolder' | translate) : ('lang.pinFolder' | translate)}}</span>
+                        </button>
+
+                        <button mat-menu-item [disabled]="createItemNode || !node.canAdd || node.level > 6"
+                            (click)="addNewItem(node)">
+                            <mat-icon style="width: auto;height: auto;">
+                                <i class="fas fa-folder-plus"></i>
+                            </mat-icon>
+                            <span>{{'lang.addSubFolder' | translate}}</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteNode(node)" [disabled]="!node.canDelete">
+                            <mat-icon style="width: auto;height: auto;">
+                                <i class="far fa-trash-alt"></i>
+                            </mat-icon>
+                            <span>
+                                {{'lang.delete' | translate}}
+                            </span>
+                        </button>
+                        <button mat-menu-item (click)="openFolderAdmin(node)"
+                            [disabled]="!node.edition">
+                            <mat-icon style="width: auto;height: auto;">
+                                <i class="fas fa-sliders-h"></i>
+                            </mat-icon>
+                            <span>
+                                {{'lang.properties' | translate}}
+                            </span>
+                        </button>
+                    </mat-menu>
+                </a>
+            </mat-tree-node>
+        </mat-tree>
+    </mat-nav-list>
+</ng-container>
+<ng-template #elseTemplate>
+    <div class="loading">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-template>

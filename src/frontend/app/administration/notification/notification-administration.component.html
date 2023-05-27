@@ -1,0 +1,138 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <h3 mat-subheader *ngIf="!creationMode">{{'lang.actions' | translate}}</h3>
+            <a mat-list-item (click)="createScript()" *ngIf="!creationMode && !loading && !notification.scriptcreated"
+                joyrideStep="createScriptTour" (next)="createScript()">
+                <mat-icon color="primary" mat-list-icon class="fa fa-terminal"></mat-icon>
+                <p mat-line>
+                    {{'lang.createScriptNotification' | translate}}
+                </p>
+            </a>
+            <a mat-list-item *ngIf="!creationMode && !loading && notification.is_enabled == 'N'"
+                (click)="toggleNotif()">
+                <mat-icon color="accent" mat-list-icon class="fa fa-play"></mat-icon>
+                <p mat-line>
+                    {{'lang.activateNotification' | translate}}
+                </p>
+            </a>
+            <a mat-list-item *ngIf="!creationMode && !loading && notification.is_enabled == 'Y'"
+                (click)="toggleNotif()">
+                <mat-icon color="warn" mat-list-icon class="fa fa-pause"></mat-icon>
+                <p mat-line>
+                    {{'lang.suspendNotification' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div *ngIf="notification.is_enabled == 'N'" class="text-warning"
+                        style="position: absolute;opacity: 0.1;font-size: 120px;transform: rotate(324deg);-webkit-transform: rotate(324deg);margin-left: 25%;margin-top: 90px;">
+                        {{'lang.suspended' | translate}}</div>
+                    <form class="form-horizontal" (ngSubmit)="onSubmit()" #notificationsFormUp="ngForm">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="notification.notification_id" required
+                                        name="notification_id" id="notification_id" title="{{'lang.id' | translate}}"
+                                        type="text" pattern="^[\w.-]*$" placeholder="{{'lang.id' | translate}}"
+                                        maxlength="50" [disabled]="!creationMode">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="notification.description" required name="description"
+                                        id="description" title="{{'lang.description' | translate}}" type="text"
+                                        placeholder="{{'lang.description' | translate}}" maxlength="255">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <app-select-with-filter name="eventId" [label]="'lang.NotificationEvent' | translate"
+                                    [(ngModel)]="notification.event_id" [array]="events" [required]="true">
+                                </app-select-with-filter>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                <app-select-with-filter name="templateId" [label]="'lang.notificationModel' | translate"
+                                    [(ngModel)]="notification.template_id" [array]="templatesMailSend"
+                                    [required]="true"></app-select-with-filter>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field>
+                                    <mat-select id="attachfor_type" name="attachfor_type"
+                                        title="{{'lang.attachment' | translate}}"
+                                        placeholder="{{'lang.attachment' | translate}}"
+                                        [(ngModel)]="notification.attachfor_type">
+                                        <mat-option value="">
+                                            {{'lang.noAttachment' | translate}}
+                                        </mat-option>
+                                        <mat-option value="main_document">
+                                            {{'lang.notificationJoinDocument' | translate}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <app-select-with-filter name="diffusionType" [label]="'lang.sendTo' | translate"
+                                    [(ngModel)]="notification.diffusion_type" (selectionChange)="updateDiffusionType($event)" [array]="diffusionTypes"
+                                    [required]="true"></app-select-with-filter>
+                            </div>
+                            <div class="col-md-8">
+                                <app-select-with-filter *ngIf="notification.diffusion_type === 'group'"
+                                    name="diffusionProperties" [label]="'lang.memberDiffTypeUsers' | translate"
+                                    [(ngModel)]="notification.diffusion_properties" [array]="groups" [required]="true"
+                                    [multiple]="true">
+                                </app-select-with-filter>
+                                <app-select-with-filter *ngIf="notification.diffusion_type === 'user'"
+                                    name="diffusionProperties" [label]="'lang.memberDiffTypeUsers' | translate"
+                                    [(ngModel)]="notification.diffusion_properties" [array]="users" [required]="true"
+                                    [multiple]="true">
+                                </app-select-with-filter>
+                                <app-select-with-filter *ngIf="notification.diffusion_type === 'entity'"
+                                    name="diffusionProperties" [label]="'lang.memberDiffTypeUsers' | translate"
+                                    [(ngModel)]="notification.diffusion_properties" [array]="entities" [required]="true"
+                                    [multiple]="true">
+                                </app-select-with-filter>
+                                <app-select-with-filter *ngIf="notification.diffusion_type == 'dest_user' || notification.diffusion_type == 'copy_list' || notification.diffusion_type == 'dest_entity' || notification.diffusion_type == 'dest_user_visa' || notification.diffusion_type == 'dest_user_sign'"
+                                    name="diffusionProperties" [label]="('lang.selectedDocumentStatus' | translate) + ' ' + ('lang.optional' | translate)"
+                                    [(ngModel)]="notification.diffusion_properties" [array]="statuses" [multiple]="true">
+                                </app-select-with-filter>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12" style="text-align:center;">
+                                <button mat-raised-button color="primary" type="submit"
+                                    [disabled]="!notificationsFormUp.form.valid">{{'lang.save' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

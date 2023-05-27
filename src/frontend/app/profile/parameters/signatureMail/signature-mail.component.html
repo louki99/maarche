@@ -1,0 +1,58 @@
+<div class="emailSignatureForm" class="col-sm-6">
+    <form (ngSubmit)="submitEmailSignature()" #emailSignatureForm="ngForm">
+        <div class="row" style="margin-top:5px;">
+            <div class="col-md-12">
+                <mat-form-field>
+                    <input matInput type="text"
+                        [(ngModel)]="mailSignatureModel.title" name="title"
+                        placeholder="{{'lang.label' | translate}}" required>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row" style="margin-top:5px;">
+            <div class="col-md-12">
+                <div id="html_mode">
+                    <textarea name="emailSignature" id="emailSignature"
+                        style="width:100%" rows="15" cols="60"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 form-group" style="margin-top: 10px;">
+            <div style="text-align:center;">
+                <button mat-raised-button color="primary" type="submit"
+                    *ngIf="mailSignatureModel.selected==-1"
+                    [disabled]="!emailSignatureForm.form.valid">{{'lang.save' | translate}}</button>
+                <button mat-raised-button color="primary" type="button"
+                    *ngIf="mailSignatureModel.selected!=-1"
+                    (click)="updateEmailSignature()"
+                    [disabled]="!emailSignatureForm.form.valid">{{'lang.update' | translate}}</button>
+                <button mat-raised-button color="warn" type="button"
+                    *ngIf="mailSignatureModel.selected!=-1"
+                    (click)="deleteEmailSignature()">{{'lang.delete' | translate}}</button>
+                <button mat-raised-button color="default" type="button"
+                    *ngIf="mailSignatureModel.selected!=-1"
+                    (click)="resetEmailSignature()">{{'lang.cancel' | translate}}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="col-sm-6" style="overflow:hidden;">
+    <div class="col-md-6 col-sm-6 col-xm-12"
+        *ngFor="let emailSignature of userEmailSignatures; let i = index">
+        <mat-card style="margin-bottom:10px;">
+            <mat-card-content style="text-align:center;">
+                <mat-form-field floatLabel="never">
+                    <input matInput type="text" [(ngModel)]="emailSignature.title"
+                        name="selectedEmailSignatureLabel"
+                        placeholder="{{'lang.label' | translate}}" disabled>
+                </mat-form-field>
+                <button mat-icon-button color="primary"
+                    (click)="changeEmailSignature(i)"
+                    matTooltip="{{'lang.update' | translate}}">
+                    <mat-icon class="fa fa-edit fa-2x"></mat-icon>
+                </button>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+<div style="clear:both;"></div>

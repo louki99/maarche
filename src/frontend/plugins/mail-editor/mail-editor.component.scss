@@ -1,0 +1,104 @@
+.loading {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.height-ajust {
+    min-height: 560px;
+}
+
+.mat-dialog-title {
+    display: flex;
+    align-items: center;
+}
+
+.recipients,
+.copy {
+    font-size: 12px !important;
+    padding: 5px !important;
+    min-height: auto;
+    height: auto;
+    border-radius: 5px;
+    cursor: pointer;
+
+    .mat-icon {
+        width: auto;
+        font-size: 12px;
+        height: auto;
+    }
+}
+
+.models {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    padding-top: 10px;
+}
+
+.activeButton {
+    color: var(--maarch-color-secondary);
+    font-weight: bold;
+}
+
+.mailLabel {
+    color: var(--maarch-color-primary);
+}
+
+.pdfVersion:hover {
+    color: var(--maarch-color-primary);
+}
+
+::ng-deep.attachListMenu {
+    width: auto;
+    max-width: initial;
+    min-height: auto;
+}
+
+.attachListButton:hover {
+    background: initial !important;
+    cursor: default;
+}
+
+.attachListContainer {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    align-items: center;
+}
+
+.extensionButton {
+    line-height: 20px;
+    min-width: 50px;
+    padding: 0px;
+}
+
+.badFormat {
+    background-color: #d03c3c;
+    color: white;
+}
+
+.component-content {
+    ::ng-deep.mat-form-field-disabled .mat-form-field-underline {
+        background-image: initial !important;
+        background-color: rgba(0, 0, 0, 0.42) !important;
+    }
+    ::ng-deep.mat-input-element:disabled {
+        color: initial;
+    }
+}
+
+.subjectPrefix {
+    color: #666;
+}
+
+.recipientPj {
+    font-size: 10px;
+    color: var(--maarch-color-default);
+}

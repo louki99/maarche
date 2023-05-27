@@ -1,0 +1,81 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form class="form-horizontal" (ngSubmit)="onSubmit(docserver)" #docserverForm="ngForm">
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-md-12">
+                                <mat-form-field>
+                                    <mat-select required name="docserver_type" id="docserver_type"
+                                        title="{{'lang.docserverType' | translate}}" placeholder="{{'lang.docserverType' | translate}}"
+                                        [(ngModel)]="docserver.docserver_type_id">
+                                        <mat-option *ngFor="let docserverType of this.docserversTypes"
+                                            [value]="docserverType.docserver_type_id">
+                                            {{docserverType.docserver_type_label}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <input matInput required name="identifier" id="identifier" title="{{'lang.id' | translate}}"
+                                        type="text" placeholder="{{'lang.id' | translate}}" [(ngModel)]="docserver.docserver_id"
+                                        maxlength="32" pattern="^[\w.-]*$">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <input matInput required name="label" id="label" title="{{'lang.label' | translate}}" type="text"
+                                        placeholder="{{'lang.label' | translate}}" [(ngModel)]="docserver.device_label"
+                                        maxlength="255">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-select required name="collection" id="collection" title="{{'lang.collection' | translate}}"
+                                        placeholder="{{'lang.collection' | translate}}" [(ngModel)]="docserver.coll_id">
+                                        <mat-option value="letterbox_coll" selected>
+                                            letterbox_coll
+                                        </mat-option>
+                                        <mat-option value="attachments_coll">
+                                            attachments_coll
+                                        </mat-option>
+                                        <mat-option value="archive_transfer_coll">
+                                            archive_transfer_coll
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <input matInput required name="max_size" id="max_size" title="{{'lang.maxSize' | translate}}"
+                                        type="number" placeholder="{{'lang.maxSize' | translate}}"
+                                        [(ngModel)]="docserver.limitSizeFormatted" [disabled]="docserver.is_readonly"
+                                        pattern="^\d+$">
+                                    <span matSuffix> Go</span>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <input matInput required name="path" id="path" title="{{'lang.path' | translate}}" type="text"
+                                        placeholder="{{'lang.path' | translate}}" [(ngModel)]="docserver.path_template"
+                                        [disabled]="docserver.is_readonly">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-12 text-center" style="padding:10px;">
+                                <button mat-raised-button color="primary" type="submit"
+                                    [disabled]="!docserverForm.form.valid">{{'lang.add' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

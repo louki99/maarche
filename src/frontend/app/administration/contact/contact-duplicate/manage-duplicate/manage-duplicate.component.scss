@@ -1,0 +1,27 @@
+
+.merged {
+    opacity: 0.5;
+}
+
+.contact-list-container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 33%);
+    grid-gap: 10px;
+}
+
+.contact-list-container-1 {
+    grid-template-columns: 1fr;
+}
+
+.contact-list-container-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.excludeLogo {
+    position: absolute;
+    top: 50%;left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 80px;
+    color: var(--maarch-color-danger);
+}

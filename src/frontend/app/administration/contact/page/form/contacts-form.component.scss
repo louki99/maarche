@@ -1,0 +1,135 @@
+
+.contact-item {
+    height: auto !important;
+}
+
+/*.multipleUnits div:nth-child(1) {
+    display: inline-grid !important;
+    width: 50%;
+}
+
+.multipleUnits div:nth-child(2) {
+    display: inline-grid !important;
+    width: 50%;
+}*/
+
+.unitTitle {
+    display: flex;
+    color: var(--maarch-color-primary);
+}
+
+.contact-address {
+    cursor: pointer;
+    color: #337ab7;
+
+    &:hover {
+        .contact-content {
+            text-decoration: underline;
+        }
+    }
+}
+
+.contact-content {
+    position: relative;
+}
+
+.smallInput {
+    font-size: 11px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    .mat-button {
+        width: 30px;
+        height: 25px;
+        color: var(--maarch-color-primary);
+
+        ::ng-deep.mat-button-wrapper {
+            display: flex;
+            line-height: initial;
+            align-items: center;
+        }
+    }
+
+    ::ng-deep.mat-form-field-infix {
+        padding: 0px;
+        padding-bottom: 5px;
+    }
+}
+
+.radio-form {
+    display: flex;
+
+    .mat-radio-button {
+        flex: 1;
+        max-width: 250px;
+    }
+}
+
+.checkbox-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: auto;
+    max-height: 200px;
+    border: solid 1px rgba(0,0,0,0.12);
+    border-radius: 5px;
+}
+
+.loading {
+    display: flex;
+    height: 100%;
+}
+
+.fillingBar {
+    ::ng-deep .mat-progress-bar-buffer {
+        background: #e4e8eb;
+    }
+}
+
+.rate {
+    font-size: 10px;
+    text-align: right;
+}
+
+.fillingBar.mat-warn {
+    ::ng-deep.mat-progress-bar-fill::after {
+        background-color: #e81c2b;
+    }
+}
+
+.fillingBar.mat-primary {
+    ::ng-deep.mat-progress-bar-fill::after {
+        background-color: #f4891e;
+    }
+}
+
+.fillingBar.mat-accent {
+    ::ng-deep.mat-progress-bar-fill::after {
+        background-color: #0aa34f;
+    }
+}
+
+.mat-error {
+    font-size: 10px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.labelCustom {
+    color: rgba(0, 0, 0, 0.54);
+    transform: scale(0.75) translateX(-15%);
+    font-weight: 400;
+}
+
+.alert-message-info {
+    margin: auto;
+    margin-top: 10px;
+    max-width: max-content;
+    padding:0px;
+    overflow: hidden;
+}
+
+.showAllContacts {
+    color: #337ab7;
+    font-weight: bold;
+    cursor: pointer;
+}

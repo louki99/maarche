@@ -1,0 +1,37 @@
+:host ::ng-deep .helper-addin-outlook .mat-tab-header {
+
+    position: sticky;
+    top: -10px;
+    background: white;
+    z-index: 2;
+}
+
+::ng-deep.mat-step-icon {
+    background-color: white;
+    color: #135f7f;
+}
+
+::ng-deep.mat-step-label-active {
+    opacity: 1 !important;
+}
+
+::ng-deep.mat-step-label {
+    color: white;
+    opacity: 0.5;
+}
+
+.stepIcon {
+    font-size: 10px !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+::ng-deep.mat-step-label {
+    transition: all 0.2s;
+}
+
+::ng-deep.mat-step-label-selected {
+    font-size: 160%;
+    transition: all 0.2s;
+    opacity: 1;
+}

@@ -1,0 +1,58 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form class="form-horizontal" (ngSubmit)="onSubmit()" #priorityForm="ngForm">
+                        <div class="form-group">
+                            <div class="row" style="margin:0px;">
+                                <div class="col-md-1 col-xs-2">
+                                    <mat-form-field>
+                                        <input matInput type="color" name="color" matTooltip="{{'lang.chooseColor' | translate}}"
+                                            [(ngModel)]="priority.color" required>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-11 col-xs-10">
+                                    <mat-form-field>
+                                        <input matInput type="text" name="label" title="{{'lang.label' | translate}}"
+                                            placeholder="{{'lang.label' | translate}}" [(ngModel)]="priority.label" maxlength="128"
+                                            required>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <mat-form-field>
+                                    <input matInput type="number" name="delays" placeholder="{{'lang.processDelayDay' | translate}}"
+                                        [(ngModel)]="priority.delays" required pattern="^\d+$">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12 text-center" style="padding:10px;">
+                                <button mat-raised-button [disabled]="!priorityForm.form.valid"
+                                    color="primary">{{'lang.save' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

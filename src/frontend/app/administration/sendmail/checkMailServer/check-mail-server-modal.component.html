@@ -1,0 +1,19 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.mailServerTest' | translate}}</h1>
+    <mat-dialog-content class="modal-container">
+        <div *ngIf="loading" class="msg-loading">
+            <i class="fas fa-2x fa-paper-plane primary" style="padding-right: 10px;"></i>
+            <div [innerHTML]="statusMsg"></div>
+        </div>
+        <app-maarch-message mode="success" *ngIf="!loading && error === null" [content]="statusMsg"></app-maarch-message>
+        <app-maarch-message mode="danger" *ngIf="!loading && error !== null" [content]="statusMsg"></app-maarch-message>
+
+        <div class="bash" *ngIf="!loading && error !== null">
+            {{error}}
+        </div>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="default" *ngIf="!loading && error !== null" (click)="dialogRef.close()">{{'lang.close' | translate}}</button>
+    </div>
+</div>

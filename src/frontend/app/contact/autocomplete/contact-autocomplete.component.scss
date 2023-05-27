@@ -1,0 +1,187 @@
+
+.smallInputInfo {
+    font-size: 9px;
+    white-space: normal;
+    line-height: 13px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.mat-chip.mat-standard-chip {
+    color: var(--maarch-color-primary-light);
+    background-color: white;
+    border: solid 1px var(--maarch-color-primary-light);
+}
+
+.noResult {
+    text-align: center;
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.listAutocomplete {
+    cursor: pointer;
+    height: auto;
+}
+
+.itemChip {
+    display: block;
+    width: 95%;
+
+    ::ng-deep.mat-chip-list-wrapper {
+        margin: 0px;
+    }
+}
+
+.mat-card {
+    padding: 0px;
+    margin: 5px;
+}
+
+.mat-card:hover {
+    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+.itemList {
+    padding-top: 10px;
+    overflow-x: hidden;
+    max-height: 165px;
+}
+
+.mat-list {
+    padding: 0px;
+}
+
+.mat-option:not(.smallInputInfo) {
+    white-space: initial;
+    line-height: initial;
+    height: auto;
+    padding: 0px;
+}
+
+.mat-option:hover {
+    background: initial;
+}
+
+.contact-card {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 0px;
+    box-shadow: none;
+    border: solid 1px rgba(0, 0, 0, 0.12);
+}
+
+.mat-card-header {
+    background: #F9F9F9;
+    padding: 10px;
+    padding-bottom: 5px;
+}
+
+.contact-header {
+    ::ng-deep.mat-card-header-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+
+
+.mat-card-subtitle {
+    white-space: pre;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.contact-item {
+    height: 20px !important;
+
+    ::ng-deep.mat-list-text {
+        padding-left: 0px !important;
+    }
+}
+
+.mat-card-title {
+    font-size: 13px;
+}
+
+.mat-card-subtitle {
+    font-size: 10px;
+    margin-bottom: 0px;
+}
+
+
+.contact-header-image {
+    background: var(--maarch-color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    height: 24px;
+    width: 24px;
+}
+
+.contact-group {
+    color: var(--maarch-color-primary);
+    font-size: 10px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px !important;
+    margin: 0;
+}
+
+.mat-list-item-content {
+    padding: 0px;
+}
+
+.contact-content {
+    font-size: 10px !important;
+    color: #337ab7;
+}
+
+.contact-address {
+    height: auto !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
+    ::ng-deep.mat-list-text {
+        padding-left: 0px !important;
+    }
+    
+    ::ng-deep.mat-list-item-content {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+}
+
+.contact-filling {
+    position: absolute;
+    right: 8px;
+    border-radius: 10px;
+}
+
+.create-contact {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    height: auto;
+    position: sticky;
+    bottom: 0px;
+    width: auto;
+    padding: 0px;
+    background: white;
+    box-shadow: 1px 0px 2px 0px rgba(0,0,0,0.12);
+    font-size: 11px;
+}
+
+.sector {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 20px;
+}

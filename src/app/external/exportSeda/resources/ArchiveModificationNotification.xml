@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ArchiveModificationNotification xmlns="fr:gouv:culture:archivesdefrance:seda:v2.0">
+    <?merge ArchiveModificationNotification.Comment ?><Comment><?merge .value ?></Comment>
+    <Date><?merge ArchiveModificationNotification.Date ?></Date>
+    <?merge ArchiveModificationNotification.MessageIdentifier $messageIdentifier ?><?xinclude /resources/MessageIdentifier.xml ?>
+    <?xinclude /resources/CodeListVersions.xml ?>
+    <UnitIdentifier><?merge ArchiveModificationNotification.UnitIdentifier.value ?></UnitIdentifier>
+    <ArchivalAgency>
+        <?merge ArchiveModificationNotification.ArchivalAgency $organization ?>
+        <?xinclude /resources/Organization.xml ?>
+    </ArchivalAgency>
+    <OriginatingAgency>
+        <?merge ArchiveModificationNotification.OriginatingAgency $organization ?>
+        <?xinclude /resources/Organization.xml ?>
+    </OriginatingAgency>
+</ArchiveModificationNotification>

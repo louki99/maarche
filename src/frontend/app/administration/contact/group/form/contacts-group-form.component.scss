@@ -1,0 +1,92 @@
+
+.active,
+.active:hover,
+.active:active,
+.active:focus {
+    color: var(--maarch-color-primary);
+    border-left: solid 5px var(--maarch-color-primary);
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.formType {
+    align-items: center;
+    display: flex;
+    margin: 10px;
+    border-radius: 4px;
+    border: solid 1px #ccc;
+    position: relative;
+    padding: 10px;
+
+    &-title {
+        white-space: pre;
+        overflow: hidden;
+        max-width: 85%;
+        text-overflow: ellipsis;
+        z-index: 1;
+        font-size: 10px;
+        font-weight: bold;
+        background: white;
+        position: absolute;
+        top: -7px;
+        left: 10px;
+        padding: 0px;
+        margin: 0px;
+        color: #135f7f;
+    }
+}
+
+.displayed-title {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr;
+    grid-gap: 10px;
+    align-items: center;
+}
+
+.mat-list-item-disabled {
+    background: initial;
+    opacity: 0.5;
+}
+
+::ng-deep.addCorrespondentAC {
+    max-height: 100% !important;
+}
+
+::ng-deep .correspondent-list-item {
+    .mat-list-text {
+        padding-left: 0px !important;
+    }
+
+    .mat-pseudo-checkbox {
+        display: none;
+    }
+}
+
+.empty {
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.title-search-result {
+    padding: 10px;
+    padding-left: 24px;
+    font-size: 12px;
+    position: sticky;
+    top: 0px;
+    background: white;
+    z-index: 1;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+    display: flex;
+}
+
+.search-result-container {
+    display: grid !important;
+    grid-gap: 10px;
+    grid-template-columns: 30px 1fr 1fr;
+    align-items: center;
+}
+
+.correspondent-type-icon {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}

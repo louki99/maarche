@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "baseUrl": "../../apps/maarch_entreprise/",
+    "paths": {
+      "@appRoot/*": [
+        "../../src/frontend/app/*"
+      ],
+      "@service/*": [
+        "../../src/frontend/service/*"
+      ],
+      "@plugins/*": [
+        "../../src/frontend/plugins/*"
+      ],
+      "@models/*":  [
+        "../../src/frontend/models/*"
+      ]
+    }
+  },
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "../../src/frontend/**/*.d.ts"
+  ],
+  "exclude": [
+    "../../src/**/*.spec.ts",
+    "../../plugins"
+  ]
+}

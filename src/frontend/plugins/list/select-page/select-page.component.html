@@ -1,0 +1,4 @@
+<div *ngIf="paginator.getNumberOfPages() > 0" [matMenuTriggerFor]="page" class="pageList"></div>
+<mat-menu #page="matMenu">
+    <button [ngClass]="{'selectedPage': i === paginator.pageIndex }" mat-menu-item *ngFor="let count of counter(paginator.getNumberOfPages());let i=index" (click)="goToPage(i)">{{i+1}}</button>
+</mat-menu>

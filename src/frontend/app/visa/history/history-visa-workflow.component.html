@@ -1,0 +1,35 @@
+<ng-container *ngIf="!loading">
+    <ng-container *ngFor="let visaWorkflow of visaWorkflowHistory">
+        <mat-list>
+            <div class="dateTitle">
+                <div mat-subheader class="primary" [title]="visaWorkflow.creationDate | fullDate">
+                    {{'lang.createdBy' | translate }}&nbsp;<b>{{visaWorkflow.user}}</b> &nbsp;<b>{{visaWorkflow.creationDate | timeAgo : 'full'}}</b>
+                </div>
+                <mat-divider></mat-divider>
+            </div>
+            <mat-list-item disableRipple *ngFor="let diffusion of visaWorkflow.details;let i=index" class="workflow">
+                <mat-icon class="fa fa-2x fa-user" mat-list-icon color="primary">
+                </mat-icon>
+                <div mat-line class="workflowLine">
+                    <div class="workflowLineContainer">
+                        <div class="workflowLineLabel" [title]="diffusion.itemLabel">
+                            {{diffusion.itemLabel}}
+                        </div>
+                        <div class="workflowLineSubLabel">
+                            {{diffusion.itemSubLabel}}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="currentRoleButton" color="primary" disabled mat-raised-button
+                            title="{{diffusion.process_date === null ? (diffusion.requested_signature ? ('lang.signUser' | translate) : ('lang.visaUser' | translate)) : (diffusion.signatory ? ('lang.signUser' | translate) : ('lang.visaUser' | translate))}}">
+                            {{diffusion.process_date === null ? (diffusion.requested_signature ? ('lang.signUser' | translate) : ('lang.visaUser' | translate)) : (diffusion.signatory ? ('lang.signUser' | translate) : ('lang.visaUser' | translate))}}
+                        </button>
+                    </div>
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </ng-container>
+</ng-container>
+<div *ngIf="loading" style="display:flex;padding: 10px;">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>

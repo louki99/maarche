@@ -1,0 +1,95 @@
+// import all mixins and utils to create a theme
+@use '@angular/material' as mat;
+@import './node_modules/@angular/material/theming';
+
+// Include the base styles for Angular Material core. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+@include mat.core();
+
+// theme colors
+// @function mat-palette($base-palette, $default: 500, $lighter: 100, $darker: 700)
+$mat-maarch-primary: (
+  100: var(--maarch-color-primary-light),
+  500: var(--maarch-color-primary),
+  700: var(--maarch-color-primary-dark),
+  contrast: (
+    100: $dark-primary-text,
+    500: $light-primary-text,
+    700: $light-primary-text
+  )
+);
+
+$mat-maarch-warn: (
+  100: var(--maarch-color-danger-light),
+  500: var(--maarch-color-danger),
+  700: var(--maarch-color-danger-dark),
+  contrast: (
+    100: $dark-primary-text,
+    500: $light-primary-text,
+    700: $light-primary-text
+  )
+);
+
+$mat-maarch-accent: (
+  100: var(--maarch-color-success-light),
+  500: var(--maarch-color-success),
+  700: var(--maarch-color-success-dark),
+  contrast: (
+    100: $dark-primary-text,
+    500: $light-primary-text,
+    700: $light-primary-text
+  )
+);
+
+$primary: mat.define-palette($mat-maarch-primary, 500);
+$accent: mat.define-palette($mat-maarch-accent, 500);
+$warn: mat.define-palette($mat-maarch-warn, 500);
+
+// create theme from palettes
+$theme: mat.define-light-theme($primary, $accent, $warn);
+
+// apply theme
+@include mat.all-component-themes($theme);
+
+.mat-calendar-body-in-range .mat-calendar-body-cell-content {
+  color: white;
+}
+
+.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical), .cdk-keyboard-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical), .cdk-program-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+  color: white;
+  background-color: var(--maarch-color-primary-light);
+}
+
+.jstree-proton .jstree-clicked {
+  background: var(--maarch-color-primary-light) !important;
+}
+
+.jstree-proton :not(.jstree-disabled).jstree-hovered {
+  background: var(--maarch-color-primary-light) !important;
+  box-shadow: inset 0 0 1px var(--maarch-color-primary) !important;
+}
+
+.jstree-proton .jstree-disabled:hover {
+  cursor: not-allowed;
+}
+
+.dndFile {
+  border: dashed 5px grey;
+  padding: 10px;
+  text-align: center;
+  opacity: 0.5;
+  font-size: 15px;
+  font-weight: bolder;
+  margin: 20px;
+
+}
+
+.dndFileHighlighted {
+  opacity: 1 !important;
+  border: dashed 5px var(--maarch-color-primary) !important;
+  color: var(--maarch-color-primary);
+}
+
+.cdk-textarea-autosize {
+  min-height: 18px !important;
+}

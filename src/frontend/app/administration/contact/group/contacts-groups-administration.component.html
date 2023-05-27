@@ -1,0 +1,34 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <a mat-list-item *ngFor="let menu of subMenus" [class.active]="menu.current" (click)="contactService.goTo(menu.route)">
+                <mat-icon color="primary" mat-list-icon [class]="menu.icon"></mat-icon>
+                <p mat-line>
+                    {{menu.label}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <app-contacts-groups-list [allPerimeters]="true"></app-contacts-groups-list>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        position='end'>
+    </mat-sidenav>
+</mat-sidenav-container>

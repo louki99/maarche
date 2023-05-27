@@ -1,0 +1,199 @@
+
+.mat-card {
+    border: solid 1px #E0E0E0;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.75);
+}
+
+.layout {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #0003;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    .mat-raised-button {
+        width: 200px;
+    }
+}
+
+.infosPj {
+    background: #F9F9F9;
+    border-top: solid 1px rgba(0, 0, 0, 0.12);
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    ::ng-deep.mat-expansion-panel-body {
+        padding: 0px;
+    }
+
+    ::ng-deep.mat-form-field-label {
+        color: var(--maarch-color-primary);
+    }
+}
+
+.mainInfos {
+    display: block;
+    font-size: 16px;
+    color: #666;
+}
+
+.subInfos {
+    display: block;
+    font-size: 10px;
+    color: var(--maarch-color-primary);
+}
+
+.stateInfo {
+    font-size: 12px;
+    color: var(--maarch-color-primary);
+    position: absolute;
+    left: 0px;
+    height: 100%;
+    top: 0px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    font-style: italic;
+    padding-left: 10px;
+}
+
+.statusInfo {
+    font-size: 12px;
+    color: #666;
+    opacity: 0.5;
+    position: absolute;
+    right: 0px;
+    height: 100%;
+    top: 0px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+}
+
+.subInfosBottom {
+    font-style: italic;
+    font-size: 12px;
+    color: #666;
+}
+
+.signed {
+    border: solid 1px green;
+
+    .infosPj {
+        background: green;
+    }
+
+    .mainInfos,
+    .subInfos,
+    .stateInfo,
+    .statusInfo,
+    .subInfosBottom {
+        color: white;
+    }
+}
+
+.mat-icon {
+    height: auto;
+}
+
+.pjToolsContent {
+    position: absolute;
+    right: 0px;
+    border-bottom: solid 1px #E0E0E0;
+    border-left: solid 1px #E0E0E0;
+    border-bottom-left-radius: 5px;
+    background: white;
+
+    .downloadButton,
+    .actionsButton,
+    .versionButton {
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 10px;
+    }
+
+    .downloadButton:hover,
+    .downloadButton:active,
+    .downloadButton:focus {
+        text-decoration: none;
+    }
+
+    .mat-badge-content {
+        right: 0;
+        top: -7px;
+        font-size: 10px;
+    }
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #ffffffb3;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.filterTypes {
+    overflow: auto;
+    overflow-y: hidden;
+    width: auto;
+    max-width: 100%;
+    margin-left: 10px;
+    ::ng-deep.mat-button-toggle-checked {
+        background: var(--maarch-color-secondary);
+        color: white;
+        font-weight: bold;
+        height: 25px;
+        font-size: 10px;
+
+        .mat-button-toggle-label-content {
+            line-height: 0px;
+        }
+
+        .mat-button-toggle-button {
+            height: 100%;
+        }
+    }
+
+    :not(::ng-deep.mat-button-toggle-checked) {
+        ::ng-deep.mat-button-toggle-button {
+            color: var(--maarch-color-primary);
+            font-weight: bold;
+            height: 25px;
+            font-size: 10px;
+
+            .mat-button-toggle-label-content {
+                line-height: 0px;
+            }
+        }
+    }
+}
+
+.addPjProcess {
+    position: sticky;
+    z-index: 2;
+    bottom: 0px;
+    margin-left: 10px;
+}
+
+.addPjPanel {
+    position: sticky;
+    z-index: 2;
+    bottom: 10px;
+    margin-left: 10px;
+}

@@ -1,0 +1,40 @@
+.button-row .mat-fab {
+    border: solid #135f7f 2px;
+    color: #135f7f;
+}
+
+.mat-fab ::ng-deep.mat-button-wrapper {
+    padding: 0px;
+}
+
+.speedDialLabel {
+    margin-left: -220px !important;
+    width: 200px;
+    text-align: right;
+    z-index: 0;
+    //text-shadow: 4px 4px 2px rgba(150, 150, 150, 1);
+    font-weight: bold;
+}
+
+.smd-opened .speedDialLabel {
+    transition: opacity 1s ease-in !important;
+    display: block !important;
+}
+
+.mat-icon {
+    height: auto !important;
+}
+
+.followedShortcut {
+    ::ng-deep.mat-badge-content {
+        width: auto;
+        min-width: 25px;
+        min-height: 25px;
+        text-align: center;
+        align-items: center;
+        padding: 2px 2px;
+        font-size: 15px;
+        top: -23px !important;
+        right: -22px !important;
+    }
+}

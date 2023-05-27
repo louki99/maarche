@@ -1,0 +1,143 @@
+
+.example-tree-progress-bar {
+    margin-left: 30px;
+}
+
+.example-tree-nested-node {
+    padding-left: 30px;
+}
+
+mat-tree {
+    margin-left: 10px;
+}
+
+.mat-tree-node {
+    font-family: 'Titillium Web', sans-serif, Arial;
+    min-height: 32px;
+    line-height: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+    background-color: white;
+    white-space: pre;
+}
+
+.mat-nested-tree-node {
+    top: -24px;
+}
+
+ul,
+li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li.example-tree-container {
+    border-bottom: 0;
+}
+
+ul {
+    padding-left: 40px;
+}
+
+li {
+    padding-left: 15px;
+    border: 1px dotted grey;
+    border-width: 0 0 1px 1px;
+    position: relative;
+    top: -24px;
+}
+
+li.mat-tree-node,
+li div {
+    margin: 0;
+    position: relative;
+    top: 17px;
+}
+
+li ul {
+    padding-top: 15px;
+    border-top: 1px dotted grey;
+    margin-left: -15px;
+    padding-left: 27px;
+}
+
+.lastNode {
+    border-left: 1px solid white;
+    margin-left: -16px !important;
+}
+
+.mat-icon-button {
+    z-index: 100;
+}
+
+.fixHeight {
+    height: 33px;
+}
+
+.node-content {
+    height: 24px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    margin-top: -35px !important;
+    z-index: 2;
+
+    i {
+        color: #666;
+        color: var(--maarch-color-primary)
+    }
+}
+
+.node-content:not(.node-selected):not(.node-disabled):hover {
+    background-color: #6666661c !important;
+    transition: all 0.3s;
+}
+
+.node-selected {
+    background-color: #1a80ab;
+    color: white;
+    transition: all 0.3s;
+
+    i {
+        color: white;
+    }
+}
+
+.node-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.node-hide {
+    opacity: 0.5;
+}
+
+.node-highlight {
+    font-weight: bold;
+    color: var(--maarch-color-primary);
+}
+
+.tree-exp::before {
+    background: white;
+}
+
+.msgHotkey {
+    position: absolute;
+    background: #00000096;
+    color: white;
+    z-index: 3;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 10px;
+    top: 0px;
+    right: 0px;
+}

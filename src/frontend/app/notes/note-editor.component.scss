@@ -1,0 +1,71 @@
+
+.noteEditorContent {
+    .mat-icon-button:disabled {
+        opacity: 0.5;
+    }
+
+    ::ng-deep.mat-form-field-flex {
+        align-items: flex-start;
+    }
+
+    ::ng-deep.mat-form-field-wrapper {
+        padding-bottom: 0;
+    }
+}
+
+::ng-deep.templateNoteListMenu {
+    .mat-menu-content {
+        padding-top: 0;
+        padding-bottom: 0;
+        max-height: 500px;
+    }
+}
+
+::ng-deep.fixedWidth {
+    .mat-menu-content {
+        min-width: 265px;
+    }
+}
+
+::ng-deep.mat-tooltip {
+    font-size: 14px;
+}
+
+.noteRestriction {
+    background-color: rgba(0, 0, 0, 0.4);
+    white-space: normal;
+    display: inline-block;
+    margin: 5px !important;
+    cursor: pointer;
+}
+
+.noNoteRestriction {
+    background-color: var(--maarch-color-primary);
+    white-space: normal;
+    display: inline-block;
+    margin: 5px !important;
+    cursor: pointer;
+}
+
+.labelFolder {
+    color: rgb(102, 102, 102);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.smallInput {
+    font-size: 11px;
+    padding-left: 20px;
+    padding-right: 20px;
+    ::ng-deep.mat-form-field-infix {
+        padding : 0px;
+        padding-bottom: 5px;
+    }
+}
+
+.warningNote {
+    font-style: italic;
+    opacity: 0.5;
+    margin-bottom: 10px;
+    font-size: 13px;
+}

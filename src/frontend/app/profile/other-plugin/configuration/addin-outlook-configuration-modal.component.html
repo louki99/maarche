@@ -1,0 +1,74 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.configurePlugin' | translate}}</h1>
+    <div mat-dialog-content>
+        <mat-horizontal-stepper linear="true" #stepper>
+            <mat-step>
+                <ng-template matStepLabel>{{'lang.outlookAccount' | translate}}</ng-template>
+                <app-maarch-message [content]="'lang.addingOutlookPasswordMsg' | translate"></app-maarch-message>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'lang.outlookPassword' | translate}}</mat-label>
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="outlookPassword">
+                    <mat-icon color="primary" style="cursor: pointer;" matSuffix
+                    (click)="hidePassword = !hidePassword" class="fa fa-2x"
+                    [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                </mat-form-field>
+                <i style="opacity: 0.5;font-size: 10px;">{{'lang.addingOutlookPasswordMsg2' | translate}}</i>
+                <div style="text-align: center;">
+                    <button mat-raised-button color="primary" [disabled]="outlookPassword === ''" (click)="savePassword();stepper.next();">{{ 'lang.validate' | translate }}</button>
+                </div>
+            </mat-step>
+            <mat-step [label]="'lang.downloadManifest' | translate">
+                <app-maarch-message [content]="'lang.downloadManifestMsg' | translate"></app-maarch-message>
+                <div style="text-align: center;">
+                    <button mat-raised-button color="primary" (click)="getManifest();stepper.next();">{{ 'lang.downloadManifest' | translate }}</button>
+                </div>
+            </mat-step>
+            <mat-step>
+                <ng-template matStepLabel>{{'lang.configuration' | translate}}</ng-template>
+                <div style="padding-left: 100px;padding-right: 100px;">
+                    <app-maarch-message [content]="'lang.addingOutlookWebMsg1' | translate"></app-maarch-message>
+                    <mat-card>
+                        <img style="width:100%" src="assets/addin_outlook_1.png" />
+                    </mat-card>
+                    <app-maarch-message [content]="'lang.addingOutlookWebMsg2' | translate"></app-maarch-message>
+                    <mat-card>
+                        <img style="width:100%" src="assets/addin_outlook_2.png" />
+                    </mat-card>
+                    <app-maarch-message [content]="'lang.addingOutlookWebMsg3' | translate"></app-maarch-message>
+                    <mat-card>
+                        <img style="width:100%" src="assets/addin_outlook_3.png" />
+                    </mat-card>
+                    <app-maarch-message [content]="'lang.addingOutlookWebMsg4' | translate"></app-maarch-message>
+                    <mat-card>
+                        <img style="width:100%" src="assets/addin_outlook_4.png" />
+                        <img style="width:100%" src="assets/addin_outlook_5.png" />
+                    </mat-card>
+                    <app-maarch-message [content]="'lang.addingOutlookWebMsg5' | translate"></app-maarch-message>
+                    <mat-card>
+                        <img style="width:100%" src="assets/addin_outlook_6.png" />
+                    </mat-card>
+                    <app-maarch-message [content]="'lang.addingOutlookWebMsg6' | translate"></app-maarch-message>
+                    <mat-card>
+                        <img style="width:100%" src="assets/addin_outlook_7.png" />
+                    </mat-card>
+                    <app-maarch-message [content]="'lang.addingOutlookWebMsg7' | translate"></app-maarch-message>
+                    <mat-card>
+                        <img style="width:100%" src="assets/addin_outlook_8.png" />
+                    </mat-card>
+                </div>
+            </mat-step>
+            <ng-template matStepperIcon="edit">
+                <mat-icon class="fa fa-check stepIcon"></mat-icon>
+            </ng-template>
+            <ng-template matStepperIcon="done">
+                <mat-icon class="fa fa-check stepIcon"></mat-icon>
+            </ng-template>
+        </mat-horizontal-stepper>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button (click)="stepper.previous()">{{'lang.previous' | translate}}</button>
+        <button mat-raised-button mat-button [mat-dialog-close]="">{{'lang.close' | translate}}</button>
+        <button mat-raised-button mat-button (click)="stepper.next()">{{'lang.next' | translate}}</button>
+    </div>
+</div>

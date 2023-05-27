@@ -1,0 +1,199 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <a mat-list-item routerLink="/administration/notifications/new">
+                <mat-icon color="primary" mat-list-icon class="fa fa-plus"></mat-icon>
+                <p mat-line>
+                    {{'lang.add' | translate}}
+                </p>
+            </a>
+            <a mat-list-item (click)="loadCron();snav2.toggle();" (next)="snav2.open();paramCron();" joyrideStep="notifTour">
+                <mat-icon color="primary" mat-list-icon class="fa fa-clock"></mat-icon>
+                <p mat-line>
+                    {{'lang.toSchedule' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6">
+                            <mat-form-field>
+                                <input matInput [formControl]="adminService.getFilterField()" placeholder="{{'lang.filterBy' | translate}}">
+                                <button mat-button *ngIf="adminService.searchTerm.value !== ''" matSuffix
+                                    mat-icon-button aria-label="Clear" (click)="adminService.searchTerm.setValue('')"
+                                    [title]="'lang.clearFilter' | translate">
+                                    <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <div class="table-head table-head-tool">
+                                <span style="position: relative;">
+                                    <mat-paginator #paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100, 150]"></mat-paginator>
+                                    <app-select-page [paginator]="paginator"></app-select-page>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-table #table [dataSource]="adminService.getDataSource()" matSort matSortDisableClear>
+                        <ng-container matColumnDef="notification_id">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:1;"
+                                [class.hide-for-mobile]="appService.getViewMode()">{{'lang.id' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="flex:1;"
+                                [class.hide-for-mobile]="appService.getViewMode()"> {{element.notification_id}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="description">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:2;">{{'lang.description' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="flex:2;"> {{element.description}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="is_enabled">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:1;"
+                                [class.hide-for-mobile]="appService.getViewMode()">{{'lang.status' | translate}}</mat-header-cell>
+                            <mat-cell *matCellDef="let element" matTooltip="{{'lang.view' | translate}}" style="flex:1;"
+                                [class.hide-for-mobile]="appService.getViewMode()">
+                                <span *ngIf="element.is_enabled == 'Y'" color="primary"
+                                    class="label">{{'lang.active' | translate}}</span>
+                                <span *ngIf="element.is_enabled == 'N'" color="warn"
+                                    class="label">{{'lang.suspended' | translate}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="notifications">
+                            <mat-header-cell *matHeaderCellDef style="flex:1;"></mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="justify-content: flex-end;flex:1;">
+                                <button mat-icon-button color="warn" matTooltip="{{'lang.delete' | translate}}"
+                                    (click)="$event.stopPropagation();deleteNotification(element)">
+                                    <mat-icon class="fa fa-trash-alt fa-2x" aria-hidden="true"></mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"
+                            routerLink="/administration/notifications/{{row.notification_sid}}" style="cursor:pointer;"
+                            matTooltip="{{'lang.view' | translate}}" [joyrideStep]="row.notification_id + '_Tour'"></mat-row>
+                    </mat-table>
+                    <div class="mat-paginator"
+                        style="min-height:48px;display: flex;justify-content: end;align-items: center;padding-right: 20px;">
+                        {{notifications.length}} {{'lang.notifications' | translate}}</div>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="appService.getViewMode() ? false : false"  (next)="paramCron()">
+        <mat-list  (next)="saveCron()" joyrideStep="notifTour3">
+            <h3 mat-subheader>{{'lang.notificationSchedule' | translate}}</h3>
+            <form class="form-horizontal" #notifForm="ngForm" style="overflow:hidden;">
+                <div class="form-group" style="padding-left:15px;padding-right:15px;">
+                    <div class="col-sm-4">
+                        <mat-form-field>
+                            <mat-select name="hour" id="hour" title="{{'lang.hour' | translate}}" placeholder="{{'lang.hour' | translate}}"
+                                [(ngModel)]="newCron.h" required>
+                                <mat-option *ngFor="let hour of hours" [value]="hour.value">
+                                    {{hour.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-4">
+                        <mat-form-field>
+                            <mat-select name="minute" id="minute" title="{{'lang.minute' | translate}}" placeholder="{{'lang.minute' | translate}}"
+                                [(ngModel)]="newCron.m" required>
+                                <mat-option *ngFor="let minute of minutes" [value]="minute.value">
+                                    {{minute.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-4">
+                        <mat-form-field>
+                            <mat-select name="day" id="day" title="{{'lang.day' | translate}}" placeholder="{{'lang.day' | translate}}"
+                                [(ngModel)]="newCron.dow" required>
+                                <mat-option *ngFor="let day of dow" [value]="day.value">
+                                    {{day.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="form-group" style="padding-left:15px;padding-right:15px;">
+                    <div class="col-sm-6">
+                        <mat-form-field>
+                            <mat-select name="month" id="month" title="{{'lang.month' | translate}}" placeholder="{{'lang.month' | translate}}"
+                                [(ngModel)]="newCron.mon" required>
+                                <mat-option *ngFor="let month of months" [value]="month.value">
+                                    {{month.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <mat-form-field>
+                            <mat-select name="dayM" id="dayM" title="{{'lang.dayOfMonth' | translate}}"
+                                placeholder="{{'lang.dayOfMonth' | translate}}" [(ngModel)]="newCron.dom" required>
+                                <mat-option *ngFor="let dayM of dom" [value]="dayM.value">
+                                    {{dayM.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-12">
+                        <mat-form-field>
+                            <mat-select name="script" id="script" title="{{'lang.script' | translate}}" placeholder="{{'lang.script' | translate}}"
+                                [(ngModel)]="newCron.cmd" required>
+                                <mat-option *ngFor="let notif of authorizedNotification" [value]="notif.path">
+                                    {{notif.description}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-12 text-center" style="padding:10px;">
+                        <button mat-raised-button [disabled]="!notifForm.form.valid" color="primary"
+                            (click)="saveCron()">{{'lang.save' | translate}}</button>
+                    </div>
+                </div>
+            </form>
+        </mat-list>
+        <mat-divider></mat-divider>
+        <div class="alert alert-info" role="alert" style="margin:15px;">
+            {{'lang.NotificationScheduleInfo' | translate}}
+        </div>
+        <mat-list joyrideStep="notifTour4">
+            <h3 mat-subheader>{{'lang.activeCron' | translate}}</h3>
+            <mat-chip-list #chipList class="mat-chip-list-stacked">
+                <span *ngFor="let notif of crontab;let i = index">
+                    <mat-chip color="primary" *ngIf="notif.state == 'normal'"
+                        style="margin:5px;border-radius:0px;display:flex;" selectable="false" removable="true"
+                        (removed)="deleteCron(i)">
+                        {{notif.description}}
+                        <span style="flex: 1 1 auto;"></span>
+                        <b>{{notif.m}}&nbsp;&nbsp;{{notif.h}}&nbsp;&nbsp;{{notif.dom}}&nbsp;&nbsp;{{notif.mon}}&nbsp;&nbsp;{{notif.dow}}</b>
+                        <mat-icon matTooltip="{{'lang.delete' | translate}}" matChipRemove color="warn" class="fa fa-times">
+                        </mat-icon>
+                    </mat-chip>
+                </span>
+            </mat-chip-list>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

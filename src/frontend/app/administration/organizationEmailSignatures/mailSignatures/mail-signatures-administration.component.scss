@@ -1,0 +1,40 @@
+.signature-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+}
+
+.add-signature-content {
+    height: 350px;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.signature-content {
+    height: 350px;
+    // border: solid 1px rgba(0, 0, 0, 0.12);
+    padding: 10px;
+}
+
+.add-signature-area {
+    color: rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: dashed 3px rgba(0, 0, 0, 0.12);
+    transition: all 0.1s;
+}
+
+.add-signature-area:hover {
+    color: var(--maarch-color-primary);
+    border: dashed 3px var(--maarch-color-primary);
+    transition: all 0.1s;
+}
+
+.mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: initial !important;
+}

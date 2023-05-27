@@ -1,0 +1,176 @@
+
+.mat-form-field-appearance-outline {
+    font-size: 11px;
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    background: white !important;
+    padding: 10px;
+
+    .mat-icon,
+    .mat-icon-button {
+        display: none;
+    }
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.columns:last-child {
+    border: none;
+}
+
+.cdk-list.cdk-drop-list-dragging .columns:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.columns {
+    cursor: move;
+}
+
+.notDraggable {
+    cursor: not-allowed;
+}
+
+.notEditable {
+    cursor: initial;
+}
+
+.currentContextButton {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    width: 150px;
+    text-align: left;
+}
+
+.currentRoleButton {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    width: 120px;
+    text-align: center;
+}
+
+.emptyContent {
+    opacity: 0.5;
+    text-align: center;
+    font-size: 10px;
+    padding: 10px;
+}
+
+.processed {
+    background: var(--maarch-color-success-opacity-10) !important;
+}
+
+.interrupt {
+    background: var(--maarch-color-danger-opacity-10) !important;
+}
+
+.workflow {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: auto !important;
+    margin-bottom: 10px;
+    background: rgba(216, 216, 216, 0.1);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.workflowLine {
+    display: flex !important;
+    align-items: center;
+
+    &Container {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &Label {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    &SubLabel {
+        font-size: 80%;
+        opacity: 0.5;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    &ProcessDate {
+        flex: 1;
+        text-align: left;
+        font-size: 80%;
+    }
+
+    .mat-raised-button[disabled] {
+        background: none;
+        color: var(--maarch-color-primary) !important;
+        opacity: 1;
+    }
+}
+
+.avatar {
+    border: solid 3px #F99830;
+    height: 45px !important;
+    width: 45px !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.valid {
+    color: var(--maarch-color-success);
+}
+
+.invalid {
+    color: var(--maarch-color-danger);
+}
+
+.commentBubble {
+    color: #F99830;
+    position: absolute;
+    top: -12px;
+    right: -11px;
+    font-size: 20px;
+    cursor: help;
+}
+
+.comment:disabled {
+    color: black;
+}
+
+.unauthorized {
+    color: var(--maarch-color-danger);
+    text-decoration: line-through;
+}
+
+.invalidMsg {
+    opacity: 0.5;
+    width: 150px;
+    white-space: break-spaces;
+    text-align: center;
+}
+
+.selected {
+    background: var(--maarch-color-secondary-opacity-50)
+}
+
+.readonly {
+    background: none;
+    box-shadow: none;
+    color: var(--maarch-color-primary);
+}

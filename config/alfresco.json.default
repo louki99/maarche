@@ -1,0 +1,17 @@
+{
+    "mapping": {
+        "document" : {
+            "cm:title": "subject",
+            "cm:description": "alt_identifier"
+        },
+        "attachment" : {
+            "cm:name": "title"
+        },
+        "folderCreation" : {
+            "cm:title": "un titre"
+        },
+        "folderModification" : {
+            "cm:description": "une description"
+        }
+    }
+}

@@ -1,0 +1,49 @@
+<div class="mat-dialog-content-container">
+    <h2 mat-dialog-title>{{'lang.entityReplacement' | translate}}</h2>
+    <mat-dialog-content>
+        <div class="alert-message alert-message-info" role="alert">
+            <mat-list>
+                <mat-list-item *ngIf="data.entity.documents > 0">
+                    <mat-icon color="primary" mat-list-icon class="fa fa-file fa-2x"></mat-icon>
+                    <p mat-line>
+                        <b>{{data.entity.entity_label}}</b> {{'lang.isDestTo' | translate}}
+                        <b>{{data.entity.documents}}</b> {{'lang.documents' | translate}}</p>
+                </mat-list-item>
+                <mat-list-item *ngIf="data.entity.instances > 0">
+                    <mat-icon color="primary" mat-list-icon class="fa fa-sitemap fa-2x"></mat-icon>
+                    <p mat-line>
+                        <b>{{data.entity.entity_label}}</b> {{'lang.isCopyTo' | translate}}
+                        <b>{{data.entity.instances}}</b> {{'lang.documents' | translate}}</p>
+                </mat-list-item>
+                <mat-list-item *ngIf="data.entity.contact > 0">
+                    <mat-icon color="primary" mat-list-icon class="fa fa-address-book fa-2x"></mat-icon>
+                    <p mat-line>
+                        <b>{{data.entity.entity_label}}</b> {{'lang.isLinkedTo' | translate | lowercase}}
+                        <b>{{data.entity.contact}}</b> {{'lang.contactsEntity' | translate | lowercase}}</p>
+                </mat-list-item>
+                <mat-list-item *ngIf="data.entity.users.length > 0">
+                    <mat-icon color="primary" mat-list-icon class="fa fa-user fa-2x"></mat-icon>
+                    <p mat-line>
+                        <b>{{data.entity.entity_label}}</b> {{'lang.isLinkedTo' | translate | lowercase}}
+                        <b>{{data.entity.users.length}}</b> {{'lang.usersAlt' | translate | lowercase}}</p>
+                </mat-list-item>
+                <mat-list-item *ngIf="data.entity.templates.length > 0">
+                    <mat-icon color="primary" mat-list-icon class="fa fa-file-alt fa-2x"></mat-icon>
+                    <p mat-line>
+                        <b>{{data.entity.entity_label}}</b> {{'lang.isLinkedTo' | translate | lowercase}}
+                        <b>{{data.entity.templates.length}}</b> {{'lang.templates' | translate | lowercase}}</p>
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <app-plugin-autocomplete [labelPlaceholder]="'lang.chooseEntity' | translate"
+            [routeDatas]="['/rest/autocomplete/entities']" [targetSearchKey]="'idToDisplay'"
+            [subInfoKey]="'descriptionToDisplay'" (triggerEvent)="setRedirectEntity($event)" singleMode required>
+        </app-plugin-autocomplete>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <mat-dialog-actions>
+        <button mat-raised-button color="warn" type="submit" class="btn btn-danger"
+            (click)="dialogRef.close(data.entity)"
+            [disabled]="data.entity.redirectEntity === undefined || data.entity.redirectEntity == data.entity.entity_id">{{'lang.delete' | translate}}</button>
+    </mat-dialog-actions>
+</div>

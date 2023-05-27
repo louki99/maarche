@@ -1,0 +1,88 @@
+{
+    "autoload": {
+    	"psr-4": {
+            "SrcCore\\"                 : "src/core/",
+            "AcknowledgementReceipt\\"  : "src/app/acknowledgementReceipt/",
+            "Action\\"                  : "src/app/action/",
+            "Administration\\"          : "src/app/administration/",
+            "Attachment\\"              : "src/app/attachment/",
+            "Basket\\"                  : "src/app/basket/",
+            "BroadcastList\\"           : "src/app/broadcastList/",
+            "Configuration\\"           : "src/app/configuration/",
+            "Contact\\"                 : "src/app/contact/",
+            "ContentManagement\\"       : "src/app/contentManagement/",
+            "Convert\\"                 : "src/app/convert/",
+            "CustomField\\"             : "src/app/customField/",
+            "Docserver\\"               : "src/app/docserver/",
+            "Doctype\\"                 : "src/app/doctype/",
+            "Email\\"                   : "src/app/email/",
+            "Entity\\"                  : "src/app/entity/",
+            "Folder\\"                  : "src/app/folder/",
+            "Group\\"                   : "src/app/group/",
+            "History\\"                 : "src/app/history/",
+            "Home\\"                    : "src/app/home/",
+            "IndexingModel\\"           : "src/app/indexingModel/",
+            "Note\\"                    : "src/app/note/",
+            "Notification\\"            : "src/app/notification/",
+            "Parameter\\"               : "src/app/parameter/",
+            "Priority\\"                : "src/app/priority/",
+            "Resource\\"                : "src/app/resource/",
+            "RegisteredMail\\"          : "src/app/registeredMail/",
+            "SignatureBook\\"           : "src/app/signatureBook/",
+            "Search\\"                  : "src/app/search/",
+            "Shipping\\"                : "src/app/shipping/",
+            "Status\\"                  : "src/app/status/",
+            "Tag\\"                     : "src/app/tag/",
+            "Template\\"                : "src/app/template/",
+            "User\\"                    : "src/app/user/",
+            "VersionUpdate\\"           : "src/app/versionUpdate/",
+            "Alfresco\\"                : "src/app/external/alfresco/",
+            "MessageExchange\\"         : "src/app/external/messageExchange/",
+            "ExportSeda\\"              : "src/app/external/exportSeda/",
+            "ExternalSignatoryBook\\"   : "src/app/external/externalSignatoryBook/",
+            "ExternalSummary\\"         : "src/app/external/summary/",
+            "Outlook\\"                 : "src/app/external/outlook/",
+            "Multigest\\"               : "src/app/external/multigest/"
+    	}
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "MaarchCourrier\\Tests\\": "test/unitTests/"
+      }
+    },
+    "config": {
+      "platform-check": false
+    },
+    "require": {
+        "php": ">=7.4",
+        "slim/slim": "4.11.0",
+        "respect/validation": "^2.2",
+        "php-http/curl-client": "2.2.*",
+        "m4tthumphrey/php-gitlab-api": "^11.8.0",
+        "zf1/zend-search-lucene": "~1.12",
+        "tecnickcom/tcpdf": "^6.6.1",
+        "setasign/fpdi": "^v2.3.6",
+        "phpmailer/phpmailer": "^v6.7",
+        "endroid/qr-code": "4.6.1",
+        "tinybutstrong/tinybutstrong": "~3.14",
+        "tinybutstrong/opentbs": "~1.10",
+        "tecnickcom/tc-lib-barcode": "^1.15",
+        "firebase/php-jwt": "^5.0",
+        "rafikhaceb/pi-barcode": "^2.0",
+        "sdaoudi/oauth2-keycloak": "^3.1.0",
+        "jasig/phpcas": "1.5.0",
+        "php-ews/php-ews": "^1.0",
+        "monolog/monolog": "^2.6",
+        "guzzlehttp/guzzle": "^7.4",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "symfony/options-resolver": "v5.4.11",
+        "symfony/deprecation-contracts": "v2.5.2",
+        "psr/log": "1.1",
+        "psr/cache": "1.0.1",
+        "slim/psr7": "^1.6",
+        "smalot/pdfparser": "^2.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}

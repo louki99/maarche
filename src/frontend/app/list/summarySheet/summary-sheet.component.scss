@@ -1,0 +1,166 @@
+/*.summary-sheet-dialog {
+    .mat-dialog-container {
+        position: relative;
+        height: 99vh !important;
+        padding-top: 0px;
+    }
+}
+
+.mat-dialog-content {
+    max-height: 92vh;
+    padding-bottom: 10px;
+    overflow-x: hidden;
+}*/
+
+::ng-deep.mat-expansion-panel-body {
+    padding-bottom: 50px;
+}
+
+::ng-deep.mat-slide-toggle-content {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.summarySheet {
+    .header {
+        font-size: 10px;
+        padding: 10px;
+    }
+
+    .title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 24px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: solid 1px black;
+    }
+
+    .unitTitle {
+        display: flex;
+        cursor: initial;
+        //position: absolute;
+        top: 2px;
+        left: 5px;
+        width: 50%;
+    }
+
+    .unitData {
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.5;
+    }
+
+    .unitToggle {
+        //position: absolute;
+        right: 10px;
+    }
+
+    .rowData {
+        display: flex;
+        margin: 8px;
+        flex-direction: row;
+    }
+}
+
+.cdk-list {
+    width: 100%;
+    max-width: 100%;
+    border: solid 1px #ccc;
+    min-height: 60px;
+    display: block;
+    background: white;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+.columns {
+    width: 100%;
+    // height: 90px;
+    padding: 8px 4px;
+    border-bottom: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    background: white;
+    font-size: 14px;
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    @extend .summarySheet;
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.columns:last-child {
+    border: none;
+}
+
+.cdk-list.cdk-drop-list-dragging .columns:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.actions {
+    justify-content: center;
+    position: relative;
+}
+
+.loader {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    background: #fff9;
+    z-index: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.disabled {
+    opacity: 0.5;
+}
+
+.qrcode {    
+    ::ng-deep.mat-button-toggle-label-content {
+        padding-left: 7px !important;
+        line-height: 40px !important;
+    }
+}
+
+.qrcode.mat-button-toggle-checked.mat-button-toggle-appearance-standard {
+    background-color: #135f7f;
+    color: white;
+}
+
+.handleDrag {
+    padding-right: 5px;
+    cursor: move;
+    display:inline-block;
+    opacity: 0.5;
+}
+
+.column-1 {
+    width: 90%;
+}
+
+.column-2 {
+    width: 10%;
+}
+
+#traffic_record_summary_sheet {
+    margin-left: 20px;
+    margin-right: -75px;
+}

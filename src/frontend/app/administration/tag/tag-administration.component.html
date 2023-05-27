@@ -1,0 +1,80 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div style="height:90%;overflow:auto;position:absolute;width:100%;">
+                    <form style="padding: 20px;" (ngSubmit)="onSubmit()">
+                        <mat-form-field>
+                            <input matInput type="text" [formControl]="tag.label" [placeholder]="'lang.label' | translate"
+                                maxlength="128" required>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <textarea matInput type="text" [formControl]="tag.description"
+                                [placeholder]="'lang.description' | translate"></textarea>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput type="text" [formControl]="tag.usage" [placeholder]="'lang.usage' | translate">
+                        </mat-form-field>
+                        <mat-form-field *ngIf="advancedMode">
+                            <mat-chip-list #chipList>
+                                <mat-chip *ngFor="let linkedTag of tag.links.value"
+                                    (click)="remove(linkedTag)" (removed)="remove(linkedTag)" style="cursor: pointer;">
+                                    {{getTagLabel(linkedTag)}}
+                                    <mat-icon matChipRemove class="fa fa-times-circle"></mat-icon>
+                                </mat-chip>
+                                <input [placeholder]="'lang.linkedTags' | translate" #linkedTagInput [formControl]="myControl"
+                                    [matAutocomplete]="auto" [matChipInputFor]="chipList">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                <mat-option *ngFor="let tag of filteredOptions | async" [value]="tag"  [disabled]="isSelected(tag) || tag.id == id">
+                                    {{tag.label}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+
+                        <div *ngIf="!creationMode && !tag.canMerge.value" class="alert-message alert-message-danger" style="min-width: 100%;">
+                            {{'lang.cannotMergeTags' | translate}}
+                        </div>
+                        <app-plugin-select-search *ngIf="!loadingTags && tag.canMerge.value && !creationMode"
+                            [label]="'lang.mergeTagWith' | translate" [placeholderLabel]="'lang.mergeTagWith' | translate"
+                            [formControlSelect]="selectMergeTag" [datas]="tags" (afterOpened)="getTags()"
+                            (afterSelected)="mergeTag($event)" style="width:100%;">
+                        </app-plugin-select-search>
+                        <div class="text-center">
+                            <button mat-raised-button [disabled]="!tagFormGroup.valid"
+                                color="primary">{{'lang.validate' | translate}}</button>
+                            <button type="button" mat-raised-button color="default" (click)="toggleAdvancedTag()">
+                                {{advancedMode ? ('lang.defaultMode' | translate) : ('lang.advancedMode' | translate)}}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="advancedMode" style="overflow-x:hidden;width:450px;">
+        <mat-list>
+            <h3 mat-subheader>{{'lang.selectParentTag' | translate}} :</h3>
+            <div style="padding:10px;">
+                <mat-form-field>
+                    <input matInput id="jstree_search" name="jstree_search" type="text"
+                        placeholder="{{'lang.searchTag' | translate}}">
+                </mat-form-field>
+                <div id="jstree"></div>
+            </div>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

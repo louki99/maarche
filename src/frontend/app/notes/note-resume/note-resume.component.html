@@ -1,0 +1,22 @@
+<ng-container *ngIf="loading; else elseTemplate">
+    <div class="loading">
+        <mat-spinner diameter="35"></mat-spinner>
+    </div>
+</ng-container>
+<ng-template #elseTemplate>
+    <div class="noteList" *ngFor="let note of notes">
+        <div class="date" [title]="note.creation_date | fullDate">
+            {{note.creation_date | timeAgo}}
+        </div>
+        <div class="info" [title]="note.value">
+            {{note.value | shorten: 110: '...'}}
+        </div>
+        <div class="date" [title]="note.firstname + ' ' + note.lastname">
+            {{note.firstname}} {{note.lastname}}
+        </div>
+    </div>
+    <button mat-button *ngIf="notes.length === 3" class="showMore" (click)="showMore()">{{'lang.showMore' | translate}}</button>
+    <div class="noData" *ngIf="notes.length === 0">
+        {{'lang.noNote' | translate}}
+    </div>
+</ng-template>

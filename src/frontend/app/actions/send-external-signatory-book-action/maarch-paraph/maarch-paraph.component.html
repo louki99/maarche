@@ -1,0 +1,44 @@
+<div class="col-md-12">
+    <div class="fieldsetdContainer" style="flex:2">
+        <h2>{{'lang.visaWorkflow' | translate}} :</h2>
+        <div class="fieldsetdContent">
+            <app-external-visa-workflow #appExternalVisaWorkflow
+                [adminMode]="true"
+                [resId]="resIds.length === 1 ? resIds[0] : null"
+                [injectDatas]="injectDatasParam">
+            </app-external-visa-workflow >
+            <div *ngIf="appExternalVisaWorkflow.getUserOtpsWorkflow().length > 0"
+                class="alert-message alert-message-danger" role="alert">
+                <b>{{appExternalVisaWorkflow.getUserOtpsWorkflow().join(', ')}}</b>
+                {{getErrorMessage()}} !
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12" style="text-align: right;">
+    <button mat-button *ngIf="additionalsInfos.attachments.length === 1 && externalSignatoryBookManagerService.canManageSignaturesPositions()" color="primary" type="button"
+        [matMenuTriggerFor]="menu" [disabled]="!isValidParaph()">{{'lang.manageSignaturesPositions' | translate}}</button>
+    <mat-menu #menu="matMenu" class="docToSignTemplateMenu">
+        <button mat-menu-item *ngFor="let resource of resourcesToSign" (click)="openSignaturePosition(resource)"
+            style="font-size:12px;">
+            <mat-icon style="height: auto;" class="fas fa-compress-arrows-alt" [class.position]="hasPositions(resource)" [class.noPosition]="!hasPositions(resource)"></mat-icon>
+            <span>
+                <span color="primary">{{resource.chrono}}</span>&nbsp;- {{resource.title}}
+            </span>
+        </button>
+    </mat-menu>
+</div>
+<div class="col-md-12" *ngIf="additionalsInfos.visaWorkflowError">
+    <div>
+        <div class="alert-message alert-message-danger mailList" role="alert">
+            <p>
+                {{'lang.canNotMakeAction' | translate}} :
+            </p>
+            <ul>
+                <li *ngFor="let visaError of additionalsInfos.visaWorkflowError">
+                    <b>{{visaError.alt_identifier}}</b> : {{'lang.' + visaError.reason | translate}}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

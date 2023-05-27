@@ -1,0 +1,225 @@
+<div class="attach-container">
+    <div class="example-loading-shade" *ngIf="sendingData">
+        <mat-spinner></mat-spinner>
+    </div>
+    <h1 mat-dialog-title>
+        <span *ngIf="!loading" style="flex: 1;" [title]="attachment.title.value">
+            <ng-container *ngIf="attachment.chrono.value !== null">
+                {{attachment.chrono.value}} -
+            </ng-container>
+            {{attachment.title.value | shorten: 50: '...'}}
+        </span>
+        <button [title]="this.translate.instant('lang.close')" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content class="attach-content">
+            <ng-container *ngIf="!loading">
+                    <div class="attachment-form col-md-3 col-sm-12">
+                        <div *ngIf="editMode && isVersionEnabled()" class="attachment-form-item">
+                            <mat-slide-toggle [checked]="newVersion" color="primary"
+                                (change)="newVersion = !newVersion;">{{'lang.newVersion' | translate}}</mat-slide-toggle>
+                        </div>
+                        <div *ngIf="newVersion" class="attachment-form-item">
+                            <div class="alert-message alert-message-danger" role="alert"
+                                [innerHTML]="this.translate.instant('lang.mustEditDocument')"></div>
+                        </div>
+                        <div class="attachment-form-item">
+                            <mat-form-field class="input-form">
+                                <input disabled matInput placeholder="{{'lang.status' | translate}}" [value]="'lang.attachment_' + attachment['status'].value | translate">
+                            </mat-form-field>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk noMandatory"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item">
+                            <app-plugin-select-search [label]="this.translate.instant('lang.type')" [placeholderLabel]="this.translate.instant('lang.type')"
+                                [formControlSelect]="attachment['type']" [datas]="attachmentsTypes"
+                                (afterSelected)="getAttachType($event)" style="width:100%;">
+                            </app-plugin-select-search>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk fieldRequired"
+                                    *ngIf="attachment['type'].hasError('required') && attachment['type'].untouched"></i>
+                                <i class="fas fa-exclamation-triangle fieldError"
+                                    *ngIf="attachment['type'].touched && attachment['type'].hasError('required')"></i>
+                                <i class="fas fa-check fieldFull"
+                                    *ngIf="attachment['type'].valid && !isEmptyField(attachment['type'])"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item">
+                            <mat-form-field class="input-form">
+                                <input matInput placeholder="{{'lang.subject' | translate}}" maxlength="255" [formControl]="attachment['title']">
+                            </mat-form-field>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk fieldRequired"
+                                    *ngIf="attachment['title'].hasError('required') && attachment['title'].untouched"></i>
+                                <i class="fas fa-exclamation-triangle fieldError"
+                                    *ngIf="attachment['title'].touched && attachment['title'].hasError('required')"></i>
+                                <i class="fas fa-check fieldFull"
+                                    *ngIf="attachment['title'].valid && !isEmptyField(attachment['title'])"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item" *ngIf="sendMassMode" style="display: block;">
+                            <app-maarch-message [content]="'lang.mailingMsg' | translate: {nbContacts: getNbContacts()}"></app-maarch-message>
+                        </div>
+                        <div class="attachment-form-item" *ngIf="!sendMassMode">
+                            <app-contact-autocomplete [control]="attachment['recipient']" style="width:100%;" [singleMode]="true">
+                            </app-contact-autocomplete>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk noMandatory"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item" *ngIf="attachment['signedResponse'].value !== undefined">
+                            <mat-form-field class="input-form">
+                                <input matInput placeholder="{{'lang.signedAlt' | translate}}" [title]="attachment['signDate'].value | fullDate"
+                                    [value]="attachment['signDate'].value | timeAgo : 'full' | ucfirst" disabled>
+                            </mat-form-field>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk noMandatory"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item" *ngIf="attachment['signedResponse'].value !== undefined">
+                            <mat-form-field class="input-form">
+                                <input matInput placeholder="{{'lang.signedAlt' | translate}} {{'lang.by' | translate}}"
+                                    [formControl]="attachment['signatory']">
+                            </mat-form-field>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk noMandatory"></i>
+                            </div>
+                        </div>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{'lang.othersInfos' | translate}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="attachment-form-item">
+                                <mat-form-field class="input-form">
+                                    <input matInput placeholder="{{'lang.created' | translate}}"
+                                        [title]="attachment['creationDate'].value | fullDate"
+                                        [value]="attachment['creationDate'].value | timeAgo : 'full'" disabled>
+                                </mat-form-field>
+                                <div class="fieldState">
+                                    <i class="fas fa-asterisk noMandatory"></i>
+                                </div>
+                            </div>
+                            <div class="attachment-form-item">
+                                <mat-form-field class="input-form">
+                                    <input matInput placeholder="{{'lang.created' | translate}} {{'lang.by' | translate}}"
+                                        [formControl]="attachment['typistLabel']">
+                                </mat-form-field>
+                                <div class="fieldState">
+                                    <i class="fas fa-asterisk noMandatory"></i>
+                                </div>
+                            </div>
+                            <div class="attachment-form-item" *ngIf="attachment['modificationDate'].value !== null">
+                                <mat-form-field class="input-form">
+                                    <input matInput placeholder="{{'lang.modified' | translate}}"
+                                        [formControl]="attachment['modificationDate']"
+                                        [value]="attachment['modificationDate'].value | timeAgo : 'full'">
+                                </mat-form-field>
+                                <div class="fieldState">
+                                    <i class="fas fa-asterisk noMandatory"></i>
+                                </div>
+                            </div>
+                            <div class="attachment-form-item" *ngIf="attachment['modificationDate'].value !== null">
+                                <mat-form-field class="input-form">
+                                    <input matInput placeholder="{{'lang.modified' | translate}} {{'lang.by' | translate}}"
+                                        [formControl]="attachment['modifiedBy']">
+                                </mat-form-field>
+                                <div class="fieldState">
+                                    <i class="fas fa-asterisk noMandatory"></i>
+                                </div>
+                            </div>
+                            <div class="attachment-form-item">
+                                <mat-form-field class="input-form">
+                                    <input matInput placeholder="{{'lang.version' | translate}}"
+                                        [formControl]="attachment['relation']"
+                                        [value]="this.translate.instant('lang.version') + ' ' + attachment.relation.value">
+                                </mat-form-field>
+                                <div class="fieldState">
+                                    <i class="fas fa-asterisk noMandatory"></i>
+                                </div>
+                            </div>
+                            <div class="attachment-form-item">
+                                <mat-form-field class="input-form" (click)="picker.open()" style="cursor:pointer;">
+                                    <input [formControl]="attachment['validationDate']" matInput
+                                        [matDatepicker]="picker" [placeholder]="this.translate.instant('lang.expectedReturnDate')" [min]="now"
+                                        readonly style="cursor:pointer;">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"
+                                        *ngIf="!attachment['validationDate'].value">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker [touchUi]="appService.getViewMode()" #picker></mat-datepicker>
+                                    <button mat-button color="warn" matSuffix mat-icon-button
+                                        *ngIf="attachment['validationDate'].value && !attachment['validationDate'].disabled"
+                                        (click)="$event.stopPropagation();attachment['validationDate'].reset();"
+                                        [title]="this.translate.instant('lang.eraseValue')">
+                                        <mat-icon color="warn" class="fa fa-calendar-times">
+                                        </mat-icon>
+                                    </button>
+                                </mat-form-field>
+                                <div class="fieldState">
+                                    <i class="fas fa-asterisk noMandatory"
+                                        *ngIf="attachment['validationDate'].valid && isEmptyField(attachment['validationDate'])"></i>
+                                    <i class="fas fa-check fieldFull"
+                                        *ngIf="attachment['validationDate'].valid && !isEmptyField(attachment['validationDate'])"></i>
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </div>
+                </ng-container>
+                <mat-tab-group [selectedIndex]="selectedIndex" class="pjList" *ngIf="!loading" animationDuration="0" style="height: 100%">
+                        <mat-tab label="{{'lang.mainDocument' | translate}}" *ngIf="attachment.res_id_master !== null">
+                            <ng-template matTabContent>
+                                <app-document-viewer #appDocumentViewer style="display:block;height:100%;width:100%;overflow: auto;" [editMode]="false"
+                                    [resId]="attachment.resIdMaster.value" [title]="'lang.mainDocument' | translate">
+                                </app-document-viewer>
+                            </ng-template>
+                        </mat-tab>
+                        <mat-tab *ngIf="attachment.status.value === 'SIGN'">
+                            <ng-template mat-tab-label>
+                                <span style="color:green">{{'lang.signedAttachment' | translate}}</span>
+                            </ng-template>
+                            <app-document-viewer #appDocumentViewer style="display:block;height:100%;width:100%;overflow: auto;text-align: left;" [editMode]="false"
+                                [resId]="attachment.signedResponse.value" [mode]="'attachment'" [newPjVersion] = "newVersion"
+                                [title]="attachment.chrono.value + ' - ' + attachment.title.value + ' (' + this.translate.instant('lang.signed') + ')'">
+                            </app-document-viewer>
+                        </mat-tab>
+                        <mat-tab>
+                            <ng-template mat-tab-label>
+                                <span style="color:#135f7f">{{'lang.attachment' | translate}}</span>
+                            </ng-template>
+                            <app-document-viewer #appAttachmentViewer style="display:block;height:100%;width:100%;overflow: auto;" [editMode]="editMode"
+                                [resId]="data.resId" [resIdMaster]="attachment['resIdMaster'].value" [mode]="'attachment'"
+                                [format]="attachment['format'].value" [attachType]="attachment['type'].value"
+                                (triggerEvent)="setDatasViewer($event)" [newPjVersion] = "newVersion"
+                                [title]="attachment.chrono.value + ' - ' + attachment.title.value">
+                            </app-document-viewer>
+                        </mat-tab>
+                        <mat-tab label="{{'lang.attachment' | translate}} ({{'lang.version' | translate}} {{version.relation}})"
+                            *ngFor="let version of versions">
+                            <ng-template matTabContent>
+                                <app-document-viewer #appDocumentViewer style="display:block;height:100%;width:100%;overflow: auto;" [editMode]="false"
+                                    [resId]="version.resId" [mode]="'attachment'" [format]="attachment['format'].value" [newPjVersion] = "newVersion"
+                                    [title]="attachment.chrono.value + ' - ' + attachment.title.value + ' (' + version.relation + ')'">
+                                </app-document-viewer>
+                            </ng-template>
+                        </mat-tab>
+                    </mat-tab-group>
+                    <div *ngIf="!loading" id="appToolsInformations" style="position: absolute;right: 16px;top: 4px;width:40px;height:40px;">
+                        <app-tools-informations style="position: fixed; z-index:3; text-align: left; display: contents;" [resId]="attachment['resIdMaster'].value"></app-tools-informations>
+                    </div>
+    </mat-dialog-content>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="primary" *ngIf="!newVersion" (click)="updateAttachment()"
+            [disabled]="!loading && (!editMode || !attachFormGroup.valid)">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button color="primary" *ngIf="!newVersion && sendMassMode && !loading" (click)="updateAttachment('mailing')"
+            [disabled]="!loading && (!editMode || !attachFormGroup.valid)">{{'lang.mailing' | translate}}</button>
+        <button mat-raised-button color="primary" *ngIf="newVersion" (click)="createNewVersion()"
+            [disabled]="!editMode || !isEditing()">{{'lang.createNewVersion' | translate}}</button>
+        <button mat-raised-button color="primary" *ngIf="newVersion && sendMassMode && !loading" (click)="createNewVersion('mailing')"
+            [disabled]="!editMode || !isEditing()">{{'lang.mailing' | translate}}</button>
+        <button mat-raised-button color="warn" *ngIf="!loading && attachment.status.value === 'SIGN' && this.headerService.user.id == attachment.signatoryId.value && !signedByDefault"
+            (click)="deleteSignedVersion()">{{'lang.deleteSignedVersion' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" (click)="closeModal()">{{'lang.close' | translate}}</button>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+
+.smallInputInfo {
+    font-size: 9px;
+    white-space: normal;
+    line-height: 13px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.mat-chip.mat-standard-chip {
+    color: white;
+    background-color: var(--maarch-color-primary-light);
+}
+
+.noResult {
+    text-align: center;
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.itemChip {
+    display: block;
+    width: 95%;
+
+    ::ng-deep.mat-chip-list-wrapper {
+        margin: 0px;
+    }
+}
+
+.itemList {
+    padding-top: 10px;
+    overflow-x: hidden;
+    max-height: 165px;
+}
+
+.depList ::ng-deep.mat-form-field-infix {
+    margin-left: -20px;
+}
+
+.sector {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 5px;
+}

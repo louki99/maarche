@@ -1,0 +1,11 @@
+
+.badge {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px !important;
+    color: white;
+    font-weight: normal;
+    border-radius: .25em;
+    background: var(--maarch-color-primary);
+    margin: 5px;
+}

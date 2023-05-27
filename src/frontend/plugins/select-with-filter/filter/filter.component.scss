@@ -1,0 +1,60 @@
+.mat-filter {
+    position: absolute;
+    top: -1px;
+    width: 100%;
+    border: solid 1px #d9d9d9;
+    border-radius: 3px;
+    background: white;
+    z-index: 100;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.mat-filter:focus-within {
+    border: solid 1px var(--maarch-color-primary);
+}
+
+.mat-filter-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+    border: 0;
+    background-color: unset;
+    color: gray;
+    width: 100%;
+    height: 50px;
+    font-size: 12px;
+    padding-left: 10px;
+}
+
+.selectedItemsMode {
+    color: green;
+    opacity: 1 !important;
+}
+
+.actionButton {
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.actionButtonIcon {
+    opacity: 0.3;
+    font-size: 17px;
+    height: auto;
+    width: auto;
+}
+
+::ng-deep.mat-option-text {
+    user-select: none !important;
+}
+
+.noResultsMessage {
+    padding: 10px;
+    text-align: center;
+    color: #666;
+}

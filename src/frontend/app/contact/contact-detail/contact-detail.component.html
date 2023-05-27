@@ -1,0 +1,141 @@
+<ng-container *ngIf="loading; else elseTemplate">
+    <div class="loading">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
+<ng-template #elseTemplate>
+    <mat-card class="contact-card">
+        <div *ngIf="selectable" class="selectable" [class.selected]="contact.selected">
+            <button style="line-height: 15px;padding: 5px;" *ngIf="!contact.selected" mat-raised-button color="primary" (click)="toggleContact(contact)"><span>{{'lang.selectDuplicatedContact' | translate}}</span><br><small style="font-size:80%">{{contact.resourcesCount}} {{'lang.associatedElements' | translate}}</small></button>
+            <button style="line-height: 15px;padding: 10px;" *ngIf="contact.selected" mat-raised-button color="primary" (click)="toggleContact(contact)"><i class="far fa-check-circle"></i> {{'lang.selectedContact' | translate}}</button>
+        </div>
+        <div *ngIf="!contact.enabled" class="disabledContact">{{'lang.contactDisabled' | translate}}</div>
+        <mat-card-header>
+            <div mat-card-avatar class="contact-header-image fa"
+                [class.fa-address-card]="contact.type === 'contact'"
+                [class.fa-users]="contact.type ==='contactGroup'"
+                [class.fa-sitemap]="contact.type ==='entity'"
+                [class.fa-user]="contact.type ==='user'" [title]="'lang.contact_' + contact.type | translate">
+            </div>
+            <mat-card-title *ngIf="!functionsService.empty(contact.firstname) || !functionsService.empty(contact.lastname)"
+                [title]="(contact.civility.label ? contact.civility.label + ' ' : '') + contact.firstname + ' ' + contact.lastname">
+                <sup style="color: #666;"
+                    *ngIf="!functionsService.empty(contact.civility)" [class.newData]="isNewValue('civility')">{{contact.civility.abbreviation}}&nbsp;</sup>{{contact.firstname}}
+                {{contact.lastname}}
+            </mat-card-title>
+            <mat-card-title *ngIf="functionsService.empty(contact.firstname) && functionsService.empty(contact.lastname)" [class.newData]="isNewValue('company')" [title]="contact.company">
+                {{contact.company}}</mat-card-title>
+            <mat-card-subtitle [class.newData]="isNewValue('function')" [title]="contact.function" *ngIf="!functionsService.empty(contact.function)">
+                {{contact.function}}&nbsp;
+            </mat-card-subtitle>
+            <i class="contact-filling fa fa-circle"
+                *ngIf="contact.type === 'contact' && !functionsService.empty(contact.fillingRate.color)"
+                [style.color]="contact.fillingRate.color" [title]="'lang.contactsFillingRate' | translate"></i>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-list>
+                <h3 mat-subheader>{{'lang.contactDetails' | translate}}</h3>
+                <mat-list-item class="contact-item"
+                    *ngIf="(!functionsService.empty(contact.firstname) || !functionsService.empty(contact.lastname)) && !functionsService.empty(contact.company)">
+                    <mat-icon mat-list-icon class="contact-group far fa-building"
+                        [title]="'lang.contactsParameters_company' | translate"></mat-icon>
+                    <p mat-line class="contact-content" [class.newData]="isNewValue('company')"> {{contact.company}}
+                    </p>
+                </mat-list-item>
+                <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.department)">
+                    <mat-icon mat-list-icon class="contact-group fa fa-sitemap"
+                        [title]="'lang.contactsParameters_department' | translate"></mat-icon>
+                    <p mat-line class="contact-content" [class.newData]="isNewValue('department')">
+                        {{contact.department}} </p>
+                </mat-list-item>
+                <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.email)">
+                    <mat-icon mat-list-icon class="contact-group far fa-envelope" [title]="'lang.email' | translate"></mat-icon>
+                    <a matLine href="mailto:{{contact.email}}" class="contact-content"
+                        [class.newData]="isNewValue('email')"> {{contact.email}} </a>
+                </mat-list-item>
+                <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.phone)">
+                    <mat-icon mat-list-icon class="contact-group fas fa-phone" [title]="'lang.phoneNumber' | translate">
+                    </mat-icon>
+                    <p mat-line class="contact-content" [class.newData]="isNewValue('phone')"> {{contact.phone}}
+                    </p>
+                </mat-list-item>
+                <mat-list-item class="contact-address" (click)="goTo(contact)" [title]="'lang.address' | translate"
+                    *ngIf="!functionsService.empty(contact.addressNumber) || !functionsService.empty(contact.addressStreet) || !functionsService.empty(contact.addressAdditional2) || !functionsService.empty(contact.addressPostcode) || !functionsService.empty(contact.addressTown) || !functionsService.empty(contact.addressCountry)">
+                    <mat-icon mat-list-icon class="contact-group fas fa-map-marker-alt"></mat-icon>
+                    <p mat-line class="contact-content" *ngIf="!functionsService.empty(contact.addressAdditional1)"
+                        [class.newData]="isNewValue('addressAdditional1')"> {{contact.addressAdditional1}}</p>
+                    <p mat-line class="contact-content"
+                        *ngIf="!functionsService.empty(contact.addressNumber) || !functionsService.empty(contact.addressStreet)"><span
+                            [class.newData]="isNewValue('addressNumber')">{{contact.addressNumber}}</span>&nbsp;<span
+                            [class.newData]="isNewValue('addressStreet')">{{contact.addressStreet}}</span></p>
+                    <p mat-line class="contact-content" *ngIf="!functionsService.empty(contact.addressAdditional2)"
+                        [class.newData]="isNewValue('addressAdditional2')">{{contact.addressAdditional2}} </p>
+                    <p mat-line class="contact-content"
+                        *ngIf="!functionsService.empty(contact.addressPostcode) || !functionsService.empty(contact.addressTown)">
+                        {{contact.addressPostcode}} {{contact.addressTown}} </p>
+                    <p mat-line class="contact-content" *ngIf="!functionsService.empty(contact.addressCountry)"
+                        [class.newData]="isNewValue('addressCountry')"> {{contact.addressCountry}} </p>
+                </mat-list-item>
+                <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.sector)">
+                    <mat-icon mat-list-icon class="contact-group fas fa-map-marked-alt" [title]="'lang.contactsParameters_sector' | translate">
+                    </mat-icon>
+                    <p mat-line class="contact-content"> {{contact.sector}}</p>
+                </mat-list-item>
+            </mat-list>
+            <mat-expansion-panel *ngIf="!emptyOtherInfo(contact)" [expanded]="selectable">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{'lang.othersInfos' | translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list>
+                    <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.notes)"
+                        [title]="'lang.note' | translate">
+                        <mat-icon mat-list-icon class="contact-group far fa-sticky-note"></mat-icon>
+                        <p mat-line class="contact-content" [class.newData]="isNewValue('notes')" [title]="contact.notes">
+                            {{contact.notes}} </p>
+                    </mat-list-item>
+                    <ng-container *ngIf="!functionsService.empty(contact.communicationMeans)">
+                        <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.communicationMeans.url)"
+                            [title]="'lang.communicationMean' | translate">
+                            <mat-icon mat-list-icon class="contact-group fas fa-hashtag"></mat-icon>
+                            <p mat-line class="contact-content" [class.newData]="isNewValue('communicationMeans.url')" [title]="contact.communicationMeans.url | splitLoginPwd">
+                                {{contact.communicationMeans.url | splitLoginPwd}}
+                            </p>
+                        </mat-list-item>
+                        <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.communicationMeans.email)"
+                            [title]="'lang.emailM2M' | translate">
+                            <mat-icon mat-list-icon class="contact-group fas fa-hashtag"></mat-icon>
+                            <p mat-line class="contact-content" [class.newData]="isNewValue('communicationMeans.email')" [title]="contact.communicationMeans.email">
+                                {{contact.communicationMeans.email}}
+                            </p>
+                        </mat-list-item>
+                            <mat-list-item class="contact-item" *ngIf="!functionsService.empty(contact.communicationMeans.login)"
+                                [title]="'lang.userIdMaarch2MaarchDesc' | translate">
+                                <mat-icon mat-list-icon class="contact-group fas fa-hashtag"></mat-icon>
+                                <p mat-line class="contact-content" [class.newData]="isNewValue('communicationMeans.login')" [title]="contact.communicationMeans.login">
+                                    {{contact.communicationMeans.login}}
+                                </p>
+                            </mat-list-item>
+                        <mat-list-item class="contact-item"
+                            *ngIf="!functionsService.empty(contact.externalId) && !functionsService.empty(contact.externalId['m2m'])"
+                            [title]="'lang.IdMaarch2Maarch' | translate">
+                            <mat-icon mat-list-icon class="contact-group fas fa-hashtag"></mat-icon>
+                            <p mat-line class="contact-content" [title]="contact.externalId['m2m']">
+                                {{contact.externalId['m2m']}} </p>
+                        </mat-list-item>
+                        </ng-container>
+                    <ng-container *ngFor="let keyVal of contact.customFields | keyvalue">
+                        <mat-list-item class="contact-item" *ngIf="keyVal.value.value !== null">
+                            <mat-icon mat-list-icon class="contact-group fas fa-hashtag"
+                                [title]="keyVal.value.label">
+                            </mat-icon>
+                            <p mat-line class="contact-content" [class.newData]="isNewValue(keyVal)" [title]="keyVal.value.value"> {{keyVal.value.value}}
+                            </p>
+                        </mat-list-item>
+                    </ng-container>
+                </mat-list>
+            </mat-expansion-panel>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

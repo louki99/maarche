@@ -1,0 +1,72 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <mat-sidenav-container autosize style="height:100%;">
+            <mat-sidenav-content style="background: white;padding:10px;">
+                <div>
+                    {{'lang.makeActionOn' | translate}}
+                    <b *ngIf="data.resIds.length === 0" color="primary"
+                        class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                    <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                    <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                        {{'lang.elements' | translate}}</b> ?
+                </div>
+                <app-maarch-message style="margin-bottom: -15px;" *ngIf="delegation.isDelegated && !noResourceToProcess" mode="danger">
+                    {{'lang.signInsteadOf' | translate}}&nbsp;<b style="overflow: hidden;text-overflow: ellipsis;" [title]="delegation.userDelegated">{{ delegation.userDelegated }}</b>
+                </app-maarch-message>
+                <div class="alert-message alert-message-info" *ngIf="data.resIds.length == 1  && !noResourceToProcess"
+                    role="alert" style="margin-top: 30px;"
+                    [innerHTML]="'<b>' + ownerOpinion + '</b> '+ ('lang.askOpinionUser' | translate) + ' :<br/><br/>' + opinionContent">
+                </div>
+
+                <div class="alert-message alert-message-info" *ngIf="data.resIds.length > 1 && !noResourceToProcess"
+                    role="alert" style="margin-top: 30px;" [innerHTML]="'lang.askOpinion' | translate"></div>
+
+                <div *ngIf="resourcesErrors.length > 0" class="alert-message alert-message-danger mailList"
+                    role="alert">
+                    <p>
+                        {{'lang.canNotMakeAction' | translate}} :
+                    </p>
+                    <ul>
+                        <li *ngFor="let ressource of resourcesErrors">
+                            <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                        </li>
+                    </ul>
+                </div>
+                <div *ngIf="resourcesWarnings.length > 0" class="alert-message alert-message-info mailList"
+                    role="alert">
+                    <ul style="margin: 0;padding-bottom: 0px;">
+                        <li *ngFor="let ressource of resourcesWarnings">
+                            <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                        </li>
+                    </ul>
+                </div>
+                <mat-form-field *ngIf="data.resIds.length === 1 && !noResourceToProcess" appearance="outline"
+                    style="cursor:pointer;margin-top: 10px;">
+                    <mat-label>{{'lang.opinionLimitDate' | translate}}</mat-label>
+                    <input matInput [(ngModel)]="opinionLimitDate" readonly style="cursor:pointer;" disabled>
+                </mat-form-field>
+
+                <app-note-editor #noteEditor [title]="'lang.addOpinion' | translate" [resIds]="data.resIds"
+                    [disableRestriction]="true">
+                </app-note-editor>
+                <div *ngIf="showToggle" class="row" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary" style="margin-bottom: 15px;"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                    <mat-divider></mat-divider>
+                </div>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || !isValidAction()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

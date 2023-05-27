@@ -1,0 +1,27 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{'lang.contact_contactGroup' | translate}} {{modalTitle}}
+        </span>
+        <button [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content class="modal-container">
+        <div style="overflow: auto;">
+            <app-contacts-group-form *ngIf="!loading" #appContactsGroupForm [contactGroupId]="contactGroupId" [allPerimeters]="allPerimeters" [hideSaveButton]="true" [canModifyGroupInfo]="canModifyGroupInfo" [canAddCorrespondents]="canAddCorrespondents" [contactIds]="contactIds" (afterUpdate)="goTo($event)"></app-contacts-group-form>
+        </div>
+        <div style="overflow: auto;overflow-x: hidden;">
+            <mat-list>
+                <h3 mat-subheader>{{'lang.shareWith' | translate}} :</h3>
+                <div style="padding:10px;">
+                    <div id="contactsGroupTree" style="display: contents;"></div>
+                </div>
+            </mat-list>
+        </div>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!isValid()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button color="default" (click)="dialogRef.close()">{{'lang.close' | translate}}</button>
+    </div>
+</div>

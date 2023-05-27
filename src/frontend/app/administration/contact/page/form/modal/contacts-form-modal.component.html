@@ -1,0 +1,18 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{'lang.contactCreation' | translate}}
+        </span>
+        <button [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content class="modal-container">
+        <app-contact-form #appContactForm [actionButton]="false" [creationMode]="true" [defaultName]="data.defaultName" (onSubmitEvent)="goTo($event)"></app-contact-form>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="primary" (click)="onSubmit()"
+            [disabled]="!isValid()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button color="default" (click)="dialogRef.close()">{{'lang.close' | translate}}</button>
+    </div>
+</div>

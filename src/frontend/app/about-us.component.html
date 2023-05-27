@@ -1,0 +1,83 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{'lang.aboutUs' | translate}}
+        </span>
+        <button *ngIf="!loading" [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button>
+    </h1>
+    <div *ngIf="loading" style="display:flex;height:100%;">
+        <mat-spinner style="margin:auto;"></mat-spinner>
+    </div>
+    <mat-card mat-dialog-content *ngIf="!loading" class="card-app-content" style="min-height: 90% !important;">
+        <div class="col-sm-8">
+            <h3>Maarch Courrier {{applicationVersion}} </h3>
+            <em>Version : <a target="blank" href="https://labs.maarch.org/maarch/MaarchCourrier/commit/{{commitHash}}">{{commitHash}}</a></em>
+            <hr />
+            <p><em>Copyright &copy; 2008-{{currentYear}} Maarch SAS {{'lang.groupeCompany' | translate}}</em></p>
+            <p>{{'lang.maarchLicence' | translate}}
+                <a target="blank" href="http://www.gnu.org/licenses/gpl-3.0-standalone.html">licence GNU GPLv3</a>.</p>
+            <div>
+                <ul>
+                    <li>{{'lang.officialWebsite' | translate}} : <a target="blank" href="https://maarch.com/">https://maarch.com</a></li>
+                    <li>{{'lang.community' | translate}} : <a target="blank"
+                                                href="https://community.maarch.org/">https://community.maarch.org</a></li>
+                    <li>{{'lang.documentation' | translate}} : <a target="blank"
+                                                    href="https://docs.maarch.org/">https://docs.maarch.org</a></li>
+                </ul>
+            </div>
+            <p>&nbsp;</p>
+            <h3>{{'lang.externalComponents' | translate}}</h3>
+            <hr />
+            <em>{{'lang.thanksToExtDev' | translate}}</em>
+            <p>&nbsp;</p>
+            <ul>
+                <li><a target="blank" href="https://angular.io/">Angular</a></li>
+                <li><a target="blank" href="https://material.angular.io/">Angular Material</a></li>
+                <li><a target="blank" href="http://getbootstrap.com/">Bootstrap</a></li>
+                <li><a target="blank" href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a></li>
+                <li><a target="blank" href="http://www.fpdf.org/">Fpdf</a></li>
+                <li><a target="blank" href="http://www.setasign.de/products/pdf-php-solutions/fpdi/">fpdi</a></li>
+                <li><a target="blank" href="https://jquery.com/">Jquery</a></li>
+                <li><a target="blank" href="https://github.com/running-coder/jquery-typeahead">Jquery Typeahead</a></li>
+                <li><a target="blank" href="https://github.com/Seldaek/monolog">Monolog</a></li>
+                <li><a target="blank" href="http://chir.ag/tech/download/pdfb">Pdfb</a></li>
+                <li><a target="blank" href="http://www.foolabs.com/xpdf/">Pdftotext</a></li>
+                <li><a target="blank" href="http://www.tinybutstrong.com/">Tiny But Strong</a></li>
+                <li><a target="blank" href="http://www.tinymce.com/">TinyMCE</a></li>
+                <li><a target="blank" href="http://framework.zend.com/">Zend Lucene Search</a></li>
+            </ul>
+        </div>
+
+        <div class="col-sm-4">
+            <h3>Crédits</h3>
+            <hr />
+            <ul>
+                <h4>Développeurs</h4>
+                <li>Florian AZIZIAN</li>
+                <li>Damien BUREL</li>
+                <li>Jean-Laurent DUZANT</li>
+                <li>Guillaume HEURTIER</li>
+                <li>Hamza HRAMCHI</li>
+                <li>Nicolas LE BOZEC</li>
+                <li>Alex ORLUC</li>
+                <li>Quentin RIBAC</li>
+                <br>
+            </ul>
+            <ul>
+                <h4>Product Owners</h4>
+                <li>Emmanuel DILLARD</li>
+                <li>Inès MKACHER</li>
+            </ul>
+            <p>&nbsp;</p>
+            <ul>
+                <li><em>{{'lang.thanksToCommunity' | translate}}</em></li>
+            </ul>
+            <p>&nbsp;</p>
+            <div class="img_credits_maarch_box">
+                <mat-icon svgIcon="maarchBox" style="width: 100%;height: auto;"></mat-icon>
+            </div>
+        </div>
+    </mat-card>
+</div>

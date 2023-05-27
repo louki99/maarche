@@ -1,0 +1,16 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title style="display: flex;">
+        <span style="flex: 1;text-align: center;">
+            {{data.resource.chrono}}
+        </span>
+        <button title="{{'lang.close' | translate}}" mat-icon-button [mat-dialog-close]="">
+            <mat-icon class="fa fa-times-circle fa-2x"></mat-icon>
+        </button>
+    </h1>
+    <div mat-dialog-content style="min-height: 200px;">
+        <app-document-viewer #appDocumentViewer style="display:block;height:100%;width:100%;overflow: auto;"
+            [editMode]="false" [resId]="data.resource.resId"
+            [title]="data.resource.chrono + ' - ' + data.resource.subject">
+        </app-document-viewer>
+    </div>
+</div>

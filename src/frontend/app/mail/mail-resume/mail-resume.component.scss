@@ -1,0 +1,58 @@
+
+.mailList {
+    font-size: 13px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    align-items: center;
+
+    &:nth-child(2n) {
+        background: var(--maarch-color-primary-opacity-10);
+    }
+}
+
+.date {
+    padding: 5px;
+    color: var(--maarch-color-primary);
+}
+
+.info {
+    padding: 5px;
+}
+
+.noData {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    opacity: 0.3;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+.showMore {
+    float: right;
+    font-size: 10px;
+    position: absolute;
+    right: 10px;
+    margin-top: -2px;
+    padding: 0;
+    line-height: 20px;
+    width: 35px;
+    color: var(--maarch-color-secondary);
+    font-weight: bold;
+}
+
+.error {
+    padding: 5px;
+    font-style: italic;
+    color: var(--maarch-color-danger)
+}
+
+.arType {
+    color: #666;
+    font-style: italic;
+}

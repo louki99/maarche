@@ -1,0 +1,133 @@
+<app-contact-autocomplete *ngIf="this.control.status !== 'DISABLED'"
+    [exclusion]="'?noUsers=true&noEntities=true&noContactsGroups=true'"
+    [inputMode]="true"
+    style="width:100%;" (afterSelected)="getContact($event)"></app-contact-autocomplete>
+<a *ngIf="!manualAddress && emptyAddress()" (click)="manualAddress=!manualAddress" style="cursor: pointer;">{{'lang.switchManualAddress' | translate}}</a>
+<mat-card color="primary" *ngIf="manualAddress">
+    <mat-form-field *ngIf="this.control.status !== 'DISABLED'" appearance='outline' class="smallInput">
+        <button mat-button matSuffix [matMenuTriggerFor]="menuDep" (click)="$event.stopPropagation();"
+            [title]="'lang.targetDepartment' | translate">
+            {{addressBANCurrentDepartment}}&nbsp;<i class="fa fa-chevron-down"></i>
+        </button>
+        <mat-menu #menuDep="matMenu">
+            <button mat-menu-item *ngFor="let dep of departmentList"
+                (click)="addressBANCurrentDepartment = dep">{{dep}}</button>
+        </mat-menu>
+        <mat-icon color="primary" class="fa fa-search" matPrefix style="font-size: 15px;">
+        </mat-icon>
+        <input type="text" #autoCompleteInput [placeholder]="'lang.searchAddressBan' | translate" matInput
+            [formControl]="addressBANControl" [matAutocomplete]="auto" (click)="$event.stopPropagation()"
+            (focus)="resetAutocompleteAddressBan()" maxlength="128">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectAddressBan($event)">
+            <ng-container *ngIf="addressBANResult.length > 0 && !addressBANLoading">
+                <mat-option *ngFor="let addressBANResult of addressBANFilteredResult | async" [value]="addressBANResult"
+                    [title]="addressBANResult.address">
+                    {{addressBANResult.address}}
+                </mat-option>
+            </ng-container>
+            <mat-option class="autoCompleteInfoResult smallInputInfo"
+                *ngIf="addressBANResult.length === 0 && !addressBANLoading" disabled [innerHTML]="addressBANInfo">
+            </mat-option>
+            <mat-option *ngIf="addressBANLoading" disabled>
+                <mat-spinner diameter="20"></mat-spinner>
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <button mat-icon-button class="address-icon" (click)="manualAddress=!manualAddress"
+        [title]="'lang.showAddress' | translate">
+        <mat-icon class="fa fa-eye"></mat-icon>
+    </button>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_company' | translate}}</mat-label>
+        <input matInput name="company" [(ngModel)]="this.control.value.company"
+            (ngModelChange)="toUpperCase('company', $event)" [required]="functions.empty(control.value.lastname)">
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_civility' | translate}}</mat-label>
+        <mat-select name="civility" [(ngModel)]="this.control.value.civility">
+            <mat-option *ngFor="let civ of civilities | sortBy: 'label'" [value]="civ.label">
+                {{civ.label}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_firstname' | translate}}</mat-label>
+        <input matInput name="firstname" [(ngModel)]="this.control.value.firstname"
+            (ngModelChange)="toUpperCase('firstname', $event)" [required]="functions.empty(control.value.company)">
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_lastname' | translate}}</mat-label>
+        <input matInput name="lastname" [(ngModel)]="this.control.value.lastname"
+            (ngModelChange)="toUpperCase('lastname', $event)" [required]="functions.empty(control.value.company)">
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_addressAdditional1' | translate}}</mat-label>
+        <input matInput name="addressAdditional1" [(ngModel)]="this.control.value.addressAdditional1"
+            (ngModelChange)="toUpperCase('addressAdditional1', $event)">
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_addressNumber' | translate}}</mat-label>
+        <input matInput name="addressNumber" [(ngModel)]="this.control.value.addressNumber"
+            (ngModelChange)="toUpperCase('addressNumber', $event)" required>
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_addressStreet' | translate}}</mat-label>
+        <input matInput name="addressStreet" [(ngModel)]="this.control.value.addressStreet"
+            (ngModelChange)="toUpperCase('addressStreet', $event)" required>
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_addressAdditional2' | translate}}</mat-label>
+        <input matInput name="addressAdditional2" [(ngModel)]="this.control.value.addressAdditional2"
+            (ngModelChange)="toUpperCase('addressAdditional2', $event)">
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_addressPostcode' | translate}}</mat-label>
+        <input matInput name="addressPostcode" [(ngModel)]="this.control.value.addressPostcode"
+            (ngModelChange)="toUpperCase('addressPostcode', $event)" required>
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_addressTown' | translate}}</mat-label>
+        <input matInput name="addressTown" [(ngModel)]="this.control.value.addressTown"
+            (ngModelChange)="toUpperCase('addressTown', $event)" required>
+    </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label>{{'lang.contactsParameters_addressCountry' | translate}}</mat-label>
+        <input matInput #autoCompleteInput [(ngModel)]="this.control.value.addressCountry" [matAutocomplete]="matAutocompleteCountries"
+            [formControl]="countryControl" [required]="registeredMailType === 'RW'">
+        <mat-autocomplete #matAutocompleteCountries="matAutocomplete" isOpen="true" (optionSelected)="this.control.value.addressCountry = $event.option.value">
+            <mat-option *ngFor="let country of countriesFilteredResult | async" [value]="country">
+                {{country}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+</mat-card>
+<mat-card color="primary" *ngIf="!manualAddress && !emptyAddress()" style="min-height: 60px">
+    <button *ngIf="this.control.status !== 'DISABLED'" mat-icon-button class="address-icon"
+        (click)="manualAddress=!manualAddress" [title]="'lang.update' | translate">
+        <mat-icon class="fa fa-edit"></mat-icon>
+    </button>
+    <div>
+        {{control.value.company}}
+    </div>
+    <div>
+        {{control.value.civility}} {{control.value.firstname}} {{control.value.lastname}}
+    </div>
+    <div>
+        {{control.value.addressAdditional1}}
+    </div>
+    <div>
+        {{control.value.addressNumber}} {{control.value.addressStreet}}
+    </div>
+    <div>
+        {{control.value.addressAdditional2}}
+    </div>
+    <div>
+        {{control.value.addressPostcode}} {{control.value.addressTown}}
+    </div>
+    <div>
+        {{control.value.addressCountry}}
+    </div>
+    <button mat-icon-button class="map-icon" (click)="goTo()" [title]="'lang.openMap' | translate">
+        <mat-icon class="fa fas fa-map-marked-alt"></mat-icon>
+    </button>
+</mat-card>

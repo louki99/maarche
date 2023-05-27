@@ -1,0 +1,22 @@
+<mat-form-field class="correspondentGroups" style="width: 100%;">
+    <mat-chip-list #chipList aria-label="correspondentGroups">
+    <mat-chip *ngFor="let item of correspondentGroups" color="primary"
+        [selectable]="true"
+        [removable]="item.canUpdateCorrespondents" (removed)="remove(item)">
+        <i class="correspondent-type-icon fas fa-atlas"></i>&nbsp;&nbsp;{{ item.label }}
+        <mat-icon matChipRemove class="fa fa-times-circle" *ngIf="item.canUpdateCorrespondents"></mat-icon>
+    </mat-chip>
+      <input
+        #correspondentGroupsInput
+        [placeholder]="'lang.correspondentsGroups' | translate"
+        [formControl]="correspondentGroupsForm"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let item of filteredcorrespondentGroups | async" [value]="item">
+        {{ item.label }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>

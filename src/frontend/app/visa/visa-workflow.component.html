@@ -1,0 +1,153 @@
+<mat-list *ngIf="!loading">
+    <mat-form-field appearance="outline" *ngIf="adminMode">
+        <input type="text" #searchVisaSignUserInput matInput placeholder="{{'lang.addUsers' | translate}}"
+            id="searchVisaSignUserInput" [formControl]="searchVisaSignUser" [matAutocomplete]="autoGroup">
+        <mat-autocomplete #autoGroup="matAutocomplete" (optionSelected)="addItemToWorkflow($event.option.value)"
+            (opened)="initFilterVisaModelList()">
+            <mat-option disabled *ngIf="visaModelListNotLoaded">
+                <div style="display: flex;justify-content: center;">
+                    <mat-spinner diameter="35"></mat-spinner>
+                </div>
+            </mat-option>
+            <mat-optgroup [label]="'lang.publicModel' | translate" *ngIf="(filteredPublicModels | async)?.length > 0"
+                class="visaSignList">
+                <mat-option *ngFor="let model of filteredPublicModels | async | sortBy : 'label'" [value]="model">
+                    {{model.label}}
+                </mat-option>
+            </mat-optgroup>
+            <mat-optgroup [label]="'lang.privateModel' | translate" *ngIf="(filteredPrivateModels | async)?.length > 0"
+                class="visaSignList">
+                <mat-option *ngFor="let model of filteredPrivateModels | async | sortBy : 'label'" [value]="model">
+                    <div style="display: flex;align-items: center;">
+                        <div style="flex:1">
+                            {{model.label}}
+                        </div>
+                        <button mat-icon-button color="warn"
+                            (click)="$event.stopPropagation();deletePrivateModel(model)">
+                            <mat-icon class="fa fa-trash" style="margin: 0px;"></mat-icon>
+                        </button>
+                    </div>
+                </mat-option>
+            </mat-optgroup>
+            <mat-optgroup [label]="('lang.visaUser' | translate) + ' / ' + ('lang.signUser' | translate)"
+                *ngIf="(filteredSignVisaUsers | async)?.length > 0" class="visaSignList">
+                <mat-option *ngFor="let user of filteredSignVisaUsers | async | sortBy : 'label'" [value]="user">
+                    {{user.label}}&nbsp;<small *ngIf="!functions.empty(user.entity)">({{user.entity}})</small>
+                </mat-option>
+            </mat-optgroup>
+        </mat-autocomplete>
+        <button mat-icon-button matSuffix *ngIf="visaWorkflow.items.length > 0 && showListModels" color="primary"
+            (click)="$event.stopPropagation();openPromptSaveModel()" title="{{'lang.saveAsPrivateModel' | translate}}">
+            <mat-icon class="fa fa-plus"></mat-icon>
+        </button>
+    </mat-form-field>
+    <!--<div class="alert alert-danger" *ngIf="visaWorkflow.itemRemovedFromVisaTemplate.length > 0" [innerHTML]="('lang.itemRemovedFromVisaTemplate' | translate) + ' : ' + visaWorkflow.itemRemovedFromVisaTemplate.join(', ')"></div>-->
+    <div cdkDropList #dataAvailableList="cdkDropList" [cdkDropListData]="visaWorkflow.items" class="cdk-list"
+        (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!adminMode">
+        <div class="emptyContent" *ngIf="adminMode && visaWorkflow.items.length === 0">
+            {{'lang.noVisaWorkflow' | translate}}
+        </div>
+        <div class="emptyContent" *ngIf="!adminMode && visaWorkflow.items.length === 0">
+            {{'lang.cannotAddVisaCircuit' | translate}}
+        </div>
+        <mat-list-item disableRipple *ngFor="let diffusion of visaWorkflow.items;let i=index" cdkDrag
+            class="columns workflow" [cdkDragDisabled]="!canManageUser(diffusion, i)"
+            [class.notDraggable]="!canManageUser(diffusion, i)" [class.notEditable]="!adminMode"
+            [class.processed]="diffusion.process_date != null && (!stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate) && !stringIncludes(diffusion.process_comment, 'lang.visaWorkflowInterrupted' | translate))"
+            [class.interrupt]="diffusion.process_date != null && (stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate) || stringIncludes(diffusion.process_comment, 'lang.visaWorkflowInterrupted' | translate))">
+            <mat-icon *ngIf="getCurrentVisaUserIndex() === i && (!adminMode || target === 'signatureBook' || target === 'action')"
+                class="fa fa-chevron-right fa-2x" mat-list-icon color="accent">
+            </mat-icon>
+            <mat-icon class="fa fa-2x" [class.avatar]="!functions.empty(diffusion.picture)"
+                [class.fa-user]="functions.empty(diffusion.picture) && (diffusion.isValid || (diffusion.process_date === null && diffusion.delegatedBy === null))"
+                [class.fa-user-friends]="diffusion.process_date != null && diffusion.delegatedBy !== null"
+                [class.fa-user-slash]="!diffusion.isValid"
+                [title]="!diffusion.isValid ? ('lang.userNotValid' | translate) : ''" mat-list-icon color="primary"
+                [class.invalid]="!diffusion.hasPrivilege || !diffusion.isValid"
+                [style.background-image]="!functions.empty(diffusion.picture) ? 'url('+diffusion.picture+')' : ''"
+                style="position: relative;">
+                <i *ngIf="!functions.empty(diffusion.process_comment)" class="far fa-comment-dots commentBubble"
+                    [matTooltip]="diffusion.process_comment"></i>
+            </mat-icon>
+            <ng-container *ngIf="(!adminMode || diffusion.process_date != null) && diffusion.isValid">
+                <mat-icon mat-list-icon class="fa-2x fa"
+                    [title]="diffusion.process_comment !== null ? diffusion.process_comment : ''"
+                    [class.fa-hourglass]="diffusion.process_date == null"
+                    [class.fa-thumbs-up]="diffusion.process_date != null && !stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate) && !stringIncludes(diffusion.process_comment, 'lang.visaWorkflowInterrupted' | translate)"
+                    [class.fa-hand-paper]="diffusion.process_date != null && stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate)"
+                    [class.fa-times]="diffusion.process_date != null && stringIncludes(diffusion.process_comment, 'lang.visaWorkflowInterrupted' | translate)"
+                    [class.valid]="diffusion.process_date != null && !stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate) && !stringIncludes(diffusion.process_comment, 'lang.visaWorkflowInterrupted' | translate)"
+                    [class.invalid]="diffusion.process_date != null && (stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate) || stringIncludes(diffusion.process_comment, 'lang.visaWorkflowInterrupted' | translate))"
+                    style="opacity:0.5;"></mat-icon>
+            </ng-container>
+            <div mat-line class="workflowLine">
+                <div class="workflowLineContainer">
+                    <div class="workflowLineLabel" [title]="diffusion.labelToDisplay" [class.unauthorized]="!diffusion.hasPrivilege || !diffusion.isValid">
+                        {{diffusion.labelToDisplay}}
+                        <ng-container *ngIf="diffusion.process_date != null && diffusion.delegatedBy !== null">
+                            <mat-icon mat-list-icon class="fas fa-exclamation-circle"
+                                [title]="('lang.insteadOf' | translate) + ' ' + diffusion.delegatedBy"
+                                style="opacity:0.5;font-size: 125%;height: 15px;color: red;cursor: help;"></mat-icon>
+                        </ng-container>
+                    </div>
+                    <div class="workflowLineSubLabel"
+                        [class.unauthorized]="!diffusion.hasPrivilege || !diffusion.isValid">
+                        {{diffusion.item_entity}}
+                    </div>
+                    <div class="workflowLineSubLabel"
+                        *ngIf="(showComment && ((adminMode && functions.empty(diffusion.process_date)) || (getCurrentVisaUserIndex() === i && !functions.empty(diffusion.process_comment)))) && diffusion.hasPrivilege && diffusion.isValid || target === 'action'">
+                        <mat-form-field>
+                            <input matInput class="comment" maxlength="255"
+                                [disabled]="!adminMode || diffusion.process_date != null || (target === 'signatureBook' && getCurrentVisaUserIndex() === i)"
+                                [placeholder]="'lang.visaNote' | translate" [(ngModel)]="diffusion.process_comment" title="{{!functions.empty(diffusion.process_comment) ? diffusion.process_comment : null}}">
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="diffusion.process_date != null && !stringIncludes(diffusion.process_comment, 'lang.visaWorkflowInterrupted' | translate) && !stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate)"
+                        class="workflowLineProcessDate" title='{{diffusion.process_date | fullDate}}' color="accent">
+                        {{((functions.empty(diffusion.process_date) && diffusion.requested_signature) || diffusion.signatory) ? ('lang.signedUserDate' | translate) : ('lang.approvedUserDate' | translate)}} {{diffusion.process_date
+                                                | timeAgo : 'full'}}</div>
+                    <div *ngIf="diffusion.process_date != null && stringIncludes(diffusion.process_comment, 'lang.hasInterruptedWorkflow' | translate)"
+                        class="workflowLineProcessDate" title='{{diffusion.process_date | fullDate}}' color="warn">
+                        {{'lang.interrupted' | translate}} {{diffusion.process_date | timeAgo : 'full'}}</div>
+                </div>
+                <div *ngIf="diffusion.hasPrivilege && diffusion.isValid">
+                    <ng-container>
+                        <button class="currentRoleButton"
+                            [color]="((functions.empty(diffusion.process_date) && diffusion.requested_signature) || diffusion.signatory) ? 'primary': '' "
+                            [disabled]="!canManageUser(diffusion, i)" mat-raised-button
+                            title="{{'lang.' + diffusion.currentRole + 'User' | translate}}"
+                            (click)="changeRole(i)">{{'lang.' + diffusion.currentRole + 'User' | translate}}</button>
+                    </ng-container>
+                </div>
+                <div *ngIf="!diffusion.hasPrivilege" class="invalid">
+                    {{'lang.noPrivileges' | translate}}
+                </div>
+                <div *ngIf="!diffusion.isValid" class="invalid invalidMsg">
+                    {{'lang.userNotValid' | translate}}
+                </div>
+            </div>
+            <div mat-line class="workflowLine" *ngIf="getCurrentVisaUserIndex() === i && (target === 'signatureBook' || target === 'action') && diffusion.item_id !== headerService.user.id" style="color: red;font-size: 12px;padding-bottom: 5px;">
+                {{'lang.signInsteadOf' | translate}}&nbsp;<b style="overflow: hidden;text-overflow: ellipsis;" [title]="diffusion.labelToDisplay">{{diffusion.labelToDisplay}}</b>
+            </div>
+            <button mat-icon-button *ngIf="canManageUser(diffusion, i)" (click)="deleteItem(i)">
+                <mat-icon class="fa fa-times" color="warn"></mat-icon>
+            </button>
+        </mat-list-item>
+    </div>
+</mat-list>
+<div *ngIf="loading" style="display:flex;padding: 10px;">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading && hasHistory">
+    <mat-divider></mat-divider>
+    <mat-expansion-panel style="box-shadow: none;">
+        <mat-expansion-panel-header>
+            <mat-panel-title color="primary">
+                {{'lang.showVisaWorkflowHistory' | translate}}
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+            <app-history-visa-workflow [resId]="resId" style="display: contents;"></app-history-visa-workflow>
+        </ng-template>
+    </mat-expansion-panel>
+</ng-container>

@@ -1,0 +1,60 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div class="row" style="margin: 0;">
+            <div class="col-md-12">
+                {{'lang.makeActionOn' | translate}}
+                <b *ngIf="data.resIds.length === 0" color="primary" class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                    {{'lang.elements' | translate}}</b> ?
+            </div>
+            <br />
+            <div *ngIf="resourcesErrors.length > 0" class="alert-message alert-message-danger mailList" role="alert">
+                <p>
+                    {{'lang.canNotMakeAction' | translate}} :
+                </p>
+                <ul>
+                    <li *ngFor="let ressource of resourcesErrors">
+                        <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                    </li>
+                </ul>
+            </div>
+            <div style="clear: both;">
+                <mat-form-field class="smallInput" appearance="outline" floatLabel="never">
+                    <mat-icon color="primary" class="fa fa-search" matPrefix></mat-icon>
+                    <input type="text" id="autoCompleteInput" #autoCompleteInput [placeholder]="'Recherche un dossier'"
+                        matInput [formControl]="searchFolder">
+                </mat-form-field>
+                <app-maaarch-tree #maarchTree *ngIf="alfrescoFolders.length > 0"
+                    [childrenRoute]="'../rest/alfresco/folders/__node/children'" [rawData]="alfrescoFolders"
+                    (afterSelectNode)="selectFolder($event)"></app-maaarch-tree>
+                <div id="jstreeAlfresco"></div>
+            </div>
+
+            <div class="col-md-12" style="padding-top: 10px;">
+                <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+            </div>
+        </div>
+        <ng-container *ngIf="showToggle">
+            <div class="row">
+                <div class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || !isValidAction()"
+        (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+    <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

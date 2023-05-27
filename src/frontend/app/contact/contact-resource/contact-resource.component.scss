@@ -1,0 +1,110 @@
+
+
+.contact-list-container {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 33%);
+    grid-gap: 10px;
+}
+
+.contact-list-container-1 {
+    grid-template-columns: 1fr;
+}
+
+.contact-list-container-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.contact-card {
+    min-width: 350px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 0px;
+    box-shadow: none;
+    border: solid 1px rgba(0, 0, 0, 0.12);
+
+    ::ng-deep.mat-expansion-panel-body {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+.mat-card-header {
+    background: #F9F9F9;
+    padding: 10px;
+    padding-bottom: 5px;
+}
+
+.mat-card-title {
+    padding-right: 15px;
+}
+
+
+.contact-item {
+    height: 35px !important;
+}
+
+.contact-header-image {
+    background: var(--maarch-color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+}
+
+.contact-group {
+    color: var(--maarch-color-primary);
+    font-size: 16px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-content {
+    font-size: 13px !important;
+}
+
+.contact-address {
+    cursor: pointer;
+    color: #337ab7;
+
+    &:hover {
+        .contact-content {
+            text-decoration: underline;
+        }
+    }
+}
+
+.mat-expansion-panel {
+    box-shadow: none !important;
+}
+
+.mat-expansion-panel-header-title {
+    font-size: 14px;
+    color: #666;
+}
+
+.contact-filling {
+    position: absolute;
+    right: 20px;
+}
+
+.loading {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffffb3;
+    z-index: 1;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+.newData {
+    color : #F99830;
+}

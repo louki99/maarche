@@ -1,0 +1,79 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <mat-sidenav-container autosize style="height:100%;">
+            <mat-sidenav-content style="background: white;padding:10px;">
+                <div>
+                    {{'lang.makeActionOn' | translate}}
+                    <b *ngIf="data.resIds.length === 0" color="primary"
+                        class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                    <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                    <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                        {{'lang.elements' | translate}}</b> ?
+                </div>
+                <div *ngIf="data.resIds.length > 0" style="padding:10px;display: flex;flex-direction: column;">
+                    <mat-checkbox color="primary" *ngFor="let inteKey of integrationsInfo | keyvalue"
+                        (click)="toggleIntegration(inteKey.key)" [checked]="data.resource.integrations[inteKey.key]">
+                        {{'lang.' + inteKey.key + '_doc' | translate}}</mat-checkbox>
+                </div>
+                <div *ngIf="!noResourceToProcess && (!visaNumberCorrect || !signNumberCorrect || !atLeastOneSign || (!lastOneIsSign && lastOneMustBeSignatory))" class="alert-message alert-message-danger" role="alert">
+                    <p *ngIf="!visaNumberCorrect">
+                        {{'lang.notEnoughVisaUser' | translate}} ({{'lang.requiredVisaUser' | translate: {min: minimumVisaRole} }})
+                    </p>
+                    <p *ngIf="!signNumberCorrect">
+                        {{'lang.tooManySignUser' | translate}} ({{'lang.authorizedSignUser' | translate: {max: maximumSignRole} }})
+                    </p>
+                    <p *ngIf="!lastOneIsSign && lastOneMustBeSignatory">
+                        {{'lang.lastNotSignatory' | translate}}
+                    </p>
+                    <p *ngIf="!atLeastOneSign">{{'lang.signUserRequired' | translate}}</p>
+                </div>
+                <div *ngIf="resourcesError.length > 0" class="alert-message alert-message-danger mailList" role="alert">
+                    <p>
+                        {{'lang.canNotMakeAction' | translate}} :
+                    </p>
+                    <ul>
+                        <li *ngFor="let ressource of resourcesError">
+                            <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                        </li>
+                    </ul>
+                </div>
+                <div *ngIf="resourcesMailing.length > 0 && appVisaWorkflow.getFirstVisaUser() != '' && appVisaWorkflow.visaWorkflow.items[0].requested_signature"
+                    class="alert-message alert-message-info" role="alert">
+                    <p>{{'lang.mailingActionInformations' | translate}}</p>
+                    <ul>
+                        <li *ngFor="let ressource of resourcesMailing">
+                            <b>{{ressource.alt_identifier}}</b>
+                        </li>
+                    </ul>
+                </div>
+                <app-visa-workflow *ngIf="!noResourceToProcess"
+                       [adminMode]="true" (workflowUpdated)="checkWorkflowParameters($event)" #appVisaWorkflow>
+                </app-visa-workflow>
+                <div *ngIf="!noResourceToProcess" style="padding-top: 10px;">
+                    <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+                    <div *ngIf="showToggle" class="row" style="margin: 10px 0px 10px 0px;">
+                        <mat-slide-toggle name="history" color="primary"
+                            [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                            {{'lang.canGoToNextRes' | translate}}
+                        </mat-slide-toggle>
+                    </div>
+                </div>
+            </mat-sidenav-content>
+            <mat-sidenav position='end' [opened]="data.resIds.length === 1 && noResourceToProcess" mode="side"
+                style="overflow-x:hidden;" autoFocus="false" [ngStyle]="{'width': '400px'}">
+                <app-attachments-list *ngIf="data.resIds.length === 1 && noResourceToProcess" [resId]="data.resIds[0]"
+                    (afterActionAttachment)="afterAttachmentToggle()"></app-attachments-list>
+            </mat-sidenav>
+        </mat-sidenav-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || !isValidAction()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

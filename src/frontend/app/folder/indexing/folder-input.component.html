@@ -1,0 +1,38 @@
+<form>
+    <input type="hidden" [formControl]="control">
+    <mat-form-field floatLabel="never" class="input-form" *ngIf="!control.disabled">
+        <mat-icon color="primary" class="fa fa-search" matPrefix style="padding-left: 20px;font-size: 15px;"></mat-icon>
+        <input type="text" #autoCompleteInput [placeholder]="'lang.searchFolder' | translate" matInput [formControl]="myControl"
+            [matAutocomplete]="auto" (click)="$event.stopPropagation()" (focus)="resetAutocomplete()">
+        <button [disabled]="!canAdd" type="button" matSuffix mat-icon-button (click)="addItem()">
+            <mat-icon class="fa fa-folder-plus" [title]="'lang.add' | translate" [style.visibility]="canAdd && myControl.value !== null && myControl.value.length > 0 ? 'visible' : 'hidden'"></mat-icon>
+        </button>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectOpt($event)">
+            <ng-container *ngIf="options.length > 0 && !loading">
+                <mat-option *ngFor="let option of filteredOptions | async | sortBy: key" [value]="option" [title]="option[key]">
+                    <span color="primary">{{option[key]}}</span>
+                </mat-option>
+            </ng-container>
+            <mat-option class="autoCompleteInfoResult smallInputInfo" *ngIf="options.length === 0 && !loading" disabled
+                [innerHTML]="listInfo">
+            </mat-option>
+            <mat-option *ngIf="loading" disabled>
+                <mat-spinner diameter="20"></mat-spinner>
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <div class="itemList">
+        <mat-chip-list *ngIf="control.value.length > 0" class="mat-chip-list-stacked itemChip" color="default">
+            <mat-chip *ngFor="let item of control.value;let i=index"
+                color="default" [removable]="!control.disabled" (removed)="removeItem(i)" class="listAutocomplete">
+                <span style="display: flex;flex: 1;align-items: center;" [title]="getFolderLabel(item)">
+                    <i class="fa fa-folder-open" style="padding-right:5px;"></i>&nbsp;{{getFolderLabel(item)}}
+                </span>
+                <mat-icon matChipRemove class="fa fa-times" *ngIf="!control.disabled"></mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+        <div class="noResult" *ngIf="control.value.length === 0">
+            {{'lang.noSelectedFolder' | translate}}
+        </div>
+    </div>
+</form>

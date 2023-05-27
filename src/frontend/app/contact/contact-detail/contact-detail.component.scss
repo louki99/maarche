@@ -1,0 +1,157 @@
+
+
+.contact-list-container {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+}
+
+.contact-list-container-1 {
+    grid-template-columns: 1fr;
+}
+
+.contact-list-container-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.contact-card {
+    //min-width: 350px;
+    //width: 100%;
+    //margin-top: 10px;
+    //margin-bottom: 10px;
+    padding: 0px;
+    box-shadow: none;
+    border: solid 1px rgba(0, 0, 0, 0.12);
+    height: 100%;
+
+    ::ng-deep.mat-expansion-panel-body {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+.mat-card-header {
+    background: #F9F9F9;
+    padding: 10px;
+    padding-bottom: 5px;
+}
+
+.mat-card-title {
+    padding-right: 15px;
+}
+
+
+.contact-item {
+    height: 35px !important;
+}
+
+.contact-header-image {
+    background: var(--maarch-color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+
+    ::ng-deep.mat-checkbox-layout {
+        margin: 0px;
+    }
+    :not(::ng-deep.mat-checkbox-checked) .mat-checkbox-frame{
+        border-color: #e6dfdf !important;
+    }
+}
+
+.contact-group {
+    color: var(--maarch-color-primary);
+    font-size: 16px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-content {
+    font-size: 13px !important;
+}
+
+.contact-address {
+    cursor: pointer;
+    color: #337ab7;
+
+    &:hover {
+        .contact-content {
+            text-decoration: underline;
+        }
+    }
+}
+
+.mat-expansion-panel {
+    box-shadow: none !important;
+}
+
+.mat-expansion-panel-header-title {
+    font-size: 14px;
+    color: #666;
+}
+
+.contact-filling {
+    position: absolute;
+    right: 20px;
+}
+
+.loading {
+    display: flex;
+    // position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffffb3;
+    z-index: 1;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+.newData {
+    color : #F99830 !important;
+}
+
+.selectable {
+    z-index: 1;
+    background: #0003;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    flex-direction: column;
+    transition: opacity 0.2s;
+}
+
+.contact-card:hover {
+    .selectable {
+        opacity: 1;
+        transition: opacity 0.2s;
+    }
+}
+
+.selected {
+    opacity: 1 !important;
+}
+
+
+.disabledContact {
+    font-size: 20px;
+    color: red;
+    text-align: center;
+    opacity: 0.2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) rotate(-30deg);
+    white-space: pre;
+    font-weight: bold;
+}

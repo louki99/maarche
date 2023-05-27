@@ -1,0 +1,39 @@
+
+
+button:disabled{
+    opacity:0.3 !important;
+}
+
+.statusUserLabelWarn {
+    color : var(--maarch-color-danger);
+}
+
+.statusUserLabelPrimary {
+    color : var(--maarch-color-primary);
+}
+
+.webserviceAccount {
+    color: #666;
+    width: 37px;
+    height: 37px;
+    font-size: x-small;
+    border-radius: 18px !important;
+}
+
+.mat-button-toggle-checked {
+    background-color: #F99830 !important;
+    color: white;
+}
+
+.admin {
+    font-weight: bold;
+}
+
+.mat-list-item-disabled {
+    cursor: not-allowed !important;
+    background-color: initial;
+
+    .mat-line, mat-icon {
+        opacity: 0.5;
+    }
+}

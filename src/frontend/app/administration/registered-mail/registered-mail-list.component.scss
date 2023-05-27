@@ -1,0 +1,45 @@
+
+.active, .active:hover , .active:active, .active:focus {
+    color: var(--maarch-color-primary);
+    border-left: solid 5px var(--maarch-color-primary);
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.fullness {
+    position: relative;
+    
+}
+.percent {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    font-size: 10px;
+    font-weight: bold;
+    color: #888;
+}
+
+
+.fullness-ok ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: green;
+}
+
+.fullness-warning ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: orange;
+}
+
+.fullness-danger ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: red;
+}
+
+.statusLabelDanger {
+    color : var(--maarch-color-danger);
+}
+
+.statusLabelWarn {
+    color : var(--maarch-color-secondary);
+}
+
+.statusLabelPrimary {
+    color : var(--maarch-color-primary);
+}

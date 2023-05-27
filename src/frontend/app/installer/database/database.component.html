@@ -1,0 +1,47 @@
+<div class="stepContent">
+    <h2 class="stepContentTitle"><i class="fa fa-database"></i> {{'lang.database' | translate}}</h2>
+    <div class="alert-message alert-message-info" role="alert" style="margin-top: 30px;min-width: 100%;">
+        {{'lang.stepDatabase_desc' | translate}}
+    </div>
+    <form [formGroup]="stepFormGroup" style="width: 850px;margin: auto;">
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.host' | translate}}</mat-label>
+            <input matInput formControlName="dbHostCtrl" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.port' | translate}}</mat-label>
+            <input matInput formControlName="dbPortCtrl"  required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.user' | translate}}</mat-label>
+            <input matInput formControlName="dbLoginCtrl" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.password' | translate}}</mat-label>
+            <input [type]="hide ? 'password' : 'text'" matInput formControlName="dbPasswordCtrl" required>
+            <button mat-icon-button matSuffix color="primary" (click)="hide = !hide">
+                <mat-icon class="fa {{hide ? 'fa-eye-slash' : 'fa-eye'}}"></mat-icon>
+            </button>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.dbName' | translate}}</mat-label>
+            <input matInput formControlName="dbNameCtrl" maxlength="50" required>
+        </mat-form-field>
+        <div class="alert-message alert-message-info" *ngIf="dbExist" role="alert" style="margin-top: 0px;min-width: 100%;">
+            {{'lang.stepEmptyDb' | translate}}
+        </div>
+        <mat-form-field appearance="outline" floatLabel="never">
+            <mat-label>{{'lang.dbSample' | translate}}</mat-label>
+            <mat-select formControlName="dbSampleCtrl">
+                <mat-option *ngFor="let sample of dataFiles" [value]="sample">
+                    {{sample}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div style="text-align:center;">
+            <button mat-raised-button type="button" color="primary" (click)="checkConnection()" [disabled]="isEmptyConnInfo() || stepFormGroup.controls['dbHostCtrl'].disabled">
+                {{'lang.checkInformations' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

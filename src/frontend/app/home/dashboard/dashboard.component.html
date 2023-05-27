@@ -1,0 +1,85 @@
+<div *ngIf="!emptyDashboard()" class="dashboard-container" dnd-sortable-container [dropZones]="['boxers-zone']"
+    [sortableData]="tiles">
+    <div class="tile" [style.border-color]="tile.color" [class.empty_tile_edit]="tile.id === null && tile.editMode"
+        [class.empty_tile]="tile.id === null" *ngFor="let tile of tiles;let i=index" (mouseenter)="enterTile(tile, i)"
+        (mouseleave)="leaveTile(tile)" dnd-sortable [sortableIndex]="i" (onDropSuccess)="transferDataSuccess()">
+        <div
+            style="position: relative;height: 100%;width:100%;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+            <div class="tool-left" *ngIf="tile.id !== null && tile.editMode">
+                <span dnd-sortable-handle style="cursor: move;">
+                    <mat-icon style="color: white;" class="fa fa-arrows-alt"></mat-icon>
+                </span>
+            </div>
+            <div class="tool" *ngIf="tile.id !== null && tile.editMode">
+                <button #test color="primary" mat-button mat-icon-button [matMenuTriggerFor]="toolMenu"
+                    (mouseenter)="hoveredTool=true">
+                    <mat-icon style="color: white;" class="fas fa-chevron-down"></mat-icon>
+                </button>
+                <mat-menu #toolMenu="matMenu">
+                    <ng-container *ngFor="let menu of tile.menus">
+                        <mat-divider *ngIf="menu==='delete'"></mat-divider>
+                        <button *ngIf="['view', 'color'].indexOf(menu) === -1" mat-menu-item
+                            (click)="launchAction(menu, tile)">{{'lang.'+ menu | translate}}</button>
+                        <button *ngIf="menu==='view' && !hasError(tile.id)" mat-menu-item
+                            [matMenuTriggerFor]="toolMenuView">{{'lang.chartView' | translate}}</button>
+                        <button *ngIf="menu==='color' && !hasError(tile.id)" mat-menu-item
+                            [matMenuTriggerFor]="toolMenuColors">{{'lang.'+ menu | translate}}</button>
+                    </ng-container>
+                </mat-menu>
+                <mat-menu #toolMenuView="matMenu">
+                    <ng-container *ngFor="let view of getViews(tile)">
+                        <button mat-menu-item *ngIf="view.id !== 'chart'" [disabled]="tile.view === view.id"
+                            (click)="changeView(tile,view.id)">
+                            <mat-icon *ngIf="view.id === 'list'" class="fa fa-list" color="primary"
+                                style="height: auto;width: auto;"></mat-icon>
+                            <mat-icon *ngIf="view.id === 'summary'" class="fas fa-equals" color="primary"
+                                style="height: auto;width: auto;"></mat-icon>
+                            <span>{{'lang.' + view.id | translate}}</span>
+                        </button>
+                        <button mat-menu-item *ngIf="view.id === 'chart'" [matMenuTriggerFor]="toolMenuChartTypes">
+                            <mat-icon class="fas fa-chart-pie" color="primary" style="height: auto;width: auto;">
+                            </mat-icon>
+                            <span>{{'lang.' + view.id | translate}}</span>
+                        </button>
+                    </ng-container>
+                </mat-menu>
+                <mat-menu #toolMenuChartTypes="matMenu" [class]="'chartTypeMenu'">
+                    <ng-container *ngFor="let chart of tile.charts">
+                        <button mat-menu-item [matMenuTriggerFor]="toolMenuChartMode"
+                            [matMenuTriggerData]="{chart: chart}" [title]="'lang.chart_'+ chart.type | translate">
+                            <mat-icon [class]="chart.icon" color="primary"
+                                style="height: auto;width: auto;"></mat-icon>
+                        </button>
+                    </ng-container>
+                </mat-menu>
+                <mat-menu #toolMenuChartMode="matMenu">
+                    <ng-template let-chart="chart" matMenuContent>
+                        <button mat-menu-item *ngFor="let mode of chart.modes | sortBy: 'label'"
+                            [disabled]="tile.parameters.chartType === chart.type && tile.parameters.chartMode === mode.id && tile.view==='chart'"
+                            (click)="changeView(tile,'chart',{'chartType': chart.type,'chartMode': mode.id})">{{mode.label}}</button>
+                    </ng-template>
+                </mat-menu>
+                <mat-menu #toolMenuColors="matMenu">
+                    <div (click)="$event.stopPropagation()">
+                        <color-github color="#ef9a9a" width="100%" [colors]="dashboardService.getColors()"
+                            [triangle]="'hide'" (onChangeComplete)="changeTileColor(tile, $event)"></color-github>
+                    </div>
+                </mat-menu>
+            </div>
+            <app-tile #tileComponent (hasError)="tileErrors.push($event);" *ngIf="tile.id !== null" [tile]="tile" [view]="tile.view"
+                style="display: flex;height: 100%;flex-direction: column;width: 100%;">
+            </app-tile>
+            <button mat-button color="secondary" mat-icon-button [title]="'lang.addTile' | translate"
+                *ngIf="tile.id === null && tile.editMode" (click)="addTilePrompt(tile)">
+                <mat-icon color="secondary" class="fa fa-plus"></mat-icon>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="empty-dashboard" *ngIf="emptyDashboard()">
+    <i class="fas fa-desktop"></i>
+    <div>
+        <span>{{'lang.dashboardEmpty' | translate}}</span>&nbsp;<button mat-stroked-button color="primary"
+            (click)="addTilePrompt(tiles[0])">{{'lang.addTile' | translate}}</button>
+    </div>
+</div>

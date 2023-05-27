@@ -1,0 +1,16 @@
+<div class="col-sm-12 col-md-4" style="line-height: 50px;">
+    {{'lang.documentEditor' | translate}}</div>
+<div class="col-sm-12 col-md-8">
+    <mat-form-field>
+        <mat-select name="documentEdition"
+            [(ngModel)]="docEdition"
+            (selectionChange)="updateUserPreferences();">
+            <mat-option *ngFor='let editor of editorsList' [value]="editor">
+                {{editor}}
+            </mat-option>
+        </mat-select>
+        <mat-hint>
+            {{'lang.documentEditor_' + docEdition | translate}}
+        </mat-hint>
+    </mat-form-field>
+</div>

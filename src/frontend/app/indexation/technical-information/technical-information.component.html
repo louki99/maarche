@@ -1,0 +1,38 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;" [title]="'lang.linkResource' | translate">
+            {{'lang.technicalInformations' | translate}}
+        </span>
+        <button [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button>
+    </h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" color="primary">
+            <mat-spinner></mat-spinner>
+        </div>
+        <ng-container *ngFor="let data of techData | keyvalue: originalOrder">
+            <mat-form-field *ngIf="!functions.empty(data.value.value)" class="data-item">
+                <mat-icon matPrefix [class]="data.value.icon" color="primary" style="width: 35px;text-align: center;">
+                </mat-icon>
+                <mat-label>{{'lang.'+data.key | translate}}</mat-label>
+                <input matInput [title]="data.value.value" [value]="data.value.value" readonly>
+            </mat-form-field>
+        </ng-container>
+        <mat-accordion *ngIf="!isEmptyCustom()">
+            <mat-expansion-panel expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{'lang.otherInformations' | translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-form-field *ngFor="let custom of customsData | keyvalue" class="data-item">
+                    <mat-icon matPrefix [class]="custom.value.icon" color="primary"
+                        style="width: 35px;text-align: center;"></mat-icon>
+                    <mat-label>{{custom.value.label}}</mat-label>
+                    <input matInput [value]="custom.value.value" readonly>
+                </mat-form-field>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</div>

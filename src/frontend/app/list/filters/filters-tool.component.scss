@@ -1,0 +1,191 @@
+.filtersContent {
+    display: flex;
+
+    .filterTool,
+    .orderTool {
+        flex: 1;
+    }
+}
+
+.basket-search {
+    color: #666;
+    width: 500px;
+    padding-right: 10px;
+    height: 55px;
+
+    button {
+        font-size: 30px;
+
+    }
+
+    ::ng-deep.mat-form-field-infix {
+        padding-bottom: 15px;
+    }
+
+    ::ng-deep.mat-form-field-flex {
+        background: white;
+        border-radius: 30px;
+    }
+
+    ::ng-deep.mat-form-field-label-wrapper {
+        font-style: italic;
+    }
+
+    ::ng-deep .mat-form-field-underline {
+        display: none;
+    }
+
+    .processLimitButton {
+        color: #666;
+        position: absolute;
+        top: -32px;
+        left: -47px;
+        border-radius: 30px;
+
+    }
+
+    .mat-button-toggle-checked {
+        background-color: #F99830 !important;
+        color: white;
+    }
+}
+
+.basket-order {
+    color: white;
+    width: 300px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 55px;
+
+    .mat-icon {
+        font-size: 30px;
+
+    }
+
+    ::ng-deep.mat-select-value {
+        color: white;
+    }
+
+    ::ng-deep.mat-form-field-infix {
+        padding-bottom: 15px;
+    }
+
+    ::ng-deep.mat-form-field-flex {
+        background: #135F7F;
+        border: solid 2px white;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    ::ng-deep.mat-form-field-prefix {
+        padding-left: 15px;
+        padding-right: 10px;
+    }
+
+    ::ng-deep.mat-form-field-label-wrapper {
+        color: white;
+    }
+
+    ::ng-deep.mat-select-arrow {
+        color: white;
+        margin-right: 25px;
+    }
+
+    ::ng-deep .mat-form-field-underline {
+        display: none;
+    }
+}
+
+.ascDescTool {
+    .mat-fab {
+        background: #135F7F;
+        border: solid 2px white;
+        color: white !important;
+        box-shadow: none;
+    }
+}
+
+.filterOptionContent {
+    ::ng-deep.mat-option-text {
+        display: flex;
+        overflow: inherit;
+    }
+}
+
+.mat-option .badge {
+    background: #F99830;
+    font-size: 11px;
+}
+
+.filterBadges>.badge-eraser {
+    margin: 5px;
+    background: none;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+}
+
+.filterBadges>.label {
+    white-space: inherit;
+}
+
+.filterBadges>.badge-search {
+    margin: 5px;
+    background: #666;
+    cursor: pointer;
+}
+
+.filterBadges>.badge-categories {
+    margin: 5px;
+    background: #78AD32;
+    cursor: pointer;
+}
+
+.filterBadges>.badge-statuses {
+    margin: 5px;
+    background: #5bc0de;
+    cursor: pointer;
+}
+
+.filterBadges>.badge-priorities {
+    margin: 5px;
+    background: #F9D812;
+    cursor: pointer;
+}
+
+.filterBadges>.badge-entities {
+    margin: 5px;
+    background: #7d5ba6;
+    cursor: pointer;
+}
+
+.filterBadges>.badge-subEntities {
+    margin: 5px; 
+    background: #9440D5;
+    cursor: pointer;
+}
+
+.filterBadges>.badge-doctypes {
+    margin: 5px;
+    background: #d6716f;
+    cursor: pointer;
+}
+
+.filterBadges>.badge-folders {
+    margin: 5px;
+    background: #F99830;
+    cursor: pointer;
+}
+
+::ng-deep.autoCompletePanelFilter {
+    left: 25px;
+    min-width: 400px !important;
+    max-width: 90% !important;
+}
+
+.mat-optgroup-label {
+    color: #F99830;
+    font-size: 14px;
+    font-weight: 500;
+}

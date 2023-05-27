@@ -1,0 +1,74 @@
+
+.stepContent {
+    // max-width: 850px;
+    margin: auto;
+
+    .stepContentTitle {
+        color: var(--maarch-color-primary);
+        margin-bottom: 30px;
+        border-bottom: solid 1px;
+        padding: 0;
+    }
+}
+
+.packageItem {
+    flex: 1 !important;
+}
+
+.iconCheckPackage {
+    background: white;
+    font-size: 15px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 20px;
+    height: 35px;
+    width: 35px;
+}
+
+.icon_ok {
+    color: green;
+}
+
+.icon_ok:before {
+    content: "\f111";
+}
+
+.icon_warning {
+    color: orange;
+}
+
+.icon_warning:before {
+    content: "\f111";
+}
+
+
+.icon_ko {
+    color: red;
+}
+
+.icon_ko:before {
+    content: "\f111";
+}
+
+.link {
+    text-decoration: underline;
+    color: var(--maarch-color-primary) !important;
+}
+
+.packageName {
+    font-size: 120% !important;
+    white-space: normal !important;
+    i {
+        cursor: help;
+        opacity: 0.5;
+        color: var(--maarch-color-primary);
+    }
+}
+
+::ng-deep.tooltip-red {
+    background: #b71c1c;
+    font-size: 14px;
+  }
+  

@@ -1,0 +1,37 @@
+
+.folderList {
+    box-shadow: none;
+
+    ::ng-deep.mat-expansion-panel-body {
+        padding: 0;
+    }
+
+    .mat-expansion-panel-header-title {
+        color: #135F7F;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .mat-expansion-panel-body {
+        padding: 0px;
+    }
+
+    .mat-line {
+        font-size: 12px;
+        font-weight: bold;
+    }
+}
+
+.panelIconMenu {
+    font-size: 22px;
+}
+
+.showFolderTree {
+    font-size: 13px;
+    opacity: 0.8;
+    font-weight: bold;
+    color: #666;
+    width: 100%;
+}

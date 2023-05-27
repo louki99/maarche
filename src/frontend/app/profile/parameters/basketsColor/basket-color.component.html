@@ -1,0 +1,20 @@
+<mat-list>
+    <ng-container
+        *ngFor="let regroupedBasket of userGroupBaskets; let i = index">
+        <h3 *ngIf="regroupedBasket.baskets[0]">{{regroupedBasket.groupDesc}}</h3>
+        <mat-list-item
+            *ngFor="let basket of regroupedBasket.baskets; let y = index">
+            <mat-icon mat-list-icon class="fa fa-inbox"
+                [ngStyle]="{'color': userGroupBaskets[i].baskets[y].color}">
+            </mat-icon>
+            <h4 mat-line title="{{basket.basket_id}}">{{basket.basket_name}}</h4>
+            <input id="userGroupBaskets" name="color" type="color"
+                [(ngModel)]="userGroupBaskets[i].baskets[y].color"
+                (change)="updateBasketColor(i, y)" />
+            <a id="basketColor" (click)="userGroupBaskets[i].baskets[y].color = ''; updateBasketColor(i, y)"
+                title="{{'lang.resetColor' | translate}}">
+                <i class="fa fa-magic"></i>
+            </a>
+        </mat-list-item>
+    </ng-container>
+</mat-list>

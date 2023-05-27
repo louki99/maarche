@@ -1,0 +1,19 @@
+
+.basket-group {
+    ::ng-deep.mat-optgroup-label {
+        position: sticky;
+        top: 0px;
+        background: white;
+        z-index: 1;
+    }
+}
+.select-tile-type {
+    ::ng-deep.mat-form-field-flex {
+        align-items: center;
+    }
+}
+
+
+.mat-option[aria-disabled=true] {
+    cursor: not-allowed !important;
+}

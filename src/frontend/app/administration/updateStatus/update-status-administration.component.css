@@ -1,0 +1,7 @@
+::ng-deep .mat-tab-body {
+    overflow-y: hidden !important;
+  }
+
+.row {
+    margin-left:0px;
+ }

@@ -1,0 +1,226 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <mat-card class="card-app-content" *ngIf="!loading">
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{'lang.tabProcessPosition' | translate}}</mat-label>
+                        <mat-select [(ngModel)]="selectedProcessTool.defaultTab">
+                            <mat-option *ngFor="let tool of processTool | sortBy: 'label'" [value]="tool.id">
+                                <span class="optionContent">
+                                    <span class="dataIcon">
+                                        <i color="primary" class="fa {{tool.icon}} fa-1x"></i>
+                                    </span>
+                                    <span class="dataLabel">
+                                        {{tool.label}}
+                                    </span>
+                                </span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <hr />
+                    <mat-toolbar class="editorTool">
+                        <span>
+                            <button color="primary" *ngIf="displayMode=='label'" mat-icon-button (click)="toggleData()"
+                                title="{{'lang.preview' | translate}}">
+                                <mat-icon fontSet="fas" fontIcon="fa-eye"></mat-icon>
+                            </button>
+                            <button color="primary" *ngIf="displayMode=='sample'" mat-icon-button (click)="toggleData()"
+                                title="{{'lang.edition' | translate}}">
+                                <mat-icon fontSet="fas" fontIcon="fa-edit"></mat-icon>
+                            </button>
+                            <button color="primary" mat-button [title]="'lang.templateUsed' | translate"
+                                [matMenuTriggerFor]="menu">
+                                {{selectedTemplateDisplayedSecondaryData}} <i class="fas fa-columns"></i>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item *ngFor="let colNum of templateDisplayedSecondaryData"
+                                    (click)="selectedTemplateDisplayedSecondaryData=colNum;">{{colNum}}
+                                    {{'lang.columns' | translate}}</button>
+                            </mat-menu>
+                        </span>
+                        <span class="area">
+                            <form>
+                                <mat-form-field appearance="outline" floatLabel="never">
+                                    <input id="availableData" name="availableData" type="text" matInput
+                                        [formControl]="dataControl" placeholder="{{'lang.availableDatas' | translate}}"
+                                        [matAutocomplete]="auto">
+                                    <mat-autocomplete #auto="matAutocomplete"
+                                        (optionSelected)="addData($event.option.value)">
+                                        <mat-option *ngFor="let item of filteredDataOptions | async"
+                                            [value]="item.value" class="dataList">
+                                            <span class="optionContent">
+                                                <span class="dataIcon">
+                                                    <i color="primary" class="fa {{item.icon}} fa-2x"></i>
+                                                </span>
+                                                <span class="dataLabel">
+                                                    {{item.label}}
+                                                </span>
+                                            </span>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </form>
+                        </span>
+                        <span>
+                            <button color="warn" mat-button (click)="removeAllData()" style="float:right;"
+                                [disabled]="displayMode=='sample'">
+                                {{'lang.eraseAll' | translate}}
+                            </button>
+                        </span>
+                    </mat-toolbar>
+                    <mat-card>
+                        <div *ngIf="displayedSecondaryData.length > 0" dnd-sortable-container
+                            [dropZones]="['boxers-zone']" [sortableData]="displayedSecondaryData"
+                            style="border: solid 1px #F9983066;border-radius: 4px;">
+                            <mat-toolbar
+                                class="secondaryInformations example-list column-{{selectedTemplateDisplayedSecondaryData}}-list">
+                                <ng-container *ngFor="let item of displayedSecondaryData;let i=index">
+                                    <span class="example-box" *ngIf="item.value != 'getFolders'" dnd-sortable
+                                        [sortableIndex]="i">
+                                        <button *ngIf="displayMode=='label'" color="primary" mat-icon-button
+                                            [matMenuTriggerFor]="menu">
+                                            <mat-icon fontSet="fas" fontIcon="fa-ellipsis-v fa-2x"></mat-icon>
+                                        </button>
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item (click)="removeData(item,i)">
+                                                <mat-icon class="secondaryInformations_icon" color="warn" fontSet="fas"
+                                                    fontIcon="fa-trash fa-2x"></mat-icon>
+                                                <span>{{'lang.delete' | translate}}</span>
+                                            </button>
+                                            <mat-divider></mat-divider>
+                                            <button
+                                                [class.isSelectedMenu]="item.cssClasses.indexOf('boldFontData') > -1"
+                                                mat-menu-item (click)="setStyle(item,'boldFontData')">
+                                                <mat-icon class="secondaryInformations_icon" fontSet="fas"
+                                                    fontIcon="fa-bold fa-2x">
+                                                </mat-icon>
+                                                <span>{{'lang.fontBold' | translate}}</span>
+                                            </button>
+                                            <button
+                                                [class.isSelectedMenu]="item.cssClasses.indexOf('align_leftData') > -1"
+                                                mat-menu-item (click)="setStyle(item,'align_leftData')">
+                                                <mat-icon class="secondaryInformations_icon" fontSet="fas"
+                                                    fontIcon="fa-align-left fa-2x">
+                                                </mat-icon>
+                                                <span>{{'lang.alignLeft' | translate}}</span>
+                                            </button>
+                                            <button
+                                                [class.isSelectedMenu]="item.cssClasses.indexOf('align_centerData') > -1"
+                                                mat-menu-item (click)="setStyle(item,'align_centerData')">
+                                                <mat-icon class="secondaryInformations_icon" fontSet="fas"
+                                                    fontIcon="fa-align-center fa-2x">
+                                                </mat-icon>
+                                                <span>{{'lang.alignCenter' | translate}}</span>
+                                            </button>
+                                            <button
+                                                [class.isSelectedMenu]="item.cssClasses.indexOf('align_rightData') > -1"
+                                                mat-menu-item (click)="setStyle(item,'align_rightData')">
+                                                <mat-icon class="secondaryInformations_icon" fontSet="fas"
+                                                    fontIcon="fa-align-right fa-2x">
+                                                </mat-icon>
+                                                <span>{{'lang.alignRight' | translate}}</span>
+                                            </button>
+                                            <button [class.isSelectedMenu]="item.cssClasses.indexOf('bigFontData') > -1"
+                                                mat-menu-item (click)="setStyle(item,'bigFontData')">
+                                                <mat-icon class="secondaryInformations_icon" fontSet="fas"
+                                                    fontIcon="fa-text-height fa-2x">
+                                                </mat-icon>
+                                                <span>{{'lang.fontBig' | translate}}</span>
+                                            </button>
+                                        </mat-menu>
+                                        <span style="width:100%;" [class]="item.cssClasses.join(' ')">
+                                            <i class="fa {{item.icon}}"></i>&nbsp;
+                                            <span class="secondaryInformations_label"
+                                                [innerHTML]="item[displayMode]"></span>
+                                        </span>
+                                    </span>
+                                </ng-container>
+
+
+                            </mat-toolbar>
+                        </div>
+                        <div class="resultRow newRow">
+                            <span class="resultCol" *ngFor="let item of displayedMainData;let i=index"
+                                [class]="item.cssClasses.join(' ')">
+                                <span *ngIf="i == 0">
+                                    <mat-icon *ngIf="displayMode=='label'" color="primary" class="fm fm-letter fm-2x">
+                                    </mat-icon>
+                                    <mat-icon *ngIf="displayMode=='sample'" color="warn"
+                                        class="fm fm-letter-status-inprogress fm-2x">
+                                    </mat-icon><br />
+                                    <span class="resultCol_chrono">{{item[displayMode]}}</span>
+                                </span>
+                                <span *ngIf="i == 1">
+                                    {{item[displayMode]}}
+                                </span>
+                            </span>
+                            <mat-button-toggle-group class="actions" multiple>
+                                <button color="primary" mat-icon-button title="{{'lang.notes' | translate}}"
+                                    [disabled]="displayMode == 'label'">
+                                    <mat-icon [matBadgeHidden]="displayMode == 'label'" fontSet="fas" matBadge="2"
+                                        fontIcon="fa-comments fa-2x"></mat-icon>
+                                </button>
+                                <button color="primary" mat-icon-button title="{{'lang.attachments' | translate}}"
+                                    [disabled]="displayMode == 'label'">
+                                    <mat-icon [matBadgeHidden]="displayMode == 'label'" fontSet="fas" matBadge="7"
+                                        fontIcon="fa-paperclip fa-2x"></mat-icon>
+                                </button>
+                                <button color="primary" mat-icon-button title="{{'lang.diffusionList' | translate}}"
+                                    [disabled]="displayMode == 'label'">
+                                    <mat-icon fontSet="fas" fontIcon="fa-sitemap fa-2x"></mat-icon>
+                                </button>
+                                <button color="primary" mat-icon-button title="{{'lang.linkDetails' | translate}}"
+                                    [disabled]="displayMode == 'label'">
+                                    <mat-icon fontSet="fas" fontIcon="fa-info-circle fa-2x"></mat-icon>
+                                </button>
+                            </mat-button-toggle-group>
+                        </div>
+                        <div *ngFor="let item of displayedSecondaryData;let i=index" class="folder-info">
+                            <ng-container *ngIf="item.value=='getFolders'">
+                                <button *ngIf="displayMode=='label'" color="primary" mat-icon-button
+                                    [matMenuTriggerFor]="menu">
+                                    <mat-icon fontSet="fas" fontIcon="fa-ellipsis-v fa-2x"></mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <button mat-menu-item (click)="removeData(item,i)">
+                                        <mat-icon class="secondaryInformations_icon" color="warn" fontSet="fas"
+                                            fontIcon="fa-trash fa-2x">
+                                        </mat-icon>
+                                        <span>{{'lang.delete' | translate}}</span>
+                                    </button>
+                                </mat-menu>
+                                <span class="badge badge-folder"><i class="fa fa-folder"></i>
+                                    {{item[displayMode]}}</span>
+                            </ng-container>
+                        </div>
+                    </mat-card>
+                    <div class="row">
+                        <div class="col-md-12 text-center" style="margin-top:30px;">
+                            <button color="primary" mat-raised-button (click)="saveTemplate()"
+                                [disabled]="checkModif()">
+                                {{'lang.validate' | translate}}
+                            </button>
+                            <button color="default" mat-raised-button (click)="cancelModification()"
+                                [disabled]="checkModif()">
+                                {{'lang.cancel' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

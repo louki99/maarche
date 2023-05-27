@@ -1,0 +1,207 @@
+<ng-container *ngIf="editInProgress && editor.mode !== 'onlyoffice' && editor.mode !== 'collaboraOnline' && editor.mode !== 'office365sharepoint'">
+    <div class="editInProgress">
+        <i class="fas fa-file-word bounce"></i>
+        <div>
+            {{'lang.editInProgress' | translate}}
+        </div>
+        <div>
+            <button mat-button (click)="cancelTemplateEdition()">{{'lang.cancel' | translate}}</button>
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="!editInProgress">
+    <ng-container *ngIf="noFile; else elseHaveFile">
+        <div class="noFile">
+            <i class="far fa-times-circle"></i>
+            {{'lang.noFile' | translate}}
+        </div>
+    </ng-container>
+    <ng-template #elseHaveFile>
+        <div class="example-loading-shade" *ngIf="loading">
+            <mat-progress-spinner [mode]="loadingInfo.mode" [value]="loadingInfo.percent"></mat-progress-spinner>
+            <div class="percent">{{loadingInfo.percent}} %</div>
+            <div style="padding-top: 10px;">{{loadingInfo.message}}</div>
+        </div>
+        <div *ngIf="file.content === null && !loading" class="view-doc-container" appUploadFileDragDrop
+            (fileDropped)="dndUploadFile($event)" [disabled]="!editMode">
+            <i class="fa fa-file-upload upload-icon"></i><br />
+            {{'lang.dragAndDrop' | translate}}<br />{{'lang.or' | translate}}
+            <div style="display: flex;">
+                <div
+                    style="margin-right:20px;align-items: center;justify-content: center;text-align: center;display: flex;">
+                    <app-plugin-select-search #templateList *ngIf="listTemplates.length > 0" [label]="'lang.chooseModel' | translate"
+                        [placeholderLabel]="'lang.chooseModel' | translate" [datas]="listTemplates" [class]="'input-form-filled'"
+                        [formControlSelect]="templateListForm" (afterSelected)="editTemplate($event)"
+                        style="width: 240px;text-align: left;font-weight:normal;font-size: 13px;">
+                    </app-plugin-select-search>
+                </div>
+                <button mat-button (click)="docToUpload.click()" class="button-form-primary-alt"
+                    style="align-items: center;justify-content: center;text-align: center;display: flex;">{{'lang.chooseFile' | translate}}</button>
+            </div>
+        </div>
+        <input type="file" id="inputFileMainDoc" #docToUpload [ngModel]="docToUploadValue" name="files[]" (change)="uploadTrigger($event)" style="display:none;">
+        <div style="display: block;width:100%;" appUploadFileDragDrop (fileDropped)="dndUploadFile($event)"
+            [disabled]="!editMode">
+            <div *ngIf="!loading && file.content !== null && !hideTools" class="viewer-tools">
+                <!-- Download original file with pdf/original format -->
+                <button *ngIf="downloadActions.length > 0" mat-icon-button [matMenuTriggerFor]="formatListMenu" [matTooltip]="'lang.downloadOriginalFile' | translate">
+                    <mat-icon class="fa fa-download"></mat-icon>
+                </button>
+                <mat-menu #formatListMenu="matMenu" [class]="'optionsListMenu'">
+                    <ng-container *ngFor="let action of downloadActions">
+                        <button mat-menu-item (click)="action.id === 'original' ? downloadOriginalFile(action.fileData) : downloadConvertedFile()">
+                            <mat-icon color="primary" [class]="action.icon"></mat-icon>
+                            <span>{{action.label}}</span>
+                        </button>
+                    </ng-container>
+                </mat-menu>
+                <!--  -->
+                <button *ngIf="downloadActions.length === 0" mat-icon-button (click)="downloadConvertedFile()" [matTooltip]="(resId !== null ? 'lang.downloadFile' : 'lang.downloadOriginalFile') | translate">
+                    <mat-icon class="fa fa-download"></mat-icon>
+                </button>
+                <div class="divider"></div>
+                <!-- Rotation buttons -->
+                <ng-container *ngIf="!isNewVersion && file.src !== null">
+                    <button mat-icon-button
+                        style="margin-right: -15px;"
+                        [title]="'lang.leftRotation' | translate"
+                        (click)="$event.stopPropagation(); rotateDocument('left')">
+                        <mat-icon class="fa fa-rotate-left"></mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        [title]="'lang.rightRotation' | translate"
+                        (click)="$event.stopPropagation(); rotateDocument('right')">
+                        <mat-icon class="fa fa-rotate-right"></mat-icon>
+                    </button>
+                </ng-container>
+                <!-- / -->
+                <!-- Zoom buttons -->
+                <ng-container *ngIf="file.src !== null && !noConvertedFound">
+                    <div class="divider"></div>
+                    <button color="light" mat-icon-button (click)="$event.stopPropagation(); zoomDocument('out')" [title]="'lang.zoomOut' | translate">
+                        <mat-icon class="fa fa-minus"></mat-icon>
+                    </button>
+                    <button color="light" mat-icon-button (click)="$event.stopPropagation(); zoomDocument('in')" [title]="'lang.zoomIn' | translate">
+                        <mat-icon class="fa fa-plus"></mat-icon>
+                    </button>
+                </ng-container>
+                <!-- / -->
+                <ng-container *ngIf="editMode && resId !== null && !noConvertedFound">
+                    <div class="divider"></div>
+                    <button [disabled]="!functions.empty(file.subinfos) && file.subinfos.signedDocVersions" [class.disabledButton]="!functions.empty(file.subinfos) && file.subinfos.signedDocVersions" mat-button (click)="editResource()"
+                        [matTooltip]="functions.empty(file.subinfos) || (!functions.empty(file.subinfos) && !file.subinfos.signedDocVersions) ? '' : ('lang.documentSignedMsg' | translate)">
+                        <i class="fa fa-edit" style="font-size: 14px;padding-right: 5px;"></i><span>{{'lang.editDocument' | translate}}</span>
+                    </button>
+                </ng-container>
+                <div class="divider"></div>
+                <button mat-icon-button [matMenuTriggerFor]="menuOptions">
+                    <mat-icon class="fas fa-chevron-down"></mat-icon>
+                </button>
+                <div class="divider"></div>
+                <mat-menu #menuOptions="matMenu" [class]="'optionsListMenu'">
+                    <button mat-menu-item *ngIf="file.contentView !== undefined || base64 !== null" (click)="openPdfInTab()">
+                        <mat-icon color="primary" class="fas fa-external-link-alt"></mat-icon>
+                        <span>{{'lang.openInExternalModal' | translate}}</span>
+                    </button>
+                    <button mat-menu-item *ngIf="canUploadNewVersion() && !loading"
+                        [title]="'lang.uploadNewVersion' | translate" (click)="isNewVersion = true; docToUpload.click()" >
+                        <mat-icon color="primary" class="fas fa-file-upload"></mat-icon>
+                        <span style="white-space: pre-wrap;">{{'lang.uploadNewVersion' | translate}}</span>
+                    </button>
+                    <button mat-menu-item *ngIf="(file.contentView !== undefined || base64 !== null) && resId != null && mode !== 'attachment' && externalId.signatureBookId && !functions.empty(externalSignatoryBook.signatoryBookEnabled)"
+                        [disabled]="!externalSignatoryBook.canViewWorkflow()"
+                        [title]="getTitle()"
+                        (click)="openExternalSignatoryBookWorkflow()">
+                        <mat-icon color="primary" class="fas fa-list-ol"></mat-icon>
+                        <span>{{('lang.' + externalSignatoryBook.signatoryBookEnabled + 'Workflow') | translate}}</span>
+                    </button>
+                    <button mat-menu-item *ngIf="editMode && resId === null" (click)="docToUpload.click()">
+                        <mat-icon color="primary" class="fa fa-file-upload"></mat-icon>
+                        <span>{{'lang.uploadAnOtherFile' | translate}}</span>
+                    </button>
+                    <button mat-menu-item *ngIf="editMode && resId === null" (click)="cleanFile()">
+                        <mat-icon class="fa fa-trash" color="warn"></mat-icon>
+                        <span>{{'lang.removeFile' | translate}}</span>
+                    </button>
+                </mat-menu>
+                <ng-container *ngIf="mode === 'mainDocument' && !functions.empty(file.subinfos)">
+                    <button *ngIf="file.subinfos.mainDocVersions.length > 1 && !file.subinfos.signedDocVersions" mat-button
+                        [matBadge]="file.subinfos.mainDocVersions.length" [matMenuTriggerFor]="menuVersionsDoc">
+                        {{'lang.versions' | translate}}
+                    </button>
+                    <mat-menu #menuVersionsDoc="matMenu">
+                        <button mat-menu-item *ngFor="let version of file.subinfos.mainDocVersions" (click)="openResourceVersion(version,'PDF')">
+                            <span>{{'lang.version' | translate}} {{version}}</span>
+                        </button>
+                    </mat-menu>
+                    <button *ngIf="file.subinfos.signedDocVersions" mat-button class="originalVersion" [title]="'lang.unsignedVersionDesc' | translate"
+                        (click)="openResourceVersion(file.subinfos.mainDocVersions[file.subinfos.mainDocVersions.length -1],'SIGN')">
+                        {{'lang.unsignedVersionDesc' | translate}}
+                    </button>
+                    <button *ngIf="file.subinfos.commentedDocVersions > 0" mat-button class="originalVersion" [title]="'lang.unannotatedVersionDesc' | translate"
+                        (click)="openResourceVersion(file.subinfos.mainDocVersions[file.subinfos.mainDocVersions.length -1],'NOTE')">
+                        {{'lang.unannotatedVersionDesc' | translate}}
+                    </button>
+                </ng-container>
+            </div>
+            <div>
+                <pdf-viewer *ngIf="file.src!==null" [src]="file.src" [render-text]="true" [autoresize]="true"
+                    [original-size]="false" [rotation]="rotation" [zoom]="zoom" [show-all]="true" (error)="onError($event)" style="width:100%;font-weight: initial;display: contents;">
+                </pdf-viewer>
+            </div>
+
+        </div>
+        <div *ngIf="file.content !== null && noConvertedFound" class="no-doc-container" appUploadFileDragDrop
+            (fileDropped)="dndUploadFile($event)" [disabled]="!editMode">
+            <div class="loaded-file"><i class="fa fa-file"></i>&nbsp;<a
+                    (click)="downloadConvertedFile()">{{file.name}}</a>&nbsp;<b>{{'lang.loaded' | translate}}</b></div>
+
+            <div class="no-view"><i class="far fa-eye-slash no-view-icon"></i><br />{{'lang.noAvailablePreview' | translate}}</div>
+
+        </div>
+    </ng-template>
+</ng-container>
+<ng-container *ngIf="editInProgress && editor.mode === 'onlyoffice'">
+    <app-onlyoffice-viewer #onlyofficeViewer style="height:100%;width:100%;" [params]="editor.options" [file]="file"
+        [editMode]="true" [loading]="loading"  (triggerAfterUpdatedDoc)="triggerEvent.emit()" (triggerModeModified)="isFullScreen = $event;"
+        (triggerCloseEditor)="closeEditor()" (triggerModifiedDocument)="isDocModified = true"></app-onlyoffice-viewer>
+        <div *ngIf="loading" class="example-loading-shade">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div> 
+</ng-container>
+<ng-container *ngIf="editInProgress && editor.mode === 'collaboraOnline'">
+    <app-collabora-online-viewer #collaboraOnlineViewer style="height:100%;width:100%;" [params]="editor.options" [file]="file"
+        [editMode]="true" [loading]="loading"  (triggerAfterUpdatedDoc)="triggerEvent.emit()" (triggerModeModified)="isFullScreen = $event;"
+        (triggerCloseEditor)="closeEditor()" (triggerModifiedDocument)="isDocModified = true"></app-collabora-online-viewer>
+    <div *ngIf="collaboraOnlineViewer.isSaving" class="example-loading-shade">
+        <mat-spinner style="margin:auto;"></mat-spinner>
+    </div>
+</ng-container>
+<ng-container *ngIf="editInProgress && editor.mode === 'office365sharepoint'">
+    <app-office-sharepoint-viewer #officeSharepointViewer style="height:100%;width:100%;" [params]="editor.options" [file]="file"
+        [editMode]="true" (triggerAfterUpdatedDoc)="triggerEvent.emit()"
+        (triggerCloseEditor)="closeEditor()" (triggerModifiedDocument)="isDocModified = true"
+        (triggerDocumentDownload)="mode === 'mainDocument' && resId !== null ? saveMainDocument() : saveTmpDocument()"></app-office-sharepoint-viewer>
+    <div *ngIf="officeSharepointViewer.isSaving" class="example-loading-shade">
+        <mat-spinner style="margin:auto;"></mat-spinner>
+    </div>
+</ng-container>
+<button mat-fab *ngIf="canSaveModifications('mainDocument')" color="accent"
+    [title]="'lang.saveModifications' | translate" style="position: absolute;z-index: 3;bottom: 40px;right: 60px;"
+    (click)="saveMainDocument()">
+    <mat-icon style="height:auto;font-size:20px;" class="fas fa-check"></mat-icon>
+</button>
+<button mat-fab *ngIf="canSaveModifications('attachment')" color="accent"
+    [class.defaultMode]="!isFullScreen"
+    [class.fullscreenMode]="isFullScreen"
+    [title]="'lang.saveModifications' | translate" style="position: absolute;z-index: 3;"
+    (click)="saveTmpDocument()">
+    <mat-icon style="height:auto;font-size:20px;" class="fas fa-check"></mat-icon>
+</button>
+<button mat-raised-button 
+    *ngIf="(!isDocModified && mode === 'mainDocument' && resId !== null && !functions.empty(file.subinfos) && file.subinfos.signedDocVersions && this.headerService.user.id == file.signatoryId) && !hideTools && editMode" 
+    color="warn"
+    [title]="'lang.unsign' | translate" style="position: fixed;z-index: 1;bottom: 100px;right: 150px;"
+    (click)="unsignMainDocument()">
+    {{'lang.removeSignature' | translate}}
+</button>

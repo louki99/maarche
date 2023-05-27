@@ -1,0 +1,94 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.exportDatas' | translate}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loadingExport" class="loader">
+            <mat-spinner></mat-spinner>
+        </div>
+        <div class="row">
+            <app-maarch-message *ngIf="!loading"
+                [mode]="'info'" 
+                [content]="'lang.applyFilters' | translate">
+            </app-maarch-message>
+            <div [class.col-md-12]="exportModel.format != 'csv'" [class.col-md-3]="exportModel.format == 'csv'">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'lang.format' | translate}}</mat-label>
+                    <mat-select [placeholder]="'lang.format'" [(ngModel)]="exportModel.format">
+                        <mat-option *ngFor="let format of formats" [value]="format">
+                            {{format}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-9" *ngIf="exportModel.format == 'csv'">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'lang.delimiter' | translate}}</mat-label>
+                    <mat-select [placeholder]="'lang.delimiter'" [(ngModel)]="exportModel.delimiter"
+                        [disabled]="exportModel.format != 'csv'">
+                        <mat-option *ngFor="let delimiter of delimiters" [value]="delimiter">
+                            {{delimiter}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{'lang.datasToExport' | translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="listFilter">
+                            <input matInput placeholder="{{'lang.searchDatas' | translate}}" #listFilter cdkFocusInitial>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row exportList">
+                    <div class="col-md-6 available-data">
+                        <h2><span class="title">{{'lang.availableDatas' | translate}}</span> <i
+                                class="fa fa-plus-circle removeAllDatas" color="primary" title="{{'lang.addAllData' | translate}}"
+                                [class.disabledIcon]="dataAvailable.length === 0"
+                                (click)="addAllData()"></i>
+                        </h2>
+                        <div id="availableElements" cdkDropList #dataAvailableList="cdkDropList"
+                            [cdkDropListData]="dataAvailable" [cdkDropListConnectedTo]="[dataExportList]"
+                            class="cdk-list" (cdkDropListDropped)="drop($event)">
+                            <div class="columns" *ngFor="let item of dataAvailable | sortBy: 'label' | filterList:listFilter.value:'label'"
+                                cdkDrag id="{{item.value}}">{{item.label}} <i class="fa fa-plus" color="primary"
+                                    style="cursor:pointer;" (click)="addData(item)"></i></div>
+                            <div *ngIf="dataAvailable.length == 0" class="noData">{{'lang.noDataAvailable' | translate}}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex;align-items: center;">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+
+                    <div class="col-md-6 active-data">
+                        <h2><span class="title">{{'lang.chosenDatas' | translate}}</span> <i class="fa fa-minus-circle removeAllDatas"
+                                color="warn" title="{{'lang.removeAllDatas' | translate}}"
+                                [class.disabledIcon]="exportModel.data.length === 0"
+                                (click)="removeAllData()"></i>
+                        </h2>
+                        <div id="selectedElements" cdkDropList #dataExportList="cdkDropList"
+                            [cdkDropListData]="exportModel.data" [cdkDropListConnectedTo]="[dataAvailableList]"
+                            class="cdk-list" (cdkDropListDropped)="drop($event)">
+                            <div class="columns" *ngFor="let item of exportModel.data;let i = index" cdkDrag
+                                id="{{item.value}}">{{item.label}} <i class="fa fa-minus" color="warn"
+                                    style="cursor:pointer;" (click)="removeData(i)"></i></div>
+                            <div *ngIf="exportModel.data.length == 0" class="noData">{{'lang.noDataAvailable' | translate}}</div>
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="exportModel.data.length == 0"
+            (click)="exportData();">{{'lang.toExport' | translate}}</button>
+        <button mat-raised-button mat-button [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

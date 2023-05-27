@@ -1,0 +1,38 @@
+<ng-container *ngIf="resources.length > 0; else elseEmpty">
+    <ngx-charts-pie-chart 
+        *ngIf="tile.parameters.chartType==='pie' && formatedData !== null" 
+        [class.link]="route !== null" 
+        (click)="route !== null ? goTo(): false" 
+        [results]="resources"
+        [legend]="false" 
+        [labels]="true">
+    </ngx-charts-pie-chart>
+    <ngx-charts-bar-vertical
+        *ngIf="tile.parameters.chartType==='vertical-bar' && formatedData !== null"
+        [class.link]="route !== null" 
+        (click)="route !== null ? goTo(): false" 
+        [results]="formatedData"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="false"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true">
+    </ngx-charts-bar-vertical>
+    <ngx-charts-line-chart
+        *ngIf="tile.parameters.chartType==='line' && formatedData !== null"
+        [class.link]="route !== null"
+        (click)="route !== null ? goTo(): false"
+        [results]="formatedData"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="false"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true">
+    </ngx-charts-line-chart>
+    <i class="{{icon}} tile-icon" color="primary"></i>
+</ng-container>
+<ng-template #elseEmpty>
+    <div class="empty-data">
+        {{'lang.noDataAvailable' | translate}}
+    </div>
+</ng-template>

@@ -1,0 +1,21 @@
+<mat-form-field>
+  <mat-chip-list #chipList>
+    <mat-chip
+      *ngFor="let selectedData of datasFormControl.value"
+      (removed)="remove(selectedData)">
+      {{selectedData}}
+      <mat-icon matChipRemove class="fa fa-times-circle"></mat-icon>
+    </mat-chip>
+    <input
+      [placeholder]="inputLabel"
+      #acInput
+      [formControl]="inputFormControl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList">
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option" [disabled]="datasFormControl.value.indexOf(option) > -1">
+      {{option}}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

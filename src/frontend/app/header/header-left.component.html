@@ -1,0 +1,6 @@
+<div class="bg-head-title-label" *ngIf="headerService.sideNavLeft !== undefined">
+    <button *ngIf="!headerService.sideNavLeft.opened" mat-icon-button (click)="headerService.sideNavLeft.open()" style="font-size:20px;" title="{{'lang.openSidePanel' | translate}}">
+        <mat-icon class="fa fa-stream"></mat-icon>
+    </button>
+    <i *ngIf="headerService.headerMessageIcon !== ''" class="{{headerService.headerMessageIcon}} headerIcon"></i> {{headerService.headerMessage}} <span class="admin-toolbar-title-small">{{headerService.subHeaderMessage}}</span>
+</div>

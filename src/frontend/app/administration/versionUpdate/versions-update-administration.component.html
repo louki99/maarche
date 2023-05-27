@@ -1,0 +1,68 @@
+<div *ngIf="updateInprogress" class="updateInProgress">
+    <mat-spinner diameter="30"></mat-spinner>&nbsp;
+    <div>
+        {{'lang.updateInProgress' | translate}}
+    </div>
+</div>
+
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div class="alert alert-info" *ngIf="versions.lastAvailableMinorVersion==null" style="display: flex;">
+                        <mat-icon class="fa fa-check fa-2x" style="flex: 1;text-align: left;"></mat-icon>
+                        <span style="flex: 1;text-align: center;">{{'lang.appUpToDate' | translate}} !</span>
+                        <mat-icon class="fa fa-check fa-2x" style="flex: 1;text-align: right;"></mat-icon>
+                    </div>
+                    <div class="alert alert-success" *ngIf="versions.lastAvailableMinorVersion!=null"
+                         style="display: flex;">
+                        <mat-icon class="fa fa-info-circle fa-2x" style="flex: 1;text-align: left;"></mat-icon>
+                        <span style="flex: 1;text-align: center;">
+                        {{'lang.newVersionAvailable' | translate}} ! <a style="font-weight: bold;"
+                                                          href="https://labs.maarch.org/maarch/MaarchCourrier/tags/{{versions.lastAvailableMinorVersion}}"
+                                                          target="_blank">{{versions.lastAvailableMinorVersion}}</a>
+                    </span>
+                        <mat-icon class="fa fa-info-circle fa-2x" style="flex: 1;text-align: right;"></mat-icon>
+                    </div>
+                    <div class="alert-message alert-message-danger" *ngIf="!versions.canUpdate && versions.lastAvailableMinorVersion!=null" [innerHTML]="('lang.updateWarn' | translate) + versions.diffOutput.join('<br/>')">
+                    </div>
+                    <div class="col-sm-12" style="text-align:center;" *ngIf="versions.lastAvailableMinorVersion!=null">
+                        <button mat-raised-button color="primary" [disabled]="!versions.canUpdate"
+                                (click)="updateVersionAccess();">{{'lang.makeUpdate' | translate}}</button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+                 fixedTopGap="56" position='end' [opened]="!appService.getViewMode()" style="overflow-x:hidden;">
+        <div class="alert-message alert-message-info" *ngIf="versions.lastAvailableMajorVersion!=null"
+             style="display: flex;">
+            Maarch Courrier&nbsp;<a style="font-weight: bold;"
+                                    href="https://labs.maarch.org/maarch/MaarchCourrier/tags/{{versions.lastAvailableMajorVersion}}"
+                                    target="_blank">{{versions.lastAvailableMajorVersion}}</a>&nbsp;{{'lang.isAvailable' | translate}} !
+        </div>
+        <mat-list>
+            <h3 mat-subheader>{{'lang.currentVersion' | translate}}</h3>
+            <mat-list-item>
+                <b>{{versions.currentVersion}}</b>
+            </mat-list-item>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

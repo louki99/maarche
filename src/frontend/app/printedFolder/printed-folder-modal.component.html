@@ -1,0 +1,109 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{'lang.generateAndDownloadPrintedFolder' | translate}}
+        </span>
+        <button [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content style="padding-bottom:10px;">
+        <div class="loading" *ngIf="loading; else loadingTemplate">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <ng-template #loadingTemplate>
+            <div class="example-loading-shade" *ngIf="isLoadingResults">
+                <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+            </div>
+            <app-maarch-message *ngIf="data.multiple" mode="info" [content]="'lang.summarySheetMandatory' | translate">
+            </app-maarch-message>
+            <div style="padding: 10px;">
+                <mat-slide-toggle color="primary" [(ngModel)]="summarySheet"
+                    (change)="$event.checked ? openSummarySheet() : false">{{'lang.attachSummarySheet' | translate}}
+                </mat-slide-toggle>
+            </div>
+            <div style="padding: 10px;">
+                <mat-slide-toggle color="primary" [(ngModel)]="withSeparator">{{'lang.generateSeparators' | translate}}
+                </mat-slide-toggle>
+            </div>
+            <div class="printedFolderContainer">
+                <mat-expansion-panel *ngIf="mainDocumentInformation.format !== null" hideToggle disabled
+                    [title]="!mainDocumentInformation.canConvert ? 'Aucune version pdf trouvé!' : ''">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title style="color: #135f7f;font-weight: bold;">
+                            <mat-checkbox color="primary" [(ngModel)]="mainDocument"
+                                [disabled]="!mainDocumentInformation.canConvert && !data.multiple" disableRipple>{{'lang.mainDocument' | translate}}
+                            </mat-checkbox>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                </mat-expansion-panel>
+                <ng-container *ngFor="let keyVal of printedFolderElement | keyvalue">
+                    <div class="printedFolderElement" *ngIf="printedFolderElement[keyVal.key].length > 0 || data.multiple">
+                        <mat-expansion-panel [hideToggle]="data.multiple" [disabled]="data.multiple">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title style="color: #135f7f;font-weight: bold;">
+                                    <mat-checkbox color="primary"
+                                        (change)="$event ? toggleAllElements($event.checked, keyVal.key) : null"
+                                        [checked]="selectedPrintedFolderElement[keyVal.key].value.length > 0 && selectedPrintedFolderElement[keyVal.key].value.length === printedFolderElement[keyVal.key].length"
+                                        [indeterminate]="!data.multiple && selectedPrintedFolderElement[keyVal.key].value.length > 0 && selectedPrintedFolderElement[keyVal.key].value.length !== printedFolderElement[keyVal.key].length"
+                                        (click)="$event.stopPropagation()" disableRipple>{{'lang.' + keyVal.key | translate}}
+                                    </mat-checkbox>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <mat-selection-list *ngIf="!data.multiple" [formControl]="selectedPrintedFolderElement[keyVal.key]" color="primary"
+                                class="printedFolderElement-content">
+                                <mat-list-option class="printedFolderElement-option"
+                                    [title]="!element.canConvert ? 'Aucune version pdf trouvé!' : ''"
+                                    [class.disabled]="!element.canConvert" checkboxPosition="before"
+                                    *ngFor="let element of printedFolderElement[keyVal.key]"
+                                    [disabled]="!element.canConvert" [value]="element.id">
+                                    <div class="printedFolderElement-item {{keyVal.key}}">
+                                        <div color="primary" style="flex:1;font-size: 80%;padding-right: 10px;"
+                                            *ngIf="!functions.empty(element.chronoMaster)">
+                                            {{element.chronoMaster}}
+                                        </div>
+                                        <div color="primary" style="flex:1;font-size: 80%;padding-right: 10px;"
+                                            *ngIf="!functions.empty(element.chrono)">
+                                            {{element.chrono}}
+                                        </div>
+                                        <div color="primary" [title]="element.recipients"
+                                            style="flex:1;display: flex;font-size: 80%;white-space: pre;padding-right: 10px;"
+                                            *ngIf="!functions.empty(element.recipients)">
+                                            {{'lang.for' | translate | ucfirst}} : {{element.recipients}}
+                                        </div>
+                                        <div *ngIf="!functions.empty(element.creator)" color="primary" [title]="element.creator"
+                                            style="flex:1;font-size: 80%;padding-right: 10px;">
+                                            {{element.creator}}
+                                        </div>
+                                        <div style="flex:2;padding-right: 10px;" [title]="element.label"
+                                            [innerHTML]="element.label | shorten: 150: '...'">
+                                        </div>
+                                        <div *ngIf="!functions.empty(element.type)" color="primary"
+                                            style="flex:1;font-size: 80%;white-space: pre;padding-right: 10px;">
+                                            {{element.type}}
+                                        </div>
+
+                                        <div *ngIf="!functions.empty(element.status)">
+                                            <div *ngIf="element.status === 'SIGN'" style="color: green">
+                                                {{'lang.attachment_' + element.status | translate}}
+                                            </div>
+                                        </div>
+
+                                        <div color="primary" [title]="element.creationDate | fullDate"
+                                            style="flex:1;justify-content: flex-end;display: flex;font-size: 80%;">
+                                            {{element.creationDate | date : "dd/MM/y HH:mm"}}
+                                        </div>
+                                    </div>
+                                </mat-list-option>
+                            </mat-selection-list>
+                        </mat-expansion-panel>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-template>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="primary" [disabled]="isLoadingResults || isEmptySelection() || (!summarySheet && data.multiple)"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+    </div>
+</div>

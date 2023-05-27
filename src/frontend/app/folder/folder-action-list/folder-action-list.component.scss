@@ -1,0 +1,61 @@
+
+.mat-icon {
+    height: auto;
+}
+
+.mat-stroked-button {
+    border-radius: 20px;
+    border-color: #135F7F;
+    color: #135F7F;
+}
+
+::ng-deep.actionListMenu {
+    .mat-menu-content {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.folderAction, .followAction {
+    .mat-icon {
+        font-size:20px;
+        color: var(--maarch-color-danger);
+    }
+}
+
+.basketGroupName {
+    color: var(--maarch-color-primary);
+    padding-left: 10px;
+    padding-right: 10px; 
+}
+
+.labelBasket {
+    color: rgb(102, 102, 102);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.noAvailableBasket {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.5;
+    font-style: italic;
+    padding: 22px;
+}
+
+.freezeIcon {
+    color: var(--maarch-color-primary);
+}
+
+.bindidngIcon {
+    color: var(--maarch-color-primary);
+    margin-left: 5px;
+}
+
+.isSelectedMenu {
+    background: var(--maarch-color-secondary);
+  }
+
+.notSelectedMenu {
+    background: white;
+}

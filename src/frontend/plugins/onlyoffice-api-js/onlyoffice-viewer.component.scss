@@ -1,0 +1,38 @@
+
+.onlyofficeButton_fullscreen, .onlyofficeButton_close, .onlyofficeButton_hide, .onlyofficeButton_show {
+    position: absolute;
+    top: 12px;
+    z-index: 3;
+    transition: all 0.5s;
+}
+
+.onlyofficeButton {
+    &_fullscreen {
+        right: 6px;
+    }
+    &_close {
+        right: 56px;
+    }
+    &_hide {
+        right: 106px;
+    }
+    &_show {
+        right: -15px;
+    }
+}
+
+.fullScreen {
+    position: fixed;
+}
+
+.fullScreenEditor {
+    top: 0px;
+    left: 0px;
+}
+
+.buttonsHide {
+    top: -15px;
+    right: -15px;
+    transform: rotate(125deg);
+    transition: all 0.5s;
+}

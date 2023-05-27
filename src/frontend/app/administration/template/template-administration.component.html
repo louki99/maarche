@@ -1,0 +1,343 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list *ngIf="!creationMode && !loading">
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <a mat-list-item [disableRipple]="lockFound || template.target == 'acknowledgementReceipt'"
+                [class.disabled]="lockFound || template.target == 'acknowledgementReceipt'"
+                (click)="duplicateTemplate()">
+                <mat-icon color="primary" mat-list-icon class="fa fa-copy"></mat-icon>
+                <p mat-line>
+                    {{'lang.duplicate' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content" style="padding: 10px 10px 0px 10px;">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content" style="display: contents;">
+                    <form style="display: contents;" class="form-horizontal" (ngSubmit)="onSubmit()"
+                        #templatesFormUp="ngForm">
+                        <app-maarch-message
+                            *ngIf="template.target === 'attachments' && !isVisibleAttachment(template.template_attachment_type) && template.template_attachment_type !== 'all'"
+                            mode="danger" [content]="'lang.invisibleAttachmentType' | translate"></app-maarch-message>
+                        <div class="col-sm-12">
+                            <div class="form-group" *ngIf="!creationMode">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <input matInput type="number" title="{{'lang.technicalId' | translate}}"
+                                            value="{{template.id}}" placeholder="{{'lang.technicalId' | translate}}"
+                                            disabled>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <input matInput name="label" [(ngModel)]="template.label"
+                                            title="{{'lang.templateName' | translate}}" type="text"
+                                            placeholder="{{'lang.templateName' | translate}}" maxlength="255" required>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <textarea matInput name="description" [(ngModel)]="template.description"
+                                            name="template_comment" placeholder="{{'lang.description' | translate}}"
+                                            title="{{'lang.description' | translate}}" cdkTextareaAutosize
+                                            matAutosizeMinRows="2" matAutosizeMaxRows="5" required>
+                                    </textarea>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <mat-select [disabled]="!creationMode" name="target" required
+                                            title="{{'lang.templateTarget' | translate}}"
+                                            placeholder="{{'lang.templateTarget' | translate}}"
+                                            [(ngModel)]="template.target" (selectionChange)="updateTemplateType()">
+                                            <mat-option *ngFor="let target of targetTypes" [value]="target">
+                                                {{'lang.' + target | translate}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="template.target === 'notifications' && !loading" class="col-sm-12">
+                                    <app-maarch-message [mode]="'info'" [content]="'lang.notifTargetDesc' | translate"></app-maarch-message>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="template.target == 'attachments'">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <mat-select id="template_attachment_type" name="template_attachment_type"
+                                            title="{{'lang.attachmentType' | translate}}"
+                                            placeholder="{{'lang.attachmentType' | translate}}"
+                                            [(ngModel)]="template.template_attachment_type">
+                                            <mat-option value="all">{{'lang.allAttachments' | translate}}</mat-option>
+                                            <mat-option *ngFor="let value of attachmentTypesList" [value]="value.id">
+                                                {{value.label}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="form-group" *ngIf="template.target == 'acknowledgementReceipt'">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <mat-select [disabled]="!creationMode" id="template_attachment_type"
+                                            name="template_attachment_type"
+                                            title="{{'lang.acknowledgementReceiptType' | translate}}"
+                                            placeholder="{{'lang.acknowledgementReceiptType' | translate}}"
+                                            [(ngModel)]="template.template_attachment_type" required>
+                                            <mat-option value="simple">{{'lang.ARsimple' | translate}}</mat-option>
+                                            <mat-option value="sva">{{'lang.ARsva' | translate}}</mat-option>
+                                            <mat-option value="svr">{{'lang.ARsvr' | translate}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div *ngIf="template.target == 'sendmail'" class="options">
+                                <div class="title" >
+                                    {{'lang.options' | translate}}
+                                    <div class="title-divider"></div>
+                                </div>
+                                <div class="col-sm-12" style="white-space:nowrap;">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <mat-form-field>
+                                                <input matInput name="subject" [(ngModel)]="template.subject"
+                                                    title="{{'lang.emailSubject' | translate}}" type="text"
+                                                    placeholder="{{'lang.emailSubject' | translate}}" maxlength="255">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" *ngIf="availableTypes.length > 1">
+                                <div class="col-sm-12">
+                                    <mat-radio-group [disabled]="!creationMode" required name="type"
+                                        (change)="changeType($event)">
+                                        <mat-radio-button style="margin-left:10px" color="primary" name="type"
+                                            *ngFor="let type of availableTypes" [value]="type"
+                                            [checked]="template.type===type">
+                                            {{type}}</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="template.type=='OFFICE'">
+                                <div class="col-md-12" style="display: none;">
+                                    <div class="form-inline hide">
+                                        <div class="form-group">
+                                            <input type="file" name="files[]" #uploadSignFileOffice
+                                                (change)="uploadFileTrigger($event)"
+                                                accept="application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml‌.slideshow,application/vnd.oasis.opendocument.text,application/vnd.oasis.opendocument.presentation,application/vnd.oasis.opendocument.spreadsheet">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <mat-form-field *ngIf="creationMode || template.file.name">
+                                        <mat-select id="template_style" [disabled]="!creationMode" name="template_style"
+                                            title="{{'lang.defaultTemplate' | translate}}"
+                                            placeholder="{{'lang.chosenModel' | translate}}"
+                                            [(ngModel)]="selectedModelFile" (selectionChange)="changeModel()"
+                                            [required]="template.target!='acknowledgementReceipt'">
+                                            <mat-optgroup label="{{'lang.loadedFile' | translate}} :">
+                                                <mat-option class="selectFile" (click)="uploadSignFileOffice.click()"
+                                                    [value]="template.file.name">
+                                                    <mat-icon class="fa fa-paperclip" color="primary"
+                                                        style="height:auto;"></mat-icon>
+                                                    {{!functionsService.empty(template.file) && !functionsService.empty(template.file.name) ? template.file.name : 'lang.importFile' | translate}}
+                                                </mat-option>
+                                            </mat-optgroup>
+                                            <ng-container *ngFor="let extension of extensionModels">
+                                                <mat-optgroup label="{{extension}} :">
+                                                    <ng-container *ngFor="let default of defaultTemplatesList">
+                                                        <mat-option *ngIf="extension == default.fileExt"
+                                                            value="{{default.fileExt}}: {{default.fileName}}">
+                                                            {{default.fileExt}}: {{default.fileName}}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-optgroup>
+                                            </ng-container>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <button mat-raised-button color="default" type="button"
+                                        (click)="$event.stopPropagation();editFile()"
+                                        *ngIf="(((creationMode && selectedModelFile && !documentImported) || (creationMode && selectedModelFile && documentImported && headerService.user.preferences.documentEdition !== 'java')) || ((!creationMode && !documentImported) || (!creationMode && documentImported && headerService.user.preferences.documentEdition !== 'java')))"
+                                        [disabled]="lockFound">{{'lang.templateEdition' | translate}}</button>
+                                    <button mat-raised-button color="default" type="button"
+                                        (click)="$event.stopPropagation();uploadSignFileOffice.click()"
+                                        [disabled]="lockFound">{{'lang.importFile' | translate}}</button>
+                                </div>
+                                <iframe *ngIf="templateDocView !== null" [src]="templateDocView"
+                                    style="width:100%;height:800px;"></iframe>
+                            </div>
+                            <div class="form-group" *ngIf="template.type=='TXT'">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <textarea matInput [(ngModel)]="template.file.content" name="templateTxt"
+                                            id="templateTxt" placeholder="{{'lang.contentTxtTemplate' | translate}}"
+                                            title="{{'lang.contentTxtTemplate' | translate}}" cdkTextareaAutosize
+                                            matAutosizeMinRows="5" matAutosizeMaxRows="5"
+                                            [required]="template.target!='acknowledgementReceipt'">
+                                    </textarea>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="template.type=='HTML'">
+                                <div class="col-sm-12">
+                                    <div id="html_mode" style="display: block; width:100%;">
+                                        <textarea [(ngModel)]="template.file.content" name="templateHtml"
+                                            id="templateHtml" style="width:100%" rows="15" cols="60"
+                                            [required]="template.target!='acknowledgementReceipt'"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="template.target=='notifications'">
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <mat-select id="datasource" name="datasource"
+                                            title="{{'lang.templateDatasource' | translate}}"
+                                            placeholder="{{'lang.templateDatasource' | translate}}"
+                                            [(ngModel)]="template.datasource">
+                                            <mat-option value="">{{'lang.noDatasource' | translate}}</mat-option>
+                                            <ng-container *ngFor="let datasource of datasourcesList">
+                                                <mat-option *ngIf="displayDatasources(datasource)"
+                                                    [value]="datasource.id">{{datasource.label}}</mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="form-group" *ngIf="template.type=='OFFICE_HTML'">
+                                <mat-tab-group (selectedTabChange)="loadTab($event);">
+                                    <mat-tab label="{{'lang.electronicTemplate' | translate}}">
+                                        <div class="options">
+                                            <div class="title" >
+                                                {{'lang.options' | translate}}
+                                                <div class="title-divider"></div>
+                                            </div>
+                                            <div class="col-sm-12" style="white-space:nowrap;">
+                                                <div class="form-group" *ngIf="template.target == 'acknowledgementReceipt'">
+                                                    <div class="col-sm-12">
+                                                        <mat-form-field>
+                                                            <mat-label>{{'lang.expAddress' | translate}}</mat-label>
+                                                            <mat-select (selectionChange)="setOption('acknowledgementReceiptFrom', $event.value, $event.value !== 'manual')" [value]="options.acknowledgementReceiptFrom" required>
+                                                                <mat-option *ngFor="let from of acknowledgementReceiptFrom | sortBy: 'label'" [value]="from.id">{{from.label | titlecase}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" *ngIf="options.acknowledgementReceiptFrom === 'manual'">
+                                                    <div class="col-sm-12">
+                                                        <mat-form-field>
+                                                            <input matInput name="subject" [(ngModel)]="options.acknowledgementReceiptFromMail"
+                                                                title="{{'lang.email' | translate}}" type="text"
+                                                                placeholder="{{'lang.email' | translate}}" maxlength="255" required pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)">
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div id="html_mode" style="display: block; width:100%;">
+                                                <textarea [(ngModel)]="template.file.electronic.content"
+                                                    name="templateOfficeHtml" id="templateOfficeHtml" style="width:100%"
+                                                    rows="15" cols="60"
+                                                    [required]="template.target!='acknowledgementReceipt'"></textarea>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="{{'lang.paperTemplate' | translate}}">
+                                        <div class="col-md-12" style="display: none;">
+                                            <div class="form-inline hide">
+                                                <div class="form-group">
+                                                    <input type="file" name="files[]" #uploadSignFileOfficeHtml
+                                                        (change)="uploadFileTrigger($event)"
+                                                        accept="application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml‌.slideshow,application/vnd.oasis.opendocument.text,application/vnd.oasis.opendocument.presentation,application/vnd.oasis.opendocument.spreadsheet">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <mat-form-field>
+                                                <mat-select id="template_style"
+                                                    [disabled]="!creationMode && template.file.paper.name !== null"
+                                                    name="template_style" title="{{'lang.defaultTemplate' | translate}}"
+                                                    placeholder="{{'lang.chosenModel' | translate}}"
+                                                    [(ngModel)]="selectedModelFile"
+                                                    [required]="template.target!='acknowledgementReceipt'">
+                                                    <mat-optgroup label="{{'lang.loadedFile' | translate}} :">
+                                                        <mat-option (click)="uploadSignFileOfficeHtml.click()"
+                                                            style="text-align: center;"
+                                                            [value]="template.file.paper.name">
+                                                            <mat-icon class="fa fa-paperclip" color="primary"
+                                                                style="height:auto;"></mat-icon>
+                                                            {{!functionsService.empty(template.file.paper) && !functionsService.empty(template.file.paper.name) ? template.file.paper.name : 'lang.importFile' | translate}}
+                                                        </mat-option>
+                                                    </mat-optgroup>
+                                                    <ng-container *ngFor="let extension of extensionModels">
+                                                        <mat-optgroup label="{{extension}} :">
+                                                            <ng-container *ngFor="let default of defaultTemplatesList">
+                                                                <mat-option *ngIf="extension == default.fileExt"
+                                                                    value="{{default.fileExt}}: {{default.fileName}}">
+                                                                    {{default.fileExt}}: {{default.fileName}}
+                                                                </mat-option>
+                                                            </ng-container>
+                                                        </mat-optgroup>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <button mat-raised-button color="default" type="button"
+                                                (click)="$event.stopPropagation();editFile()"
+                                                *ngIf="(((creationMode && selectedModelFile && !documentImported) || (creationMode && selectedModelFile && documentImported && headerService.user.preferences.documentEdition !== 'java')) || ((!creationMode && !documentImported) || (!creationMode && documentImported && headerService.user.preferences.documentEdition !== 'java')))"
+                                                [disabled]="lockFound">{{'lang.templateEdition' | translate}}</button>
+                                            <button mat-raised-button color="default" type="button"
+                                                (click)="$event.stopPropagation();uploadSignFileOfficeHtml.click()"
+                                                [disabled]="lockFound">{{'lang.importFile' | translate}}</button>
+                                        </div>
+                                        <iframe *ngIf="templateDocView !== null" [src]="templateDocView"
+                                            style="width:100%;height:800px;"></iframe>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="background: white;position:sticky;bottom:0px; text-align:center;">
+                            <button mat-raised-button color="primary" type="submit"
+                                [disabled]="!templatesFormUp.form.valid || lockFound">{{'lang.save' | translate}}</button>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="!appService.getViewMode()" style="overflow-x:hidden;width:400px;">
+        <mat-list>
+            <h3 mat-subheader>{{'lang.chooseEntityAssociationModel' | translate}}</h3>
+            <div style="padding:10px;">
+                <app-maarch-flat-tree #maarchTree></app-maarch-flat-tree>
+            </div>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

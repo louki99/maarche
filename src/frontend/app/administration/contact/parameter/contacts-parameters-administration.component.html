@@ -1,0 +1,196 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <a mat-list-item disableRipple="true">
+                <mat-icon color="primary" mat-list-icon>
+                    <mat-slide-toggle [checked]="contactsFilling.enable" color="primary"
+                        (change)="toggleFillingContact();"></mat-slide-toggle>
+                </mat-icon>
+                <p mat-line (click)="toggleFillingContact();"
+                    [ngStyle]="{'opacity': contactsFilling.enable ? '' : '0.5'}">
+                    <span *ngIf="contactsFilling.enable">{{'lang.disabledContactsFilling' | translate}}</span>
+                    <span *ngIf="!contactsFilling.enable">{{'lang.enabledContactsFilling' | translate}}</span>
+                </p>
+            </a>
+        </mat-nav-list>
+        <mat-divider></mat-divider>
+        <mat-nav-list>
+            <a mat-list-item *ngFor="let menu of subMenus" [class.active]="menu.current"
+                (click)="contactService.goTo(menu.route)">
+                <mat-icon color="primary" mat-list-icon [class]="menu.icon"></mat-icon>
+                <p mat-line>
+                    {{menu.label}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <mat-expansion-panel style="margin-bottom: 10px;">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title color="primary">
+                                {{'lang.adminCivilities' | translate}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <div class="civilities-list">
+                            <ng-container *ngFor="let civility of civilities;let i=index">
+                                <mat-form-field class="civility-input" *ngFor="let civ of civility | keyvalue: originalOrder" appearance="outline">
+                                    <mat-label>{{'lang.' + civ.key | translate}}</mat-label>
+                                    <input matInput [formControl]="civility[civ.key]" [maxlength]="civ.key === 'abbreviation' ? 16 : 255">
+                                </mat-form-field>
+                                <button mat-icon-button color="warn" matTooltip="{{'lang.delete' | translate}}"
+                                    (click)="deleteCivility(civility,i)">
+                                    <mat-icon class="fa fa-trash-alt fa-2x"></mat-icon>
+                                </button>
+                            </ng-container>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <button mat-icon-button color="accent" matTooltip="{{'lang.add' | translate}}"
+                            (click)="addCivility()">
+                            <mat-icon class="fa fa-plus fa-2x"></mat-icon>
+                        </button>
+                        </div>
+                    </mat-expansion-panel>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-12">
+                            <mat-card style="margin-bottom: 5px;">
+                                <mat-card-header>
+                                    <mat-card-title>{{'lang.contactsFillingStep1' | translate}}</mat-card-title>
+                                </mat-card-header>
+                                <p>{{'lang.fromRange' | translate}} <b
+                                        [ngStyle]="{color : fillingColor.first_threshold}">0%</b>
+                                    {{'lang.toRange' | translate}} <b
+                                        [ngStyle]="{color : fillingColor.first_threshold}">{{contactsFilling.first_threshold}}%</b>
+                                    {{'lang.contactsFillingStr' | translate}}</p>
+                                <mat-slider [(ngModel)]="contactsFilling.first_threshold" style="width:100%"
+                                    color="primary" max="98" min="1" step="1" thumbLabel="true" (change)="onSubmit()">
+                                </mat-slider>
+                                <input disabled matInput type="color" name="color"
+                                    value="{{fillingColor.first_threshold}}">
+                            </mat-card>
+                        </div>
+                        <div class="col-md-4 col-xs-12">
+                            <mat-card style="margin-bottom: 5px;">
+                                <mat-card-header>
+                                    <mat-card-title>{{'lang.contactsFillingStep2' | translate}}</mat-card-title>
+                                </mat-card-header>
+                                <p>{{'lang.fromRange' | translate}} <b
+                                        [ngStyle]="{color : fillingColor.second_threshold}">{{contactsFilling.first_threshold+1}}%</b>
+                                    {{'lang.toRange' | translate}} <b
+                                        [ngStyle]="{color : fillingColor.second_threshold}">{{contactsFilling.second_threshold}}%</b>
+                                    {{'lang.contactsFillingStr' | translate}}</p>
+                                <mat-slider [(ngModel)]="contactsFilling.second_threshold" style="width:100%"
+                                    color="primary" max="99" [min]="contactsFilling.first_threshold+1" step="1"
+                                    thumbLabel="true" (change)="onSubmit()"></mat-slider>
+                                <input disabled matInput type="color" name="color"
+                                    value="{{fillingColor.second_threshold}}">
+                            </mat-card>
+                        </div>
+                        <div class="col-md-4 col-xs-12">
+                            <mat-card style="margin-bottom: 5px;">
+                                <mat-card-header>
+                                    <mat-card-title>{{'lang.contactsFillingStep3' | translate}}</mat-card-title>
+                                </mat-card-header>
+                                <p>{{'lang.fromRange' | translate}} <b
+                                        [ngStyle]="{color : fillingColor.third_threshold}">{{contactsFilling.second_threshold+1}}%</b>
+                                    {{'lang.toRange' | translate}} <b
+                                        [ngStyle]="{color : fillingColor.third_threshold}">100%</b>
+                                    {{'lang.contactsFillingStr' | translate}}</p>
+                                <mat-slider style="width:100%" color="primary" max="100" min="100" step="1"
+                                    thumbLabel="true" disabled></mat-slider>
+                                <input disabled matInput type="color" name="color"
+                                    value="{{fillingColor.third_threshold}}">
+                            </mat-card>
+                        </div>
+                    </div>
+                    <mat-table #table [dataSource]="dataSource" matSort>
+                        <ng-container matColumnDef="label">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.label' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <div>
+                                    <div style="margin-top: 5px; margin-bottom: 5px;">
+                                        {{element.label}}
+                                        <mat-icon *ngIf="element.identifier === 'sector' && !functionsService.empty(sectorMsg)"
+                                        color="primary"
+                                        class="fas fa-question-circle" [title]="sectorMsg" style="cursor:help;"></mat-icon>
+                                    </div>
+                                </div>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="mandatory">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.mandatory' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <mat-slide-toggle style="margin-left:11px" color="primary"
+                                    [disabled]="element.identifier == 'lastname' || element.identifier == 'company' || element.identifier == 'sector'"
+                                    title="{{'lang.mandatory' | translate}}"
+                                    (change)="addCriteria($event, element, 'mandatory')" [checked]="element.mandatory">
+                                </mat-slide-toggle>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="filling">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'lang.contactsFillingCriteria' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <mat-slide-toggle style="margin-left:11px" color="primary"
+                                    title="{{'lang.contactsFillingCriteria' | translate}}"
+                                    (change)="addCriteria($event, element, 'filling')" [checked]="element.filling">
+                                </mat-slide-toggle>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="searchable">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'lang.autocompletionSearchable' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <mat-slide-toggle style="margin-left:11px" color="primary"
+                                    [disabled]="element.identifier == 'lastname' || element.identifier == 'company' || element.identifier == 'civility'"
+                                    title="{{'lang.autocompletionSearchable' | translate}}"
+                                    (change)="addCriteria($event, element, 'searchable')"
+                                    [checked]="element.searchable">
+                                </mat-slide-toggle>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="displayable">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'lang.autocompletionDisplayable' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <mat-slide-toggle style="margin-left:11px" color="primary"
+                                    [disabled]="element.identifier == 'lastname' || element.identifier == 'company'"
+                                    title="{{'lang.autocompletionDisplayable' | translate}}"
+                                    (change)="addCriteria($event, element, 'displayable')"
+                                    [checked]="element.displayable">
+                                </mat-slide-toggle>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </mat-table>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

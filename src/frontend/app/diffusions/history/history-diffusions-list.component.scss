@@ -1,0 +1,76 @@
+
+.columns {
+    cursor: move;
+}
+
+.notDraggable {
+    cursor: not-allowed;
+}
+
+.notEditable {
+    cursor: initial;
+}
+
+.roleList {
+    padding-bottom: 40px;
+}
+
+.diffusionList {
+    min-width: 400px;
+    box-shadow: none;
+
+    .mat-expansion-panel-header-title {
+        color: #4A4A4A;
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    .item-diffusion-list {
+        height: 55px;
+        margin-bottom: 10px;
+        background-color: rgba(216, 216, 216, 0.1);
+        border-radius: 10px;
+        font-size: 13px;
+
+        .mat-icon {
+            font-size: 13px;
+            height: 13px;
+            width: 13px;
+            padding-right: 10px;
+        }
+
+        .item-diffusion {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+
+            .mat-line {
+                margin: 0px;
+            }
+        }
+
+        .subInfo {
+            font-size: 13px;
+            opacity: 0.5;
+        }
+
+        .mat-button {
+            background: white;
+            font-size: 13px;
+            border: 0.5px solid rgba(74, 74, 74, 0.32);
+            border-radius: 29.5px;
+            color: #4A4A4A;
+        }
+    }
+}
+
+::ng-deep.roleListMenu {
+    .mat-menu-content {
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 13px;
+        color: #4A4A4A;
+    }
+}

@@ -1,0 +1,35 @@
+<div class="mat-dialog-content-container">
+  <h1 mat-dialog-title>{{data.title}}</h1>
+  <mat-dialog-content>
+    <app-plugin-autocomplete [labelPlaceholder]="getLabelPlaceHolder()"
+      [routeDatas]="getRouteDatas()"
+      [targetSearchKey]="'idToDisplay'" [subInfoKey]="'email'" (triggerEvent)="selectUser($event)" appearance="outline">
+    </app-plugin-autocomplete>
+    <mat-list *ngIf="externalUser.inExternalSignatoryBook">
+      <mat-list-item>
+        <mat-icon class="avatarAccount" color="primary" mat-list-icon
+          [style.background-image]="'url('+externalUser.picture+')'"></mat-icon>
+        <h4 mat-line>{{getUserFullName(externalUser)}}</h4>
+        <p mat-line style="color:#666">{{externalUser.email}}</p>
+        <button *ngIf="externalSignatoryBook.canCreateUser()" mat-icon-button color="warn" [title]="'lang.remove' | translate" (click)="removeItem()">
+          <mat-icon class="fas fa-times"></mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+    <ng-container *ngIf="externalSignatoryBook.canCreateUser()">
+      <mat-form-field *ngIf="!externalUser.inExternalSignatoryBook">
+        <input type="text" matInput placeholder="{{'lang.newLoginInMaarchParapheur' | translate}}" [(ngModel)]="externalUser.login">
+      </mat-form-field>
+      <div *ngIf="!externalUser.inExternalSignatoryBook" class="alert-message alert-message-danger" role="alert"
+        style="margin-top: 30px;"
+        [innerHTML]="('lang.maarchParapheurAccountMsg' | translate) + ' <b>' + externalUser.login + '</b> ' + ('lang.maarchParapheurAccountMsg2' | translate)">
+      </div>
+    </ng-container>
+  </mat-dialog-content>
+  <span class="divider-modal"></span>
+  <mat-dialog-actions>
+    <button color="primary" mat-raised-button (click)="this.dialogRef.close(externalUser);"
+      [disabled]="externalUser.login === ''">{{'lang.validate' | translate}}</button>
+    <button mat-raised-button (click)="this.dialogRef.close('');">{{'lang.cancel' | translate}}</button>
+  </mat-dialog-actions>
+</div>

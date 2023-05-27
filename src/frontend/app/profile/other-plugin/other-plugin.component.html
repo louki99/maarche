@@ -1,0 +1,10 @@
+<div class="plugins-list">
+    <div color="primary">
+        {{ 'lang.outlookSendingModule' | translate }}
+    </div>
+    <app-maarch-message [content]="'lang.infoOutlookPlugin' | translate"></app-maarch-message>
+    <div *ngIf="isAppSecure()">
+        <button mat-raised-button color="primary" (click)="openAddinOutlookConfiguration()">{{ 'lang.configurePlugin' | translate }}...</button>
+    </div>
+    <app-maarch-message style="width: 600px;" *ngIf="!isAppSecure()" mode="danger" [content]="'lang.mustSecureMaarchUrl' | translate"></app-maarch-message>
+</div>

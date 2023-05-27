@@ -1,0 +1,140 @@
+<div class="attach-container">
+    <div class="example-loading-shade" *ngIf="sendingData">
+        <mat-spinner></mat-spinner>
+    </div>
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{'lang.attachmentCreation' | translate}}
+        </span>
+        <button *ngIf="!loading" [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content class="attach-content">
+        <div *ngIf="loading" class="loading">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <mat-tab-group #pjList style="width: 100%;" [(selectedIndex)]="indexTab" (selectedIndexChange)="updateFile($event)" *ngIf="!loading">
+            <mat-tab *ngFor="let attachment of attachments; let i=index" [disabled]="isDocLoading()">
+                <ng-template mat-tab-label>
+                    <span [class.complete]="isPjValid(i)">{{'lang.attachmentShort' | translate}} n°{{i+1}}&nbsp;<i *ngIf="isPjValid(i)"
+                            class="fa fa-check"></i><button mat-icon-button *ngIf="attachments.length > 1" [disabled]="isDocLoading()" color="warn"
+                            [title]="'lang.delAttachment' | translate" (click)="$event.stopPropagation();removePj(i)">
+                            <mat-icon class="fa fa-minus"></mat-icon>
+                        </button></span>
+                </ng-template>
+                <div style="height:100%;overflow: auto;">
+                    <div class="attachment-form col-md-3 col-sm-12" *ngIf="!loading">
+                        <div class="attachment-form-item">
+                            <app-plugin-select-search [label]="'lang.type' | translate" [placeholderLabel]="'lang.type' | translate"
+                                [formControlSelect]="attachment['type']" [datas]="attachmentsTypes"
+                                (afterSelected)="getAttachType($event, i)" style="width:100%;">
+                            </app-plugin-select-search>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk fieldRequired"
+                                    *ngIf="attachment['type'].hasError('required') && attachment['type'].untouched"></i>
+                                <i class="fas fa-exclamation-triangle fieldError"
+                                    *ngIf="attachment['type'].touched && attachment['type'].hasError('required')"></i>
+                                <i class="fas fa-check fieldFull"
+                                    *ngIf="attachment['type'].valid && !isEmptyField(attachment['type'])"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item">
+                            <mat-form-field class="input-form">
+                                <input matInput placeholder="{{'lang.subject' | translate}}" maxlength="255" [formControl]="attachment['title']">
+                            </mat-form-field>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk fieldRequired"
+                                    *ngIf="attachment['title'].hasError('required') && attachment['title'].untouched"></i>
+                                <i class="fas fa-exclamation-triangle fieldError"
+                                    *ngIf="attachment['title'].touched && attachment['title'].hasError('required')"></i>
+                                <i class="fas fa-check fieldFull"
+                                    *ngIf="attachment['title'].valid && !isEmptyField(attachment['title'])"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item">
+                            <app-plugin-select-search  *ngIf="resourceContacts.length > 1" [label]="'lang.selectContact' | translate"
+                                [placeholderLabel]="'lang.selectContact' | translate" [datas]="resourceContacts"
+                                [returnValue]="'object'" [formControlSelect]="selectedContact"
+                                (afterSelected)="selectContact($event)" style="width:100%;">
+                            </app-plugin-select-search>
+                            <div class="fieldState">
+                                <button *ngIf="canSendMass()" mat-icon-button color="primary"
+                                    [title]="sendMassMode ? ('lang.disableMailing' | translate) : ('lang.enableMailing' | translate)"
+                                    [class.active]="sendMassMode" (click)="toggleSendMass()">
+                                    <mat-icon class="fas fa-mail-bulk"></mat-icon>
+                                </button>
+                                <i class="fas fa-asterisk noMandatory"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item" *ngIf="sendMassMode" style="display: block;">
+                            <app-maarch-message [content]="'lang.mailingMsg' | translate: {nbContacts: getNbContacts()}"></app-maarch-message>
+                        </div>
+                        <div class="attachment-form-item" *ngIf="!sendMassMode">
+                            <app-contact-autocomplete *ngIf="!loadingContact" [control]="attachment['recipient']"
+                                style="width:100%;" [singleMode]="true"
+                                (retrieveDocumentEvent)="appDocumentViewer.saveDocService()">
+                            </app-contact-autocomplete>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk noMandatory"></i>
+                            </div>
+                        </div>
+                        <div class="attachment-form-item">
+                            <mat-form-field class="input-form input-date" (click)="picker.open()"
+                                style="cursor:pointer;">
+                                <mat-label>{{'lang.expectedReturnDate' | translate}}</mat-label>
+                                <input [formControl]="attachment['validationDate']" matInput [matDatepicker]="picker"
+                                    [placeholder]="'lang.expectedReturnDate' | translate" [min]="now" readonly
+                                    style="cursor:pointer;">
+                                <mat-datepicker-toggle matSuffix [for]="picker"
+                                    *ngIf="!attachment['validationDate'].value">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker [touchUi]="appService.getViewMode()" #picker></mat-datepicker>
+                                <button mat-button color="warn" matSuffix mat-icon-button
+                                    *ngIf="attachment['validationDate'].value && !attachment['validationDate'].disabled"
+                                    (click)="$event.stopPropagation();attachment['validationDate'].reset();"
+                                    [title]="'lang.eraseValue' | translate">
+                                    <mat-icon color="warn" class="fa fa-calendar-times">
+                                    </mat-icon>
+                                </button>
+                            </mat-form-field>
+                            <div class="fieldState">
+                                <i class="fas fa-asterisk noMandatory"
+                                    *ngIf="attachment['validationDate'].valid && isEmptyField(attachment['validationDate'])"></i>
+                                <i class="fas fa-check fieldFull"
+                                    *ngIf="attachment['validationDate'].valid && !isEmptyField(attachment['validationDate'])"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="documentContent col-md-9 col-sm-12">
+                        <app-document-viewer #appDocumentViewer style="height:100%;width:100%;position: relative;"
+                            [editMode]="true" [mode]="'attachment'" (triggerEvent)="setDatasViewer($event, i)">
+                        </app-document-viewer>
+                        <div class="fieldState stateDoc">
+                            <i class="fas fa-exclamation-triangle fieldError"
+                                *ngIf="attachment['encodedFile'].touched && attachment['encodedFile'].hasError('required')"></i>
+                        </div>
+                        <div style="position: absolute;right: 20px;top: -55px;width:40px;height:40px;">
+                            <app-tools-informations style="position:fixed;z-index:3;text-align: left;" [resId]="data.resIdMaster"></app-tools-informations>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab disabled class="addPJ">
+                <ng-template mat-tab-label>
+                    <span><button mat-icon-button [disabled]="sendMassMode || isDocLoading()" [title]="'lang.newAttachment' | translate"
+                            (click)="$event.stopPropagation();newPj()">
+                            <mat-icon class="fa fa-plus"></mat-icon>
+                        </button></span>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-dialog-content>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="primary" *ngIf="creationMode && !loading" (click)="onSubmit()"
+            [disabled]="canValidatePj()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button color="primary" *ngIf="sendMassMode && !loading" (click)="onSubmit('mailing')"
+            [disabled]="canValidatePj()">{{'lang.mailing' | translate}}</button>
+        <button mat-raised-button mat-button *ngIf="creationMode && !loading" [disabled]="canValidatePj()"
+            [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

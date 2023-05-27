@@ -1,0 +1,9 @@
+<button mat-fab cdkDrag [matBadge]="countMissingLang" [matMenuTriggerFor]="menu" color="warn" style="position: fixed;right: 20px;bottom: 20px;z-index: 1;">
+  <mat-icon class="fas fa-toolbox" style="height: auto;font-size: 23px;"></mat-icon>
+</button>
+<mat-menu #menu="matMenu" [class]="'devToolListMenu'">
+  <button mat-menu-item (click)="openLangTool()">
+    <mat-icon color="primary" class="fas fa-language" style="height: auto;"></mat-icon>
+    <span>Missing lang</span>&nbsp;&nbsp;<span [matBadge]="countMissingLang">&nbsp;</span>
+  </button>
+</mat-menu>

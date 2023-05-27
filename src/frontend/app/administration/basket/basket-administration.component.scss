@@ -1,0 +1,13 @@
+.basketActionsList {
+    ::ng-deep.mat-expansion-panel-body {
+        height: 400px;
+        overflow: auto;
+    }
+}
+.mat-chip {
+    padding: 25px !important;
+}
+textarea.mat-input-element {
+    padding: 0;
+    margin: 0;
+}

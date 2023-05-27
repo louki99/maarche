@@ -1,0 +1,403 @@
+<div class="loading" *ngIf="loading; else elseTemplate">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>
+<ng-template #elseTemplate>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="mainInfo"
+            [disabled]="noField('mainInfo')">{{'lang.denomination' | translate}}</button>
+        <button mat-menu-item [matMenuTriggerFor]="address" [disabled]="noField('address')">{{'lang.address' | translate}}</button>
+        <button mat-menu-item [matMenuTriggerFor]="complement"
+            [disabled]="noField('complement')">{{'lang.additionals' | translate}}</button>
+        <button mat-menu-item [matMenuTriggerFor]="maarch2maarch"
+            [disabled]="noField('maarch2maarch')">Maarch2Maarch</button>
+    </mat-menu>
+
+    <mat-menu #mainInfo="matMenu">
+        <button mat-menu-item (click)="toogleAllFieldsUnit('mainInfo')"
+            style="text-align: center;">{{'lang.addAll' | translate}}</button>
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let field of contactForm">
+            <button mat-menu-item *ngIf="!field.display && field.unit === 'mainInfo'"
+                (click)="field.display=!field.display">
+                <mat-icon *ngIf="field.filling" style="height: auto;padding-right: 10px;"
+                    [title]="'lang.targetFillingField' | translate" [style.color]="fillingRate.color" class="fas fa-circle rate">
+                </mat-icon>
+                <span>{{field.label}}</span>
+            </button>
+        </ng-container>
+    </mat-menu>
+
+    <mat-menu #address="matMenu">
+        <button mat-menu-item (click)="toogleAllFieldsUnit('address')"
+            style="text-align: center;">{{'lang.addAll' | translate}}</button>
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let field of contactForm">
+            <button mat-menu-item *ngIf="!field.display && field.unit === 'address' && field.id !== 'sector'"
+                (click)="field.display=!field.display">
+                <mat-icon *ngIf="field.filling" style="height: auto;padding-right: 10px;"
+                    [title]="'lang.targetFillingField' | translate" [style.color]="fillingRate.color" class="fas fa-circle rate">
+                </mat-icon>
+                <span>{{field.label}}</span>
+            </button>
+        </ng-container>
+    </mat-menu>
+    <mat-menu #complement="matMenu">
+        <button mat-menu-item (click)="toogleAllFieldsUnit('complement')"
+            style="text-align: center;">{{'lang.addAll' | translate}}</button>
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let field of contactForm">
+            <button mat-menu-item *ngIf="!field.display && field.unit === 'complement'"
+                (click)="field.display=!field.display">
+                <mat-icon *ngIf="field.filling" style="height: auto;padding-right: 10px;"
+                    [title]="'lang.targetFillingField' | translate" [style.color]="fillingRate.color" class="fas fa-circle rate">
+                </mat-icon>
+                <span>{{field.label}}</span>
+            </button>
+        </ng-container>
+    </mat-menu>
+    <mat-menu #maarch2maarch="matMenu">
+        <button mat-menu-item (click)="toogleAllFieldsUnit('maarch2maarch')"
+            style="text-align: center;">{{'lang.addAll' | translate}}</button>
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let field of contactForm">
+            <button mat-menu-item *ngIf="!field.display && field.unit === 'maarch2maarch'"
+                (click)="field.display=!field.display">
+                <mat-icon *ngIf="field.filling" style="height: auto;padding-right: 10px;"
+                    [title]="'lang.targetFillingField' | translate" [style.color]="fillingRate.color" class="fas fa-circle rate">
+                </mat-icon>
+                <span>{{field.label}}</span>
+            </button>
+        </ng-container>
+    </mat-menu>
+    <div style="padding: 10px;" *ngIf="this.fillingParameters.enable">
+        <div class="rate" [style.color]="fillingRate.color">{{'lang.contactFilledTo' | translate}} <b>{{fillingRate.value}} %</b>
+        </div>
+        <mat-progress-bar mode="determinate" class="fillingBar" [color]="fillingRate.class" [value]="fillingRate.value">
+        </mat-progress-bar>
+
+    </div>
+    <div style="display: flex; flex: 1; align-items:flex-start;">
+        <div *ngIf="autocompleteContactName.length > 0 && !contactChanged" class="alert-message alert-message-info" role="alert">
+            <div [ngStyle]="{'padding': autocompleteContactName.length === 1 ? '10px' : '0px'}" style="margin: 13px; width: 100% !important;">
+                <div style="margin-top: -7px; margin-bottom: 2px;">
+                    {{'lang.contact' | translate}}
+                    <ng-container> <b>{{contactService.formatContact(autocompleteContactName[0])}}</b></ng-container> {{'lang.find' | translate}}
+                    <a style="cursor: pointer;font-weight:bold;font-style: italic;" (click)="setContact(autocompleteContactName[0].id)">{{'lang.click' | translate}} {{'lang.here' | translate}}</a> {{!fromAdministration ? ('lang.associateContact' | translate) : ('lang.accessContact' | translate)}}
+                </div>
+                <div *ngIf="autocompleteContactName.length > 1" style="margin-bottom: -8px;">
+                    <mat-icon color="primary" class="fas fa-angle-right" style="font-size:16px;width:14px;"></mat-icon>
+                <a class="showAllContacts" (click)="showAllContact()">Voir les autres contacts</a>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="companyFound !== null" class="alert-message alert-message-info" role="alert" [@hideShow]>
+            <div style="padding:10px;">
+                {{'lang.contactsParameters_company' | translate}} <b>{{companyFound.company}}</b>
+                {{'lang.found' | translate}}
+                !
+                <a (click)="setAddress(companyFound)"
+                    style="cursor: pointer;font-weight:bold;font-style: italic;">{{'lang.click' | translate}} {{'lang.here' | translate}}</a>
+                {{'lang.toCopyAddress' | translate}} :<br/>
+                <q style="font-weight: bold;width: 100%;display: block;text-align: center;">{{companyFound.addressNumber}} {{companyFound.addressStreet}}, {{companyFound.addressPostcode}}
+                    {{companyFound.addressTown}}, {{companyFound.addressCountry}}</q>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin: 0px;">
+        <ng-container *ngFor="let unit of contactUnit">
+            <div [class.col-sm-12]="unit.id !== 'maarch2maarch' && unit.id !== 'complement' && !isEmptyUnit('mainInfo') && !isEmptyUnit('address')"
+                [class.col-md-6]="unit.id !== 'maarch2maarch' && unit.id !== 'complement' && !isEmptyUnit('mainInfo') && !isEmptyUnit('address')"
+                [class.col-md-12]="unit.id === 'complement' || unit.id === 'maarch2maarch'"
+                *ngIf="!isEmptyUnit(unit.id)">
+                <mat-list>
+                    <h3 mat-subheader class="unitTitle"><span style="flex:1">{{unit.label}}</span><a
+                            *ngIf="unit.id === 'address'" (click)="addressBANMode=!addressBANMode"
+                            style="cursor: pointer;">{{addressBANMode ? ('lang.switchManualAddress' | translate) : ('lang.searchAddressDb' | translate)}}</a>
+                    </h3>
+                    <ng-container *ngFor="let field of contactForm;let i=index">
+                        <mat-list-item class="contact-item"
+                            *ngIf="(field.unit === unit.id && unit.id !== 'address') || (field.unit === unit.id && unit.id === 'address' && !addressBANMode)">
+                            <p mat-line class="contact-content" *ngIf="field.display">
+                                <ng-container
+                                    *ngIf="field.type === 'string' && field.id !== 'url' && field.id !== 'externalId_m2m' && field.id != 'addressCountry' && field.id != 'addressPostcode' && field.id != 'addressTown'">
+                                    <mat-form-field>
+                                        <input matInput [formControl]="field.control" [placeholder]="field.label"
+                                            (blur)="checkCompany(field); checkContactName(field); checkFilling();" (ngModelChange)="toUpperCase(field, $event)" [required]="field.required">
+                                        <mat-hint *ngIf="!isEmptyValue(field.desc)" align="end"
+                                            [innerHTML]="field.desc">
+                                        </mat-hint>
+                                        <mat-error *ngIf="field.control.status!=='VALID'  && field.control.touched">
+                                            {{getErrorMsg(field.control.errors)}}</mat-error>
+                                        <mat-icon style="height: auto;" *ngIf="field.filling" matSuffix
+                                            [title]="'lang.targetFillingField' | translate" [style.color]="fillingRate.color"
+                                            class="fas fa-circle rate"></mat-icon>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.type === 'integer'">
+                                    <mat-form-field>
+                                        <input type="text" matInput [formControl]="field.control"
+                                            [placeholder]="field.label" min="0" step="0.1" [required]="field.required">
+                                        <mat-error *ngIf="field.control.status!=='VALID' && field.control.touched">
+                                            {{getErrorMsg(field.control.errors)}}</mat-error>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.type === 'select'">
+                                    <app-plugin-select-search [label]="field.label" [required]="field.required"
+                                        [showLabel]="true" [formControlSelect]="field.control"
+                                        [placeholderLabel]="field.label" [hideErrorDesc]="false" [datas]="field.values"
+                                        [class]="''"
+                                        [suffixIcon]="field.filling ? {class:'fa-circle', color:fillingRate.color, title: 'lang.targetFillingField' | translate} : null">
+                                    </app-plugin-select-search>
+                                </ng-container>
+                                <ng-container *ngIf="field.type === 'date'">
+                                    <mat-form-field (click)="picker.open()" style="cursor:pointer;">
+                                        <mat-label>{{field.label}}
+                                        </mat-label>
+                                        <input [formControl]="field.control" matInput [matDatepicker]="picker"
+                                            [placeholder]="field.label" readonly style="cursor:pointer;">
+                                        <mat-datepicker-toggle matSuffix [for]="picker" *ngIf="!field.control.value">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker [touchUi]="appService.getViewMode()" #picker>
+                                        </mat-datepicker>
+                                        <button mat-button color="warn" matSuffix mat-icon-button
+                                            *ngIf="field.control.value && !field.control.disabled"
+                                            (click)="$event.stopPropagation();field.control.reset();"
+                                            [title]="'lang.eraseValue' | translate">
+                                            <mat-icon color="warn" class="fa fa-calendar-times">
+                                            </mat-icon>
+                                        </button>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.type === 'radio'">
+                                    <label class="labelCustom">{{field.label}} <ng-container *ngIf="field.required">*
+                                        </ng-container></label>
+                                    <mat-radio-group class="radio-form" color="primary" [formControl]="field.control">
+                                        <mat-radio-button *ngFor="let value of field.values" [value]="value.id">
+                                            {{value.label}}
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                    <i *ngIf="field.filling"
+                                        style="position:absolute;height: auto;padding-right: 10px;right: 0px;z-index: 1;top: 50%;transform: translateY(-50%);"
+                                        [title]="'lang.targetFillingField' | translate" [style.color]="fillingRate.color"
+                                        class="fas fa-circle rate"></i>
+                                    <mat-error *ngIf="field.control.status!=='VALID'  && field.control.touched">
+                                        {{getErrorMsg(field.control.errors)}}</mat-error>
+                                </ng-container>
+                                <ng-container *ngIf="field.type === 'checkbox'">
+                                    <label class="labelCustom">{{field.label}} <ng-container *ngIf="field.required">*
+                                        </ng-container></label>
+                                    <mat-selection-list #shoes class="checkbox-form" [formControl]="field.control">
+                                        <mat-list-option *ngFor="let value of field.values" [value]="value.id"
+                                            color="primary" checkboxPosition="before">
+                                            {{value.label}}
+                                        </mat-list-option>
+                                    </mat-selection-list>
+                                    <i *ngIf="field.filling"
+                                        style="position:absolute;height: auto;padding-right: 10px;right: 0px;z-index: 1;top: 50%;transform: translateY(-50%);"
+                                        [title]="'lang.targetFillingField' | translate" [style.color]="fillingRate.color"
+                                        class="fas fa-circle rate"></i>
+                                    <mat-error *ngIf="field.control.status!=='VALID'  && field.control.touched">
+                                        {{getErrorMsg(field.control.errors)}}</mat-error>
+                                </ng-container>
+                                <ng-container *ngIf="field.id === 'url'">
+                                    <mat-form-field *ngIf="annuaryEnabled">
+                                        <input type="text" #autoCompleteInputCommunicationMean
+                                            [placeholder]="'lang.searchCommunicationMean' | translate" matInput
+                                            [formControl]="field.control" [matAutocomplete]="auto"
+                                            (click)="$event.stopPropagation()" (keyup)="resetM2MFields()">
+                                        <mat-hint *ngIf="!isEmptyValue(field.desc)" align="end"
+                                            [innerHTML]="field.desc"></mat-hint>
+                                        <mat-autocomplete #auto="matAutocomplete"
+                                            (optionSelected)="selectCommunicationMean($event)">
+                                            <ng-container
+                                                *ngIf="communicationMeanResult.length > 0 && !communicationMeanLoading">
+                                                <mat-option
+                                                    *ngFor="let communicationMeanResult of communicationMeanFilteredResult | async"
+                                                    [value]="communicationMeanResult">
+                                                    {{communicationMeanResult.unitOrganization}}
+                                                </mat-option>
+                                            </ng-container>
+                                            <mat-option class="autoCompleteInfoResult smallInputInfo"
+                                                *ngIf="communicationMeanResult.length === 0 && !communicationMeanLoading"
+                                                disabled [innerHTML]="communicationMeanInfo">
+                                            </mat-option>
+                                            <mat-option *ngIf="communicationMeanLoading" disabled>
+                                                <mat-spinner diameter="20"></mat-spinner>
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    <mat-form-field *ngIf="!annuaryEnabled">
+                                        <input type="text" #autoCompleteInputCommunicationMean
+                                            [placeholder]="'lang.communicationMean' | translate" matInput
+                                            [formControl]="field.control">
+                                        <mat-hint *ngIf="!isEmptyValue(field.desc)" align="end"
+                                                  [innerHTML]="field.desc"></mat-hint>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.id === 'externalId_m2m'">
+                                    <mat-form-field *ngIf="annuaryEnabled">
+                                        <input type="text" #autoCompleteInputExternalIdM2M
+                                            [placeholder]="'lang.searchExternalIdM2M' | translate" matInput
+                                            [formControl]="field.control" [matAutocomplete]="auto"
+                                            (click)="$event.stopPropagation()"
+                                            (keyup)="resetAutocompleteExternalIdM2M()">
+                                        <mat-hint *ngIf="!isEmptyValue(field.desc)" align="end"
+                                            [innerHTML]="field.desc"></mat-hint>
+                                        <mat-autocomplete #auto="matAutocomplete"
+                                            (optionSelected)="selectExternalIdM2M($event)">
+                                            <ng-container
+                                                *ngIf="externalId_m2mResult.length > 0 && !externalId_m2mLoading">
+                                                <mat-option
+                                                    *ngFor="let externalId_m2mResult of externalId_m2mFilteredResult | async"
+                                                    [value]="externalId_m2mResult">
+                                                    {{externalId_m2mResult.unitOrganization}}
+                                                </mat-option>
+                                            </ng-container>
+                                            <mat-option class="autoCompleteInfoResult smallInputInfo"
+                                                *ngIf="externalId_m2mResult.length === 0 && !externalId_m2mLoading"
+                                                disabled [innerHTML]="externalId_m2mInfo">
+                                            </mat-option>
+                                            <mat-option *ngIf="externalId_m2mLoading" disabled>
+                                                <mat-spinner diameter="20"></mat-spinner>
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    <mat-form-field *ngIf="!annuaryEnabled">
+                                        <input type="text" #autoCompleteInputExternalIdM2M
+                                            [placeholder]="'lang.IdMaarch2Maarch' | translate" matInput
+                                            [formControl]="field.control">
+                                        <mat-hint *ngIf="!isEmptyValue(field.desc)" align="end"
+                                                  [innerHTML]="field.desc"></mat-hint>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.id === 'addressCountry'">
+                                    <mat-form-field>
+                                        <input matInput #autoCompleteInput [formControl]="field.control" [placeholder]="field.label" [matAutocomplete]="matAutocompleteCountries">
+                                        <mat-autocomplete #matAutocompleteCountries="matAutocomplete" isOpen="true" (optionSelected)="selectCountry($event)">
+                                            <mat-option *ngFor="let country of countriesFilteredResult | async" [value]="country">
+                                                {{country}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.id === 'addressPostcode'">
+                                    <mat-form-field>
+                                        <input matInput #autoCompleteInput [formControl]="field.control" [placeholder]="field.label" [matAutocomplete]="matAutocompletePostCode">
+                                        <mat-autocomplete #matAutocompletePostCode="matAutocomplete" (optionSelected)="selectPostcode($event)">
+                                            <mat-option *ngFor="let postcode of postcodesFilteredResult | async" [value]="postcode">
+                                                {{postcode.postcode}} - {{postcode.town}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.id === 'addressTown'">
+                                    <mat-form-field>
+                                        <input matInput #autoCompleteInput [formControl]="field.control" [placeholder]="field.label" [matAutocomplete]="matAutocompletePostCodeTown">
+                                        <mat-autocomplete #matAutocompletePostCodeTown="matAutocomplete" (optionSelected)="selectPostcode($event)">
+                                            <mat-option *ngFor="let postcode of postcodesTownFilteredResult | async" [value]="postcode">
+                                                {{postcode.town}} ({{postcode.postcode}})
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-container *ngIf="field.id === 'correspondentsGroups'">
+                                    <app-input-correspondent-group #appInputCorrespondentGroup [id]="contactId" [type]="'contact'" style="display: block;" (afterCorrespondentsGroupsLoaded)="handleCorrespondentsGroupsField($event,field)"></app-input-correspondent-group>
+                                </ng-container>
+                            </p>
+                            <button *ngIf="field.display" [disabled]="!canDelete(field)" mat-icon-button matSuffix
+                                color="warn" (click)="removeField(field)">
+                                <mat-icon class="fa fa-trash"></mat-icon>
+                            </button>
+                        </mat-list-item>
+                        <ng-container
+                            *ngIf="unit.id === 'address' && addressBANMode && ['addressAdditional1', 'addressAdditional2', 'sector'].indexOf(field.id) > -1">
+                            <mat-list-item class="contact-item">
+                                <p mat-line class="contact-content" *ngIf="field.display">
+                                    <mat-form-field>
+                                        <input matInput [formControl]="field.control" [placeholder]="field.label"
+                                            [required]="field.required">
+                                        <mat-error *ngIf="field.control.hasError('required')">
+                                            {{'lang.requiredField' | translate}}</mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <button *ngIf="field.display" [disabled]="!canDelete(field)" mat-icon-button matSuffix
+                                    color="warn" (click)="removeField(field)">
+                                    <mat-icon class="fa fa-trash"></mat-icon>
+                                </button>
+                            </mat-list-item>
+                        </ng-container>
+
+                        <ng-container *ngIf="unit.id === 'address' && addressBANMode && i === 0">
+                            <mat-list-item>
+                                <p mat-line class="contact-content">
+                                    <mat-form-field appearance='outline' class="smallInput">
+                                        <button mat-button matSuffix [matMenuTriggerFor]="menuDep"
+                                            (click)="$event.stopPropagation();" [title]="'lang.targetDepartment' | translate">
+                                            {{addressBANCurrentDepartment}}&nbsp;<i class="fa fa-chevron-down"></i>
+                                        </button>
+                                        <mat-menu #menuDep="matMenu">
+                                            <button mat-menu-item *ngFor="let dep of departmentList"
+                                                (click)="addressBANCurrentDepartment = dep">{{dep}}</button>
+                                        </mat-menu>
+                                        <mat-icon color="primary" class="fa fa-search" matPrefix
+                                            style="font-size: 15px;"></mat-icon>
+                                        <input type="text" #autoCompleteInput [placeholder]="'lang.searchAddressBan' | translate"
+                                            matInput [formControl]="addressBANControl" [matAutocomplete]="auto"
+                                            (click)="$event.stopPropagation()" (focus)="resetAutocompleteAddressBan()"
+                                            maxlength="128">
+                                        <mat-autocomplete #auto="matAutocomplete"
+                                            (optionSelected)="selectAddressBan($event)">
+                                            <ng-container *ngIf="addressBANResult.length > 0 && !addressBANLoading">
+                                                <mat-option
+                                                    *ngFor="let addressBANResult of addressBANFilteredResult | async"
+                                                    [value]="addressBANResult">
+                                                    {{addressBANResult.address}}
+                                                </mat-option>
+                                            </ng-container>
+                                            <mat-option class="autoCompleteInfoResult smallInputInfo"
+                                                *ngIf="addressBANResult.length === 0 && !addressBANLoading" disabled
+                                                [innerHTML]="addressBANInfo">
+                                            </mat-option>
+                                            <mat-option *ngIf="addressBANLoading" disabled>
+                                                <mat-spinner diameter="20"></mat-spinner>
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    <mat-card style="margin:10px;" *ngIf="!emptyAddress()">
+                                        <mat-list-item class="contact-address" (click)="goTo()"
+                                            [title]="'lang.address' | translate">
+                                            <mat-icon mat-list-icon color="primary"
+                                                class="contact-group fas fa-map-marker-alt"></mat-icon>
+                                            <p mat-line class="contact-content" *ngIf="!isEmptyValue(getValue('addressAdditional1'))">
+                                                {{getValue('addressAdditional1')}}
+                                            </p>
+                                            <p mat-line class="contact-content">
+                                                {{getValue('addressNumber')}}
+                                                {{getValue('addressStreet')}}
+                                            </p>
+                                            <p mat-line class="contact-content" *ngIf="!isEmptyValue(getValue('addressAdditional2'))">
+                                                {{getValue('addressAdditional2')}}
+                                            </p>
+                                            <p mat-line class="contact-content">
+                                                {{getValue('addressPostcode')}}
+                                                {{getValue('addressTown')}}
+                                            </p>
+                                            <p mat-line class="contact-content">
+                                                {{getValue('addressCountry')}} </p>
+                                        </mat-list-item>
+                                    </mat-card>
+                                </p>
+                            </mat-list-item>
+                        </ng-container>
+                    </ng-container>
+                </mat-list>
+            </div>
+        </ng-container>
+    </div>
+    <div style="text-align:center;padding-top: 10px;">
+        <button mat-raised-button color="default" type="button"
+            [matMenuTriggerFor]="menu">{{'lang.moreInfos' | translate}}...</button>
+
+        <button mat-raised-button *ngIf="actionButton" color="primary" type="button" (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+    </div>
+</ng-template>

@@ -1,0 +1,213 @@
+
+.panel-left {
+    ::ng-deep.mat-drawer-inner-container {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.bg-head-content {
+    background-color: var(--maarch-color-primary);
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.attach-button {
+    border-bottom: solid 1px #ffffff4d;
+    border-radius: 0px;
+    color: white;
+}
+
+.count-badge {
+    background-color: var(--maarch-color-secondary);
+    font-weight: bold;
+    font-size: 12px;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+.count-badge-empty {
+    opacity: 0.5;
+    background-color: grey;
+    font-size: 12px;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+.document-container {
+    flex: 1;
+
+    padding-left: 50px;
+    padding-right: 50px;
+    @media (max-width: 768px) {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    color: white;
+    margin-top: 0px;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--maarch-color-primary);
+
+    .content {
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        height: 100%;
+        min-height: 200px;
+        width: 100%;
+        border-radius: 0px;
+        box-shadow: none;
+        border: solid 1px white;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        font-weight: bold;
+        flex-direction: column;
+    }
+}
+
+.indexing-form-container {
+    height: 100%;
+    overflow: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    @media (max-width: 768px) {
+        padding-right: 0px;
+        padding-left: 0px;
+    }
+}
+
+.actions-indexing-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 -5px 10px 0 rgba(0, 0, 0, 0.07);
+    padding-left: 40px;
+    padding-right: 40px;
+    @media (max-width: 768px) {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+.emptyModel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 25px;
+    opacity: 0.3;
+    font-weight: bold;
+}
+
+.listModels {
+    background: #F9F9F9;
+    display: flex;
+    padding: 10px;
+    padding-left: 40px;
+    padding-right: 40px;
+    @media (max-width: 768px) {
+        padding-bottom: 20px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .mat-icon {
+        font-size: 20px;
+        height: auto;
+    }
+
+    &-button {
+        margin-right:20px;
+        width: 450px !important;
+    }
+}
+
+::ng-deep.listModels-menu {
+    min-width: 450px !important;
+
+    .mat-menu-item:hover:hover {
+        .listModels-menu-badge {
+            background: white !important;
+            color: var(--maarch-color-primary) !important;
+        }
+    
+        .listModels-menu-delete {
+            .mat-icon {
+                color: white !important;
+            }
+        }
+    }
+    &-badge {
+        font-size: 70%;
+        background: var(--maarch-color-primary);
+        padding: 2px;
+        border-radius: 20px;
+        color: white;
+        padding-left: 5px;
+        padding-right: 5px;
+        font-weight: bold;
+    }
+
+    &-delete {
+        .mat-icon {
+            margin-right: 0px;
+        }
+    }
+
+    &-selected {
+        color: white !important;
+        background: var(--maarch-color-primary);
+        .listModels-menu-badge {
+            background: white !important;
+            color: var(--maarch-color-primary) !important;
+        }
+    }
+}
+
+.emptyAction {
+    color: var(--maarch-color-danger);
+    font-size: 14px;
+    text-align: center;
+    // opacity: 0.3;
+}
+
+.loading {
+    display: flex;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    background: #ffffffba;
+    z-index: 2;
+}
+
+::ng-deep.menuAction {
+    min-width: 350px !important;
+}
+
+.menuTitle {
+    display: flex;
+    padding-left: 20px;
+    align-items: center;
+    color: var(--maarch-color-primary);
+    font-weight: bold;
+}
+
+.smallInput {
+    padding: 10px;
+
+    ::ng-deep.mat-form-field-wrapper {
+        padding-bottom: 0px;
+    }
+}

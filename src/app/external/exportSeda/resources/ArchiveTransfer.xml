@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ArchiveTransfer xmlns="fr:gouv:culture:archivesdefrance:seda:v2.1">
+    <?merge ArchiveTransfer.Comment ?><Comment><?merge .value ?></Comment>
+    <Date><?merge ArchiveTransfer.Date ?></Date>
+    <?merge ArchiveTransfer.MessageIdentifier $messageIdentifier ?><?xinclude /resources/MessageIdentifier.xml ?>
+    <?merge ArchiveTransfer.ArchivalAgreement $archivalAgreement ?><?xinclude /resources/ArchivalAgreement.xml ?>
+    <?xinclude /resources/CodeListVersions.xml ?>
+    <?merge ArchiveTransfer.DataObjectPackage $dataObjectPackage ?>
+    <?xinclude /resources/DataObjectPackage.xml ?>
+    <ArchivalAgency>
+        <?merge ArchiveTransfer.ArchivalAgency $organization ?>
+        <?xinclude /resources/Organization.xml ?>
+    </ArchivalAgency>
+    <TransferringAgency>
+        <?merge ArchiveTransfer.TransferringAgency $organization ?>
+        <?xinclude /resources/Organization.xml ?>
+    </TransferringAgency>
+</ArchiveTransfer>

@@ -1,0 +1,24 @@
+<div class="stepContent">
+    <h2 class="stepContentTitle"><i class="fas fa-check-square"></i> {{'lang.prerequisite' | translate}}</h2>
+    <div class="alert-message alert-message-info" role="alert" style="margin-top: 30px;min-width: 100%;">
+        {{'lang.stepPrerequisite_desc' | translate}} : <a href="{{docMaarchUrl}}" target="_blank" class="link">{{docMaarchUrl}}</a>
+    </div>
+    <mat-list style="background: white;" *ngFor="let groupPackage of packagesList | keyvalue">
+        <div mat-subheader>{{'lang.' + groupPackage.key | translate}}</div>
+        <mat-grid-list cols="3" rowHeight="50px">
+            <mat-grid-tile *ngFor="let package of packagesList[groupPackage.key]">
+                <mat-list-item>
+                    <mat-icon mat-list-icon class="fa iconCheckPackage icon_{{package.state}}"></mat-icon>
+                    <div mat-line class="packageName">
+                        {{'lang.install_' + package.label | translate}} <i #packageItem="matTooltip" [id]="package.label" class="fa fa-info-circle" 
+                        [matTooltip]="'lang.install_'+package.label+'_desc' | translate"
+                        [matTooltipClass]="package.state !== 'ok' ? 'tooltip-red' : ''" matTooltipPosition="right"></i>
+                    </div>
+                </mat-list-item>  
+            </mat-grid-tile>
+          </mat-grid-list>
+    </mat-list>
+    <div style="text-align: center;">
+        <button mat-raised-button type="button" color="primary" (click)="getStepData()">{{'lang.updateInformations' | translate}}</button>
+    </div>
+</div>

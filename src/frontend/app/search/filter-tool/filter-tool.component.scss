@@ -1,0 +1,68 @@
+
+.catGroupTitle {
+    color: var(--maarch-color-primary);
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+.catContent {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.catLabel {
+    flex: 1;
+}
+
+.catBadge {
+    color: #135f7f;
+    font-size: 14px;
+    font-weight: bold !important;
+    min-width: auto;
+}
+
+.filter-list {
+    ::ng-deep.mat-list-text {
+        flex-direction: row;
+    }
+}
+
+.FilterContainer {
+    border-radius: 0px;
+    box-shadow:none;
+
+    ::ng-deep.mat-expansion-panel-body {
+        padding: 0;
+    }
+
+    .mat-expansion-panel-header-title {
+        color: #135F7F;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .mat-line {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    ::ng-deep.mat-pseudo-checkbox-disabled {
+        opacity: 0.5;
+    }
+}
+
+.panelIconMenu {
+    font-size: 22px;
+}
+
+.mat-list-item-disabled {
+    background: initial;
+}
+
+.noRes {
+    color: #666 !important;
+    opacity: 0.5;
+}

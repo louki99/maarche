@@ -1,0 +1,224 @@
+<?merge $archiveUnit ?>
+<ArchiveUnit id="[?merge .id ?]">
+    <ArchiveUnitRefId><?merge .ArchiveUnitRefId ?></ArchiveUnitRefId>
+    <ArchiveUnitProfile schemeID="[?merge .ArchiveUnitProfile.schemeID ?]" schemeName="[?merge .ArchiveUnitProfile.schemeName ?]" schemeAgencyID="[?merge .ArchiveUnitProfile.schemeAgencyID ?]" schemeAgencyName="[?merge .ArchiveUnitProfile.schemeAgencyName ?]" schemeVersionID="[?merge .ArchiveUnitProfile.schemeVersionID ?]" schemeDataURI="[?merge .ArchiveUnitProfile.schemeDataURI ?]" schemeURI="[?merge .ArchiveUnitProfile.schemeURI ?]"><?merge .ArchiveUnitProfile ?></ArchiveUnitProfile>
+    <?merge .Management.bool() ?>
+    <Management>
+        <?merge .Management.ArchivalProfile.bool() ?><ArchivalProfile><?merge .Management.ArchivalProfile.value ?></ArchivalProfile>
+        <?merge .Management.ServiceLevel.bool() ?><ServiceLevel><?merge .Management.ServiceLevel.value ?></ServiceLevel>
+        <?merge .Management.StorageRule.bool() ?>
+        <StorageRule>
+            <?merge .Management.StorageRule.Rule.bool() ?><Rule><?merge .Management.StorageRule.Rule.value ?></Rule>
+            <?merge .Management.StorageRule.StartDate.bool() ?><StartDate><?merge .Management.StorageRule.StartDate ?></StartDate>
+            <PreventInheritance><?merge .Management.StorageRule.PreventInheritance ?></PreventInheritance>
+            <RefNonRuleId><?merge .Management.StorageRule.RefNonRuleId ?></RefNonRuleId>
+            <FinalAction><?merge .Management.StorageRule.FinalAction ?></FinalAction>
+        </StorageRule>
+        <?merge .Management.AppraisalRule.bool() ?>
+        <AppraisalRule>
+            <?merge .Management.AppraisalRule.Rule.bool() ?><Rule><?merge .Management.AppraisalRule.Rule.value ?></Rule>
+            <?merge .Management.AppraisalRule.StartDate.bool() ?><StartDate><?merge .Management.AppraisalRule.StartDate ?></StartDate>
+            <PreventInheritance><?merge .Management.AppraisalRule.PreventInheritance ?></PreventInheritance>
+            <RefNonRuleId><?merge .Management.AppraisalRule.RefNonRuleId ?></RefNonRuleId>
+            <FinalAction><?merge .Management.AppraisalRule.FinalAction ?></FinalAction>
+        </AppraisalRule>
+        <?merge .Management.AccessRule.bool() ?>
+        <AccessRule>
+            <?merge .Management.AccessRule.Rule.bool() ?><Rule><?merge .Management.AccessRule.Rule.value ?></Rule>
+            <?merge .Management.AccessRule.StartDate.bool() ?><StartDate><?merge .Management.AccessRule.StartDate ?></StartDate>
+            <PreventInheritance><?merge .Management.AccessRule.PreventInheritance ?></PreventInheritance>
+            <RefNonRuleId><?merge .Management.AccessRule.RefNonRuleId ?></RefNonRuleId>
+        </AccessRule>
+        <?merge .Management.DisseminationRule.bool() ?>
+        <DisseminationRule>
+            <?merge .Management.DisseminationRule.Rule.bool() ?><Rule><?merge .Management.DisseminationRule.Rule.value ?></Rule>
+            <?merge .Management.DisseminationRule.StartDate.bool() ?><StartDate><?merge .Management.DisseminationRule.StartDate ?></StartDate>
+            <PreventInheritance><?merge .Management.DisseminationRule.PreventInheritance ?></PreventInheritance>
+            <RefNonRuleId><?merge .Management.DisseminationRule.RefNonRuleId ?></RefNonRuleId>
+        </DisseminationRule>
+        <?merge .Management.ReuseRule.bool() ?>
+        <ReuseRule>
+            <?merge .Management.ReuseRule.Rule.bool() ?><Rule><?merge .Management.ReuseRule.Rule.value ?></Rule>
+            <?merge .Management.ReuseRule.StartDate.bool() ?><StartDate><?merge .Management.ReuseRule.StartDate ?></StartDate>
+            <PreventInheritance><?merge .Management.ReuseRule.PreventInheritance ?></PreventInheritance>
+            <RefNonRuleId><?merge .Management.ReuseRule.RefNonRuleId ?></RefNonRuleId>
+        </ReuseRule>
+        <?merge .Management.ClassificationRule.bool() ?>
+        <ClassificationRule>
+            <?merge .Management.ClassificationRule.Rule.bool() ?><Rule><?merge .Management.ClassificationRule.Rule.value ?></Rule>
+            <?merge .Management.ClassificationRule.StartDate.bool() ?><StartDate><?merge .Management.ClassificationRule.StartDate ?></StartDate>
+            <PreventInheritance><?merge .Management.ClassificationRule.PreventInheritance ?></PreventInheritance>
+            <RefNonRuleId><?merge .Management.ClassificationRule.RefNonRuleId ?></RefNonRuleId>
+            <ClassificationLevel><?merge .Management.ClassificationRule.ClassificationLevel ?></ClassificationLevel>
+            <ClassificationOwner><?merge .Management.ClassificationRule.ClassificationOwner ?></ClassificationOwner>
+            <ClassificationReassessingDate><?merge .Management.ClassificationRule.ClassificationReassessingDate ?></ClassificationReassessingDate>
+            <NeedReassessingAuthorization><?merge .Management.ClassificationRule.NeedReassessingAuthorization ?></NeedReassessingAuthorization>
+        </ClassificationRule>
+        <?merge .Management.NeedAuthorization.bool() ?>
+        <NeedAuthorization>
+            <?merge .Management.NeedAuthorization ?>
+        </NeedAuthorization>
+        <?merge .Management.OtherManagementAbstract.bool() ?>
+        <OtherManagementAbstract>
+            <?merge .Management.OtherManagementAbstract ?>
+        </OtherManagementAbstract>
+    </Management>
+    <?merge .Content.bool() ?>
+    <Content>
+        <DescriptionLevel><?merge .Content.DescriptionLevel ?></DescriptionLevel>
+        <?merge .Content.Title ?><Title><?merge . ?></Title>
+        <?merge .Content.FilePlanPosition ?><FilePlanPosition schemeID="[?merge .schemeID @schemeID ?]" schemeName="[?merge .schemeName @schemeName ?]" schemeAgencyID="[?merge .schemeAgencyID @schemeAgencyID ?]" schemeAgencyName="[?merge .schemeAgencyName @schemeAgencyName ?]" schemeVersionID="[?merge .schemeVersionID @schemeVersionID ?]" schemeDataURI="[?merge .schemeDataURI @schemeDataURI ?]" schemeURI="[?merge .schemeURI @schemeURI ?]"><?merge .value ?></FilePlanPosition>
+        <?merge .Content.OriginatingSystemId.bool() ?><OriginatingSystemId><?merge .Content.OriginatingSystemId ?></OriginatingSystemId>
+        <OriginatingAgencyArchiveUnitIdentifier><?merge .Content.OriginatingAgencyArchiveUnitIdentifier ?></OriginatingAgencyArchiveUnitIdentifier>
+        <?merge .Content.Description.bool() ?><Description><?merge .Content.Description ?></Description>
+        <?merge .Content.CustodialHistory.bool() ?>
+        <CustodialHistory>
+            <?merge .Content.CustodialHistory.CustodialHistoryItem ?>
+            <CustodialHistoryItem when="[?merge .when ?]"><?merge .value ?></CustodialHistoryItem>
+        </CustodialHistory>
+        <Type><?merge .Content.Type ?></Type>
+        <DocumentType><?merge .Content.DocumentType ?></DocumentType>
+        <Language><?merge .Content.Language ?></Language>
+        <DescriptionLanguage><?merge .Content.DescriptionLanguage ?></DescriptionLanguage>
+        <Status><?merge .Content.Status ?></Status>
+        <Version><?merge .Content.Version ?></Version>
+        <?merge .Content.Tag ?><Tag><?merge .value ?></Tag>
+        <?merge .Content.Keyword.array() ?><Keyword>
+            <KeywordContent role="[?merge .KeywordContent.role @role ?]"><?merge .KeywordContent.value ?></KeywordContent>
+            <KeywordReference schemeID="[?merge .KeywordReference.schemeID @schemeID ?]" schemeName="[?merge .KeywordReference.schemeName @schemeName ?]" schemeAgencyID="[?merge .KeywordReference.schemeAgencyID @schemeAgencyID ?]" schemeAgencyName="[?merge .KeywordReference.schemeAgencyName @schemeAgencyName ?]" schemeVersionID="[?merge .KeywordReference.schemeVersionID @schemeVersionID ?]" schemeDataURI="[?merge .KeywordReference.schemeDataURI @schemeDataURI ?]" schemeURI="[?merge .KeywordReference.schemeURI @schemeURI ?]"><?merge .KeywordReference.value ?></KeywordReference>
+            <KeywordType listVersionID="[?merge .KeywordType.listVersionID @listVersionID ?]"><?merge .KeywordType ?></KeywordType>
+        </Keyword>
+        <?merge .Content.OriginatingAgency.bool() ?>
+        <OriginatingAgency>
+            <Identifier><?merge .Content.OriginatingAgency.Identifier.value ?></Identifier>
+        </OriginatingAgency>
+        <?merge .Content.SubmissionAgency.bool() ?>
+        <SubmissionAgency>
+            <?merge .Content.SubmissionAgency $organization ?>
+            <?xinclude /resources/Organization.xml ?>
+        </SubmissionAgency>
+        <?merge .Content.AuthorizedAgend.bool() ?>
+        <AuthorizedAgent>
+            <FirstName><?merge .Content.AuthorizedAgend.FirstName ?></FirstName>
+            <BirthName><?merge .Content.AuthorizedAgend.BirthName ?></BirthName>
+            <GivenName><?merge .Content.AuthorizedAgend.GivenName ?></GivenName>
+            <Gender><?merge .Content.AuthorizedAgend.Gender ?></Gender>
+            <BirthDate><?merge .Content.AuthorizedAgend.BirthDate ?></BirthDate>
+            <BirthPlace><?merge .Content.AuthorizedAgend.BirthPlace ?></BirthPlace>
+            <DeathDate><?merge .Content.AuthorizedAgend.DeathDate ?></DeathDate>
+            <DeathPlace><?merge .Content.AuthorizedAgend.DeathPlace ?></DeathPlace>
+            <Nationality><?merge .Content.AuthorizedAgend.Nationality ?></Nationality>
+            <Function><?merge .Content.AuthorizedAgend.Function ?></Function>
+            <Activity><?merge .Content.AuthorizedAgend.Activity ?></Activity>
+            <Position><?merge .Content.AuthorizedAgend.Position ?></Position>
+            <Role><?merge .Content.AuthorizedAgend.Role ?></Role>
+            <Corpname><?merge .Content.AuthorizedAgend.Corpname ?></Corpname>
+            <Identifier><?merge .Content.AuthorizedAgend.Identifier ?></Identifier>
+        </AuthorizedAgent>
+        <?merge .Content.Writer.array() ?>
+        <Writer>
+            <FirstName><?merge .FirstName ?></FirstName>
+            <BirthName><?merge .BirthName ?></BirthName>
+            <GivenName><?merge .GivenName ?></GivenName>
+            <Gender><?merge .Gender ?></Gender>
+            <BirthDate><?merge .BirthDate ?></BirthDate>
+            <BirthPlace><?merge .BirthPlace ?></BirthPlace>
+            <DeathDate><?merge .DeathDate ?></DeathDate>
+            <DeathPlace><?merge .DeathPlace ?></DeathPlace>
+            <Nationality><?merge .Nationality ?></Nationality>
+            <Function><?merge .Function ?></Function>
+            <Activity><?merge .Activity ?></Activity>
+            <Position><?merge .Position ?></Position>
+            <Role><?merge .Role ?></Role>
+            <Corpname><?merge .Corpname ?></Corpname>
+            <Identifier><?merge .Identifier ?></Identifier>
+        </Writer>
+        <?merge .Content.Addressee.array()?>
+        <Addressee>
+            <FirstName><?merge .FirstName ?></FirstName>
+            <BirthName><?merge .BirthName ?></BirthName>
+            <GivenName><?merge .GivenName ?></GivenName>
+            <Gender><?merge .Gender ?></Gender>
+            <BirthDate><?merge .BirthDate ?></BirthDate>
+            <BirthPlace><?merge .BirthPlace ?></BirthPlace>
+            <DeathDate><?merge .DeathDate ?></DeathDate>
+            <DeathPlace><?merge .DeathPlace ?></DeathPlace>
+            <Nationality><?merge .Nationality ?></Nationality>
+            <Function><?merge .Function ?></Function>
+            <Activity><?merge .Activity ?></Activity>
+            <Position><?merge .Position ?></Position>
+            <Role><?merge .Role ?></Role>
+            <Corpname><?merge .Corpname ?></Corpname>
+            <Identifier><?merge .Identifier ?></Identifier>
+        </Addressee>
+        <?merge .Content.Recipient.array() ?>
+        <Recipient>
+            <FirstName><?merge .FirstName ?></FirstName>
+            <BirthName><?merge .BirthName ?></BirthName>
+            <GivenName><?merge .GivenName ?></GivenName>
+            <Gender><?merge .Gender ?></Gender>
+            <BirthDate><?merge .BirthDate ?></BirthDate>
+            <BirthPlace><?merge .BirthPlace ?></BirthPlace>
+            <DeathDate><?merge .DeathDate ?></DeathDate>
+            <DeathPlace><?merge .DeathPlace ?></DeathPlace>
+            <Nationality><?merge .Nationality ?></Nationality>
+            <Function><?merge .Function ?></Function>
+            <Activity><?merge .Activity ?></Activity>
+            <Position><?merge .Position ?></Position>
+            <Role><?merge .Role ?></Role>
+            <Corpname><?merge .Corpname ?></Corpname>
+            <Identifier><?merge .Identifier ?></Identifier>
+        </Recipient>
+        <?merge .Content.Sender.array() ?>
+        <Sender>
+            <FirstName><?merge .FirstName ?></FirstName>
+            <BirthName><?merge .BirthName ?></BirthName>
+            <GivenName><?merge .GivenName ?></GivenName>
+            <Gender><?merge .Gender ?></Gender>
+            <BirthDate><?merge .BirthDate ?></BirthDate>
+            <BirthPlace><?merge .BirthPlace ?></BirthPlace>
+            <DeathDate><?merge .DeathDate ?></DeathDate>
+            <DeathPlace><?merge .DeathPlace ?></DeathPlace>
+            <Nationality><?merge .Nationality ?></Nationality>
+            <Function><?merge .Function ?></Function>
+            <Activity><?merge .Activity ?></Activity>
+            <Position><?merge .Position ?></Position>
+            <Role><?merge .Role ?></Role>
+            <Corpname><?merge .Corpname ?></Corpname>
+            <Identifier><?merge .Identifier ?></Identifier>
+        </Sender>
+        <Source><?merge .Content.Source ?></Source>
+        <?merge .Content.RelatedObjectReference.bool() ?>
+        <RelatedObjectReference>
+            <?merge .Content.RelatedObjectReference.References ?>
+            <References>
+                <ArchiveUnitRefId><?merge .ArchiveUnitRefId ?></ArchiveUnitRefId>
+                <RepositoryArchiveUnitPID><?merge .RepositoryArchiveUnitPID ?></RepositoryArchiveUnitPID>
+            </References>
+        </RelatedObjectReference>
+        <CreatedDate><?merge .Content.CreatedDate ?></CreatedDate>
+        <TransactedDate><?merge .Content.TransactedDate ?></TransactedDate>
+        <AcquiredDate><?merge .Content.AcquiredDate ?></AcquiredDate>
+        <SentDate><?merge .Content.SentDate ?></SentDate>
+        <ReceivedDate><?merge .Content.ReceivedDate ?></ReceivedDate>
+        <RegisteredDate><?merge .Content.RegisteredDate ?></RegisteredDate>
+        <StartDate><?merge .Content.StartDate ?></StartDate>
+        <EndDate><?merge .Content.EndDate ?></EndDate>
+        <?merge .Content.Event.array() ?>
+        <Event>
+            <EventIdentifier><?merge .EventIdentifier ?></EventIdentifier>
+            <EventType><?merge .EventType ?></EventType>
+            <EventDateTime><?merge .EventDateTime ?></EventDateTime>
+            <EventDetail><?merge .EventDetail ?></EventDetail>
+        </Event>
+    </Content>
+    <?merge .ArchiveUnit.array() ?>
+    <?xinclude /resources/ArchiveUnit.xml ?>
+    <?merge .DataObjectReference.array() ?>
+    <DataObjectReference>
+        <?merge .DataObjectReferenceId.bool() ?>
+        <DataObjectReferenceId><?merge .DataObjectReferenceId ?></DataObjectReferenceId>
+        <?merge .DataObjectGroupReferenceId.bool() ?>
+        <DataObjectGroupReferenceId><?merge .DataObjectGroupReferenceId ?></DataObjectGroupReferenceId>
+    </DataObjectReference>
+</ArchiveUnit>

@@ -1,0 +1,25 @@
+<div class="mat-dialog-content-container">
+    <mat-dialog-content style="padding: 0px;">
+        <div class="example-loading-shade" *ngIf="loading">
+            <mat-spinner></mat-spinner>
+        </div>
+        <app-onlyoffice-viewer *ngIf="editorType === 'onlyoffice'" #onlyofficeViewer style="height:100%;width:100%;" [hideCloseEditor]="true"
+            [params]="editorOptions" [file]="file" [editMode]="true" [loading]="loading"  (triggerAfterUpdatedDoc)="close()"
+            (triggerCloseEditor)="dialogRef.close('');" (triggerModifiedDocument)="documentIsModified = true"></app-onlyoffice-viewer>
+        <app-collabora-online-viewer *ngIf="editorType === 'collaboraonline'" #collaboraOnlineViewer style="height:100%;width:100%;" [params]="editorOptions" [file]="file"
+                                     [editMode]="true" [loading]="loading"  (triggerAfterUpdatedDoc)="close()"
+                                         (triggerCloseEditor)="dialogRef.close('');" (triggerModifiedDocument)="documentIsModified = true"></app-collabora-online-viewer>
+        <div *ngIf="editorType === 'office365sharepoint'" class="office-sharepoint-container">
+            <app-office-sharepoint-viewer #officeSharepointViewer style="height:100%;width:100%;" [params]="editorOptions" [file]="file"
+                      [editMode]="true" (triggerAfterUpdatedDoc)="close()"
+                      (triggerCloseEditor)="dialogRef.close('')" (triggerModifiedDocument)="documentIsModified = true"
+                      (triggerDocumentDownload)="close()"></app-office-sharepoint-viewer>
+        </div>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary"
+            (click)="close()" [disabled]="!documentIsModified || loading">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

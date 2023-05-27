@@ -1,0 +1,31 @@
+<div class="signature-container">
+    <div *ngFor="let signature of signatures;let i=index" class="signature-content" style="display: flex;flex-direction: column;">
+        <mat-form-field floatLabel="never">
+            <mat-icon *ngIf="signature.public && mode === 'private'" matPrefix class="fa fa-users" color="secondary" style="width: auto;font-size: 12px;height: auto;padding: 5px;" [title]="'lang.public' | translate"></mat-icon>
+            <mat-label>{{'lang.label' | translate }}</mat-label>
+            <input matInput [(ngModel)]="signature.label" [disabled]="!signature.editMode">
+        </mat-form-field>
+        <div *ngIf="!signature.editMode" [innerHTML]="signature.content | safeHtml" style="border: solid 1px rgba(0, 0, 0, 0.12);flex:1;overflow: auto;"></div>
+        <textarea *ngIf="signature.editMode" [id]="'emailSignature'+ signature.id" style="width:100%;visibility: hidden;flex:1;" [(ngModel)]="signature.content"></textarea>
+        <div style="text-align: center;">
+            <button *ngIf="!signature.editMode" [disabled]="signature.public && mode === 'private'" mat-raised-button mat-button color="primary" (click)="editSignature(i)">{{'lang.update' | translate}}</button>
+            <button *ngIf="!signature.editMode" [disabled]="signature.public && mode === 'private'" mat-raised-button mat-button color="warn" (click)="deleteSignature(i)">{{'lang.delete' | translate}}</button>
+            <button *ngIf="signature.editMode" mat-raised-button mat-button color="primary" (click)="saveSignature(i)">{{'lang.validate' | translate}}</button>
+            <button *ngIf="signature.editMode" mat-raised-button mat-button color="default" (click)="closeEditSignature(i)">{{'lang.cancel' | translate}}</button>
+        </div>
+    </div>
+    <div *ngIf="addMode" class="add-signature-content">
+        <mat-form-field>
+            <mat-label>{{'lang.label' | translate }} *</mat-label>
+            <input matInput [(ngModel)]="newSignature.label">
+        </mat-form-field>
+        <textarea id="emailSignature" style="width:100%;visibility: hidden;flex:1;" [(ngModel)]="newSignature.content"></textarea>
+        <div>
+            <button mat-raised-button mat-button color="primary" (click)="createSignature()" [disabled]="newSignature.label === ''">{{'lang.validate' | translate}}</button>
+            <button mat-raised-button mat-button color="default" (click)="switchMode()">{{'lang.cancel' | translate}}</button>
+        </div>
+    </div>
+    <div *ngIf="!addMode" class="signature-content add-signature-area" [title]="'lang.add' | translate" (click)="switchMode()">
+        <mat-icon class="fa fa-plus"></mat-icon>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title style="display: flex;">
+        <span style="flex: 1;text-align: center;">{{data.title}}</span>
+        <button title="{{'lang.close' | translate}}" mat-icon-button [mat-dialog-close]="">
+            <mat-icon class="fa fa-times-circle fa-2x"></mat-icon>
+        </button>
+    </h1>
+    <mat-dialog-content>
+        <app-document-viewer #appDocumentViewer style="height:100%;width:100%;"
+            [editMode]="false" [base64]="data.base64"
+            [title]="data.title" [filename]="data.filename"
+            [isNewVersion]="data.isNewVersion"
+            [downloadActions]="data.downloadActions" [isSigned]="data.isSigned">
+        </app-document-viewer>
+    </mat-dialog-content>
+    <ng-container *ngIf="data.isNewVersion !== undefined">
+        <span class="divider-modal"></span>
+        <div mat-dialog-actions class="actions">
+            <button mat-raised-button color="primary" (click)="createNewVersion()">{{'lang.createNewVersion' | translate}}</button>
+        </div>
+    </ng-container>
+</div>

@@ -1,0 +1,30 @@
+
+.container-content {
+    background: none;
+    box-shadow: none;
+}
+
+.first_col {
+    position:relative;
+    text-align:center;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 5px;
+    vertical-align: middle;
+}
+.noDoc {
+    .mat-badge-content {
+        color: #666;
+        opacity: 0.5;
+    }
+}
+
+.watermark {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) rotate(-20deg);
+    color: red;
+    font-weight: bold;
+    opacity: 0.6;
+  }

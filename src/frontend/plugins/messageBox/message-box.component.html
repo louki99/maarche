@@ -1,0 +1,9 @@
+<ng-container *ngIf="content !== null; else elseTemplate">
+    <div class="content content-{{mode}}" [innerHTML]="content"></div>
+</ng-container>
+<ng-template #elseTemplate>
+    <div class="content content-{{mode}}">
+        <ng-content></ng-content>
+    </div>
+</ng-template>
+

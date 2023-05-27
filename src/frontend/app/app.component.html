@@ -1,0 +1,20 @@
+<mat-sidenav-container *ngIf="!loading" class="maarch-container" autosize>
+    <mat-sidenav #snavLeft class="panel-left" [mode]="appService.getViewMode() ? 'over' : 'side'"
+        [fixedInViewport]="appService.getViewMode()" [opened]="appService.getViewMode() || headerService.hideSideBar ? false : true"
+        autoFocus="false" style="overflow-x:hidden;" [class.sideBarForm]="headerService.sideBarForm && !appService.getViewMode()" [class.sideBarFormMobile]="appService.getViewMode() && headerService.sideBarForm" [ngStyle]="{'width': appService.getViewMode() ? '80%' : '350px'}">
+        <app-header-panel *ngIf="headerService.showhHeaderPanel && !headerService.hideSideBar"></app-header-panel>
+        <app-menu-shortcut *ngIf="headerService.showMenuShortcut && !headerService.hideSideBar"></app-menu-shortcut>
+        <app-menu-nav *ngIf="headerService.showMenuShortcut && !headerService.hideSideBar"></app-menu-nav>
+        <ng-container *ngIf="!headerService.sideBarAdmin && !headerService.hideSideBar">
+            <app-basket-home #basketHome></app-basket-home>
+            <mat-divider></mat-divider>
+            <app-panel-folder #panelFolder></app-panel-folder>
+        </ng-container>
+        <div id="adminMenu" *ngIf="!headerService.hideSideBar" style="display: contents;"></div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<!-- <app-dev-tool *ngIf="debugMode && authService.isAuth()"></app-dev-tool> -->

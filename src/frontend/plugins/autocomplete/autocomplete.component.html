@@ -1,0 +1,49 @@
+<form>
+    <input *ngIf="control !== undefined" type="hidden" [formControl]="control">
+    <mat-form-field class="maarch-autocomplete" [class.no-margin]="styles.indexOf('no-margin') > -1" [class.smallInput]="size === 'small'" [appearance]="appearance" floatLabel="never" (click)="$event.stopPropagation();">
+        <mat-label *ngIf="singleMode">{{labelPlaceholder}}</mat-label>
+        <mat-icon *ngIf="size !== 'small' && (myControl.enabled && !singleMode)" color="primary" class="fa fa-search"
+            matPrefix></mat-icon>
+        <input type="text" id="autoCompleteInput" #autoCompleteInput [placeholder]="singleMode ? '' : labelPlaceholder"
+            aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto"
+            (click)="$event.stopPropagation()" (focus)="resetAutocomplete()" [required]="required"
+            (keyup.enter)="addItem()">
+        <button type="button" *ngIf="myControl.disabled" matSuffix mat-icon-button color="warn" (click)="unsetValue()">
+            <mat-icon class="fa fa-times" color="warn" [title]="'lang.delete' | translate"></mat-icon>
+        </button>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectOpt($event)" [displayWith]="displayFnWrapper()" >
+            <ng-container *ngIf="datas.length > 0 && !loading">
+                <mat-option *ngFor="let option of filteredOptions | async | sortBy: targetSearchKey" [value]="option" [disabled]="disableItems.indexOf(option['serialId']) > -1">
+                    <mat-icon *ngIf="type[option['type']]" class="autcompleteIcon fas {{type[option['type']]}}"
+                        color="primary">
+                    </mat-icon>&nbsp;<span
+                        color="primary">{{option[targetSearchKey]}}</span>&nbsp;<small>{{option[subInfoKey]}}</small>
+                </mat-option>
+            </ng-container>
+            <mat-option class="autoCompleteInfoResult smallInputInfo" *ngIf="datas.length === 0 && !loading" disabled
+                [innerHTML]="listInfo">
+            </mat-option>
+            <mat-option *ngIf="loading" disabled>
+                <mat-spinner diameter="20"></mat-spinner>
+            </mat-option>
+            <div *ngIf="fromExternalWorkflow && connectorLength > 0" class="autoCompleteInfoResult create-contact" style="font-size: 11px;">
+                <a style="cursor: pointer;" (click)="$event.stopPropagation(); createExternalUser()" [title]="'lang.addOtp' | translate">
+                    <mat-icon matSuffix class="fas fa-user-plus" style="padding-top: 5px"></mat-icon>
+                    {{'lang.addOtp' | translate}}
+                </a>
+            </div>
+        </mat-autocomplete>
+    </mat-form-field>
+    <ng-container *ngIf="control !== undefined">
+        <mat-chip-list class="mat-chip-list-stacked" color="default">
+            <mat-chip *ngFor="let item of control.value;let i=index" class="activeListAutocomplete"
+                color="default" [removable]="true" (removed)="removeItem(i)">
+                <span style="display: flex;flex: 1;" [innerHTML]="this.valuesToDisplay[item]"></span>
+                <mat-icon matChipRemove class="fa fa-times"></mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+        <div class="noResult" *ngIf="control.value.length === 0">
+            {{'lang.noSelectedValue' | translate}}
+        </div>
+    </ng-container>
+</form>

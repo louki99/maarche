@@ -1,0 +1,117 @@
+$default: #4F4F4F; // default color in application
+$primary: #135f7f; // main color theme of application
+$secondary: #f99830; // main color theme of application
+$success: #006841; // accent color theme of application (like success buttons)
+$danger: #8e3e52; // warning color theme of application
+
+$primary-light: lighten($primary, 10%);
+$primary-dark: darken($primary, 10%);
+$primary-opacity-10: rgba($primary, 0.1);
+$primary-opacity-20: rgba($primary, 0.2);
+$primary-opacity-30: rgba($primary, 0.3);
+$primary-opacity-40: rgba($primary, 0.4);
+$primary-opacity-50: rgba($primary, 0.5);
+$primary-opacity-60: rgba($primary, 0.6);
+
+$secondary-light: lighten($secondary, 10%);
+$secondary-dark: darken($secondary, 10%);
+$secondary-opacity-10: rgba($secondary, 0.1);
+$secondary-opacity-20: rgba($secondary, 0.2);
+$secondary-opacity-30: rgba($secondary, 0.3);
+$secondary-opacity-40: rgba($secondary, 0.4);
+$secondary-opacity-50: rgba($secondary, 0.5);
+$secondary-opacity-60: rgba($secondary, 0.6);
+
+$success-opacity-10: rgba($success, 0.1);
+$success-opacity-20: rgba($success, 0.2);
+$success-opacity-30: rgba($success, 0.3);
+$success-opacity-40: rgba($success, 0.4);
+$success-opacity-50: rgba($success, 0.5);
+$success-opacity-60: rgba($success, 0.6);
+$success-light: lighten($success, 10%);
+$success-dark: darken($success, 10%);
+
+$danger-opacity-10: rgba($danger, 0.1);
+$danger-opacity-20: rgba($danger, 0.2);
+$danger-opacity-30: rgba($danger, 0.3);
+$danger-opacity-40: rgba($danger, 0.4);
+$danger-opacity-50: rgba($danger, 0.5);
+$danger-opacity-60: rgba($danger, 0.6);
+$danger-light: lighten($danger, 10%);
+$danger-dark: darken($danger, 10%);
+
+:root {
+    --maarch-color-default: #{$default};
+
+    --maarch-color-primary: #{$primary};
+    --maarch-color-primary-opacity-10: #{$primary-opacity-10};
+    --maarch-color-primary-opacity-20: #{$primary-opacity-20};
+    --maarch-color-primary-opacity-30: #{$primary-opacity-30};
+    --maarch-color-primary-opacity-40: #{$primary-opacity-40};
+    --maarch-color-primary-opacity-50: #{$primary-opacity-50};
+    --maarch-color-primary-opacity-60: #{$primary-opacity-60};
+    --maarch-color-primary-light: #{$primary-light};
+    --maarch-color-primary-dark: #{$primary-dark};
+
+    --maarch-color-secondary: #{$secondary};
+    --maarch-color-secondary-opacity-10: #{$secondary-opacity-10};
+    --maarch-color-secondary-opacity-20: #{$secondary-opacity-20};
+    --maarch-color-secondary-opacity-30: #{$secondary-opacity-30};
+    --maarch-color-secondary-opacity-40: #{$secondary-opacity-40};
+    --maarch-color-secondary-opacity-50: #{$secondary-opacity-50};
+    --maarch-color-secondary-opacity-60: #{$secondary-opacity-60};
+    --maarch-color-secondary-light: #{$secondary-light};
+    --maarch-color-secondary-dark: #{$secondary-dark};
+
+    --maarch-color-success: #{$success};
+    --maarch-color-success-opacity-10: #{$success-opacity-10};
+    --maarch-color-success-opacity-20: #{$success-opacity-20};
+    --maarch-color-success-opacity-30: #{$success-opacity-30};
+    --maarch-color-success-opacity-40: #{$success-opacity-40};
+    --maarch-color-success-opacity-50: #{$success-opacity-50};
+    --maarch-color-success-opacity-60: #{$success-opacity-60};
+    --maarch-color-success-light: #{$success-light};
+    --maarch-color-success-dark: #{$success-dark};
+
+    --maarch-color-danger: #{$danger};
+    --maarch-color-danger-opacity-10: #{$danger-opacity-10};
+    --maarch-color-danger-opacity-20: #{$danger-opacity-20};
+    --maarch-color-danger-opacity-30: #{$danger-opacity-30};
+    --maarch-color-danger-opacity-40: #{$danger-opacity-40};
+    --maarch-color-danger-opacity-50: #{$danger-opacity-50};
+    --maarch-color-danger-opacity-60: #{$danger-opacity-60};
+    --maarch-color-danger-light: #{$danger-light};
+    --maarch-color-danger-dark: #{$danger-dark};
+}
+
+[color=primary],
+.primary {
+    color: var(--maarch-color-primary);
+}
+
+[color=secondary],
+.secondary {
+    color: var(--maarch-color-secondary);
+}
+
+[color=warn],
+.warn {
+    color: var(--maarch-color-danger);
+}
+
+[color=accent],
+.accent {
+    color: var(--maarch-color-success);
+}
+
+[bgcolor=primary] {
+    background-color: var(--maarch-color-primary);
+}
+
+[bgcolor=warn] {
+    background-color: var(--maarch-color-danger);
+}
+
+[bgcolor=accent] {
+    background-color: var(--maarch-color-success);
+}

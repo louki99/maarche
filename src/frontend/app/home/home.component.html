@@ -1,0 +1,29 @@
+<mat-sidenav-container autosize class="maarch-container" joyrideStep="welcome" stepPosition="center">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+                <mat-card *ngIf="homeMessage"
+                    style="background: #135F7F;color: white;box-shadow: none;border: solid 2px white;width: 100%;border-radius: 20px;padding-bottom: 40px;">
+                    <div style="display: flex;max-height: 250px;overflow: auto;">
+                        <div style="padding-left: 10px;">
+                            <span [innerHTML]="homeMessage"></span>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <app-dashboard></app-dashboard>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

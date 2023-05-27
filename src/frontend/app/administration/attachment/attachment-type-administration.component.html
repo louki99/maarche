@@ -1,0 +1,70 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="!creationMode && unlistedAttachmentTypes.indexOf(attachmentType['typeId'].value) > -1" class="alert alert-danger" role="alert" style="margin: 10px;">
+                    <b>{{'lang.systemType' | translate}} !</b> {{'lang.doNotModifyUnlessExpert' | translate}}
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form class="form-horizontal" (ngSubmit)="onSubmit()" [formGroup]="adminFormGroup">
+                        <mat-form-field>
+                            <input matInput formControlName="typeId" name="typeId"
+                                title="{{'lang.id' | translate}}" type="text" placeholder="{{'lang.id' | translate}}"
+                                maxlength="255" pattern="^[\w.@-]*$" required>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput formControlName="label" name="label"
+                                title="{{'lang.label' | translate}}" type="text"
+                                placeholder="{{'lang.label' | translate}}" maxlength="255" required>
+                        </mat-form-field>
+                        <mat-expansion-panel expanded>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title color="primary">
+                                    {{'lang.options' | translate}}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list *ngFor="let idOpt of getOptions()">
+                                <mat-list-item>
+                                    <div mat-line style="display: flex;">
+                                        <mat-slide-toggle [formControlName]="idOpt" [name]="idOpt"
+                                            color="primary" [checked]="attachmentType[idOpt].value" [disabled]="!isValidToggle(idOpt)">
+                                            {{'lang.' + idOpt + '_attachment' | translate}}</mat-slide-toggle>
+                                        &nbsp;
+                                        <i class="fa fa-question-circle" color="primary" style="cursor: help;"
+                                            [title]="'lang.' + idOpt + '_attachmentDesc' | translate"></i>
+                                    </div>
+                                </mat-list-item>
+                            </mat-list>
+                            <div mat-line>
+                                <mat-form-field style="padding: 0px 16px">
+                                    <span mattPrefix color="primary">{{'lang.iconLetter' | translate}} 
+                                        <i class="fa fa-question-circle" color="primary" style="cursor: help;"
+                                            [title]="'lang.iconLetter_attachmentDesc' | translate"></i> : </span>
+                                    <input matInput formControlName="icon" name="icon" type="text" maxlength="2">
+                                </mat-form-field>
+                            </div>
+                        </mat-expansion-panel>
+                        <div style="text-align:center;">
+                            <button mat-raised-button color="primary" type="submit"
+                                [disabled]="!adminFormGroup.valid">{{'lang.save' | translate}}</button>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

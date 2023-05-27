@@ -1,0 +1,55 @@
+
+.example-viewport {
+    flex: 1;
+    width: 100%;
+    background: white;
+    height: 100%;
+
+    ::ng-deep.cdk-virtual-scroll-content-wrapper {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
+}
+
+.active,
+.active:hover,
+.active:active,
+.active:focus {
+    color: var(--maarch-color-primary);
+    border-left: solid 5px var(--maarch-color-primary);
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.criteria-container {
+    margin: 20px;
+}
+
+.hovered {
+    background: rgba(#000, 0.04) !important;
+    transition: all 0.3s;
+}
+
+.odd {
+    border-bottom: solid 1px rgba(0,0,0,0.12);
+}
+
+.contact-list-container-1 {
+    grid-template-columns: 1fr;
+}
+
+.contact-list-container-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.contact-list-container-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.contact-list-container-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.contact-list-container-5 {
+    grid-template-columns: repeat(5, 1fr);
+}

@@ -1,0 +1,41 @@
+.attachment-content {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 20px;
+    border: solid 1px var(--maarch-color-primary);
+    position: relative;
+}
+
+.close-button {
+    cursor: pointer;
+    font-size: 20px;
+    width: auto;
+    height: auto;
+    position: absolute;
+    right: -5px;
+    background: white;
+    border-radius: 10px;
+    top: -5px;
+}
+
+.attachment-name {
+    width: 100%;
+    white-space: pre;
+    color: var(--maarch-color-primary);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+.add-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;cursor: pointer;
+}

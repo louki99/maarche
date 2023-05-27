@@ -1,0 +1,101 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form (ngSubmit)="onSubmit()" #alfrescoForm="ngForm">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="alfresco.label" required name="label" id="label"
+                                title="{{'lang.label' | translate}}" type="text" placeholder="{{'lang.label' | translate}}" maxlength="64">
+                        </mat-form-field>
+                        <div class="form-group" style="flex-direction: row; flex-wrap: wrap;">
+                            <div class="formType ratio-2 col-sm-12">
+                                <div class="formType-title">
+                                    {{'lang.alfrescoAccount' | translate}}
+                                </div>
+                                <div style="width: 100%;text-align: center;">
+                                    <mat-form-field>
+                                        <input matInput [(ngModel)]="alfresco.account.id" required name="accountId"
+                                            id="accountId" title="{{'lang.id' | translate}}" type="text" placeholder="{{'lang.id' | translate}}">
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input matInput [(ngModel)]="alfresco.account.password"
+                                            [required]="creationMode" name="password" id="password"
+                                            [title]="creationMode ? ('lang.password' | translate) : ('lang.changePassword' | translate)"
+                                            [type]="hidePassword ? 'password' : 'text'"
+                                            [placeholder]="creationMode ? ('lang.password' | translate) : ('lang.changePassword' | translate)">
+                                        <mat-icon color="primary" style="cursor: pointer;" matSuffix
+                                            (click)="hidePassword = !hidePassword" class="fa fa-2x"
+                                            [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="formType ratio-1 col-sm-12">
+                                <div class="formType-title">
+                                    {{'lang.rootFolder' | translate}}
+                                </div>
+                                <!--<div *ngIf="alfresco.account.id !== '' && alfresco.account.password !== '' && functionsService.empty(alfresco.rootFolder) && !alfrescoTreeLoaded"
+                                    (click)="getAlfrescoFolders()"
+                                    style="text-align: center;font-weight: bold;opacity: 0.5;width: 100%;">
+                                    <div>{{'lang.showTreeMsg' | translate}}</div>
+                                    <button mat-icon-button>
+                                        <mat-icon class="fas fa-sync-alt" style="font-size: 25px;"></mat-icon>
+                                    </button>
+                                </div>
+                                <div *ngIf="(alfresco.account.id === '' || alfresco.account.password === '') && functionsService.empty(alfresco.rootFolder)"
+                                    style="text-align: center;font-weight: bold;opacity: 0.5;">
+                                    <div>{{'lang.mustFillAccountMsg' | translate}}</div>
+                                </div>
+                                <div *ngIf="alfrescoTreeLoaded && functionsService.empty(alfresco.rootFolder)" style="width: 100%;">
+                                    <app-maaarch-tree *ngIf="entities.length > 0" (afterSelectNode)="alfresco.rootFolder=$event.id" [rawData]="entities"></app-maaarch-tree>
+                                </div>-->
+                                <!--<div *ngIf="!functionsService.empty(alfresco.rootFolder)" style="width: 100%;"> -->
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="alfresco.rootFolder" required name="rootFolder"
+                                        id="rootFolder" [title]="'lang.id' | translate" type="text" placeholder="Dépôt racine">
+                                    <!--<button mat-icon-button matSuffix color="warn"
+                                            (click)="alfresco.rootFolder=null">
+                                            <mat-icon class="fa fa-trash"></mat-icon>
+                                        </button>-->
+                                </mat-form-field>
+                                <!--</div> -->
+                            </div>
+                        </div>
+                        <div class="col-sm-12 text-center" style="padding:10px;">
+                            <button mat-raised-button type="button" color="primary" (click)="checkAccount()"
+                                [disabled]="functionsService.empty(alfresco.account.id) || (functionsService.empty(alfresco.account.password) && creationMode)">{{'lang.test' | translate}}</button>
+
+                            <button mat-raised-button type="submit" color="primary"
+                                [disabled]="!alfrescoForm.valid || !validAccount()">{{'lang.validate' | translate}}</button>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="!appService.getViewMode()" style="overflow-x:hidden;width:400px;">
+        <mat-list>
+            <h3 mat-subheader>{{'lang.chooseEntityAssociationAccount' | translate}}</h3>
+            <div style="padding:10px;">
+                <app-maarch-flat-tree #maarchTree></app-maarch-flat-tree>
+            </div>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

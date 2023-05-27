@@ -1,0 +1,19 @@
+{
+    "mapping": {
+        "document": {
+            "ALT_IDENTIFIER": "alt_identifier",
+            "SUBJECT": "subject",
+            "DOCTYPE": "doctypeLabel",
+            "INITIATOR": "initiatorLabel",
+            "DOC_DATE": "doc_date",
+            "DEST": "destinationLabel",
+            "PRIORITY": "priorityLabel",
+            "DEST_USER": "destUserLabel",
+            "SENDER": "senderAddress_0"
+        },
+        "attachments": {
+            "IDENTIFIER": "identifier",
+            "TITLE": "title"
+        }
+    }
+}

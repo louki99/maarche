@@ -1,0 +1,37 @@
+.notif-container {
+    display: flex;
+    align-items: center;
+    padding-top: 25px;
+    padding-bottom: 25px;
+
+    cursor: pointer;
+
+    &-icon {
+        display: flex;
+        width:50px;
+        justify-content: center;
+    }
+
+    &-content {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+
+        &-msg {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
+::ng-deep.mat-snack-bar-container.error-snackbar  {
+    color: var(--maarch-color-danger);
+    background: white;
+    border: solid 1px var(--maarch-color-danger);
+}
+  
+::ng-deep.mat-snack-bar-container.success-snackbar  {
+    color: var(--maarch-color-primary);
+    background: white;
+    border: solid 1px var(--maarch-color-primary);
+}

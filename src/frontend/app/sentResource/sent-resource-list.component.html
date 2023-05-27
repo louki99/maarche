@@ -1,0 +1,83 @@
+<ng-container *ngIf="loading; else elseLoading">
+    <div class="loading">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
+<ng-template #elseLoading>
+    <div *ngIf="sentResources.length == 0" class="emptyResource">
+        {{'lang.noSentResource' | translate}}
+    </div>
+    <div class="row" style="margin: 0px;">
+        <div class="col-md-12" style="padding-bottom: 10px;">
+            <mat-button-toggle-group *ngIf="sentResources.length > 0" class="filterTypes" (change)="filterType($event)">
+                <mat-button-toggle [checked]="currentFilter === ''" [value]="''">{{'lang.all' | translate}}</mat-button-toggle>
+                <mat-button-toggle *ngFor="let type of filterTypes | sortBy : 'label'"
+                    [checked]="currentFilter === type.id" [value]="type.id">{{type.label}}
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort matSortActive="creationDate" matSortDirection="desc">
+        <ng-container matColumnDef="creationDate">
+            <mat-cell *matCellDef="let row" class="dataLine" [ngClass]="{'canManage' : row.canManage && row.status !== 'WAITING', 'waitingSent': row.status === 'WAITING'}" style="flex: 1;padding: 0px;flex-direction: column;" (click)="row.status === 'WAITING' ? $event.stopPropagation() : open(row)">
+                <div class="subinfo">
+                    <span *ngIf="(row.sendDate === null && row.status === 'SENT' && row.type == 'm2m_ARCHIVETRANSFER') || row.type != 'm2m_ARCHIVETRANSFER'" style="flex:1" [title]="row.creationDate | fullDate">
+                        {{row.type == 'm2m_ARCHIVETRANSFER' ? ('lang.sent' | translate) : ('lang.createdAlt' | translate)}} : <b>{{row.creationDate | timeAgo : 'full'}}</b>
+                    </span>
+                    <span *ngIf="row.sendDate !== null" style="flex:1;color:green" [title]="row.sendDate | fullDate">
+                        {{row.type == 'm2m_ARCHIVETRANSFER' ? 'Reçu' : 'lang.sent' | translate}} : <b>{{row.sendDate | timeAgo : 'full'}}</b>
+                    </span>
+                    <span *ngIf="row.status === 'DRAFT'" style="flex:1;color:orange">
+                        {{'lang.draft' | translate}}
+                    </span>
+                    <span *ngIf="row.sendDate === null && row.status === 'SENT'" style="flex:1;color:orange">
+                        En attente de réception
+                    </span>
+                    <span *ngIf="row.status === 'WAITING'" style="flex:1;color:orange;font-weight: bold;">
+                        {{'lang.emailSendInProgressShort' | translate}}
+                    </span>
+                    <span *ngIf="row.status === 'ERROR'" style="flex:1;color:red;font-weight: bold;">
+                        {{'lang.notSent' | translate}}
+                    </span>
+                    <span *ngIf="row.status !== 'ERROR' && row.type == 'acknowledgementReceipt' && functions.empty(row.sendDate)" style="flex:1;color:orange">
+                        {{'lang.manualSendingAR' | translate}}
+                    </span>
+                    <span style="flex:1;color:green" *ngIf="!functions.empty(row.operationDate)" [title]="row.operationDate | fullDate">
+                        {{'lang.delivery' | translate}} : <b>{{row.operationDate | timeAgo : 'full'}}</b>
+                    </span>
+                </div>
+                <div style="display: grid;grid-template-columns: 100px 1fr 170px;width: 100%;grid-gap: 10px;align-items: center;padding:10px;">
+                    <div class="dateType">
+                        <span class="type">
+                            <span class="badge" [style.background]="row.typeColor" [title]="'lang.' + row.type | translate">{{'lang.' + row.type | translate}}</span>
+                            <div class="attach">
+                                <i *ngIf="row.hasMainDoc" class="fas fa-file" title="Document attaché"></i>
+                                <i *ngIf="row.hasAttach" class="fas fa-paperclip" title="Pièce(s) jointe(s) attachée(s)"></i>
+                                <i *ngIf="row.hasNote" class="fas fa-pen-square" title="Note(s) attachée(s)"></i>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="desc" [innerHTML]="row.desc"></div>
+                    <div class="contact">
+                        <span *ngIf="row.sender" style="white-space: pre;overflow: hidden;text-overflow: ellipsis;" [title]="row.sender">
+                            {{'lang.senderShort' | translate}} : {{row.sender}}
+                        </span>
+                        <span style="white-space: pre;overflow: hidden;text-overflow: ellipsis;" [title]="row.recipients">
+                            {{'lang.recipientShort' | translate}} : {{row.recipients}}
+                        </span>
+                    </div>
+                </div>
+            </mat-cell>
+        </ng-container>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <button mat-fab *ngIf="editMode && privilegeService.hasCurrentUserPrivilege('sendmail')" class="addSentResource" color="primary" [title]="'lang.sendElement' | translate" (click)="openPromptMail()">
+        <mat-icon style="height: auto;width: auto;" class="fa fa-plus"></mat-icon>
+    </button>
+    <button mat-fab *ngIf="editMode && canSendNumericPackage()" class="addSentResource" color="primary" [title]="'lang.sendNumericPackage' | translate" (click)="openPromptNumericPackage()">
+        <mat-icon style="height: auto;width: auto;font-size: 20px;">
+            <i class="fas fa-envelope-open-text" style="left: -5px;position: relative;"></i>
+            <i class="fas fa-wifi" style="position: absolute;font-size: 10px;transform: rotate(35deg);margin-left: -3px;margin-top: -3px;"></i>
+        </mat-icon>
+    </button>
+</ng-template>

@@ -1,0 +1,115 @@
+<ng-container *ngIf="!loading; else elseTemplate">
+    <app-maarch-message [content]="'lang.maarch2maarchDesc' | translate : {url : maarch2maarchUrl}">
+    </app-maarch-message>
+    <app-maarch-message *ngIf="!passwordAlreadyExists" [mode]="'danger'" [content]="'lang.m2mPasswordMsg' | translate"></app-maarch-message>
+    <div class="formType" style="margin-top: 20px;">
+        <div class="formType-title">
+            {{('lang.communicationMeans' | translate)}}
+        </div>
+        <div style="width: 100%;">
+            <mat-form-field>
+                <mat-label>{{'lang.uri' | translate}}</mat-label>
+                <input matInput [formControl]="communications.url" [placeholder]="'lang.uriServerExample' | translate">
+                <mat-hint align="end" [innerHTML]="'lang.m2mUriDesc' | translate"></mat-hint>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>{{'lang.userIdMaarch2Maarch' | translate}}</mat-label>
+                <input matInput [formControl]="communications.login">
+                <mat-hint align="end" [innerHTML]="'lang.userIdMaarch2MaarchDesc' | translate"></mat-hint>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>{{'lang.userPasswordMaarch2Maarch' | translate}}</mat-label>
+                <input matInput [formControl]="communications.password">
+                <mat-hint align="end" [innerHTML]="'lang.userPasswordMaarch2MaarchDesc' | translate"></mat-hint>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>{{'lang.email' | translate}}</mat-label>
+                <input matInput [formControl]="communications.email">
+                <mat-hint align="end" [innerHTML]="'lang.m2mEmailDesc' | translate"></mat-hint>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="formType" style="margin-top: 20px;">
+        <div class="formType-title">
+            {{'lang.m2mSection1' | translate}}
+        </div>
+        <div style="width: 100%;">
+            <ng-container *ngIf="privilegeService.hasCurrentUserPrivilege('admin_baskets'); else elseNoAdminBaskets">
+                <app-plugin-select-search [id]="'basketToRedirect'" [label]="'lang.redirectToBasketAfterIndexing' | translate" [class]="''"
+                    [placeholderLabel]="'lang.chooseValue' | translate" [formControlSelect]="basketToRedirect"
+                    [datas]="baskets" [showLabel]="true" style="width:100%;">
+                </app-plugin-select-search>
+            </ng-container>
+            <ng-template #elseNoAdminBaskets>
+                <mat-form-field>
+                    <mat-label>{{'lang.redirectToBasketAfterIndexing' | translate}}</mat-label>
+                    <input matInput [formControl]="basketToRedirect">
+                    <mat-hint align="end" [innerHTML]="'lang.basketId' | translate"></mat-hint>
+                </mat-form-field>
+            </ng-template>
+        </div>
+    </div>
+    <div class="formType" style="margin-top: 20px;">
+        <div class="formType-title">
+            {{'lang.m2mSection2' | translate}}
+        </div>
+        <div style="width: 100%;">
+            <app-maarch-message [content]="'lang.setDefaultMetadata' | translate">
+            </app-maarch-message>
+            <app-plugin-select-search [id]="'typeId'" [label]="'lang.typeId' | translate" [class]="''"
+                [placeholderLabel]="'lang.chooseValue' | translate" [formControlSelect]="metadata.typeId"
+                [datas]="doctypes" [showLabel]="true" style="width:100%;">
+            </app-plugin-select-search>
+            <app-plugin-select-search [id]="'statusId'" [label]="'lang.status' | translate" [class]="''"
+                [placeholderLabel]="'lang.chooseValue' | translate" [formControlSelect]="metadata.statusId"
+                [datas]="statuses" [showLabel]="true" style="width:100%;">
+            </app-plugin-select-search>
+            <app-plugin-select-search [id]="'priorityId'" [label]="'lang.priority' | translate" [class]="''"
+                [placeholderLabel]="'lang.chooseValue' | translate" [formControlSelect]="metadata.priorityId"
+                [datas]="priorities" [showLabel]="true" style="width:100%;">
+            </app-plugin-select-search>
+            <app-plugin-select-search [id]="'indexingModelId'" [label]="'lang.indexingModel' | translate" [class]="''"
+                [placeholderLabel]="'lang.chooseValue' | translate" [formControlSelect]="metadata.indexingModelId"
+                [datas]="indexingModels" [showLabel]="true" style="width:100%;">
+            </app-plugin-select-search>
+            <app-plugin-select-search [id]="'attachmentTypeId'" [label]="'lang.attachmentType' | translate" [class]="''"
+                [placeholderLabel]="'lang.chooseValue' | translate" [formControlSelect]="metadata.attachmentTypeId"
+                [datas]="attachmentsTypes" [showLabel]="true" style="width:100%;">
+            </app-plugin-select-search>
+        </div>
+    </div>
+    <mat-slide-toggle style="height:40px;" color="primary" [formControl]="annuary.enabled">
+        {{'lang.useContactsAnnuaries' | translate}}</mat-slide-toggle>
+    <ng-container *ngIf="annuary.enabled.value">
+        <div class="annuaries-list">
+            <div *ngFor="let annuaryConf of annuary.annuaries;let i=index;" class="formType" style="margin-top: 20px;">
+                <div class="formType-title">
+                    {{'lang.annuary' | translate}} {{i+1}}
+                </div>
+                <div style="width: 100%;">
+                    <ng-container *ngFor="let data of annuaryConf | keyvalue: originalOrder">
+                        <mat-form-field *ngIf="data.key !== 'ssl'">
+                            <mat-label>{{'lang.' + data.key | translate}}</mat-label>
+                            <input matInput [formControl]="data.value">
+                        </mat-form-field>
+                        <mat-slide-toggle style="height:40px;" *ngIf="data.key === 'ssl'" color="primary"
+                            [formControl]="data.value">{{'lang.' + data.key | translate}}</mat-slide-toggle>
+                    </ng-container>
+                    <div style="text-align: center;">
+                        <button mat-raised-button color="warn" (click)="deleteAnnuary(i)"
+                            [disabled]="annuary.annuaries.length === 1">
+                            {{'lang.delete' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="add-conf" style="align-items: center;justify-content: center;display: flex;">
+                <button mat-button color="primary" (click)="addAnnuary()">
+                    <i class="fa fa-plus"></i>
+                    {{'lang.add' | translate}}</button>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>
+<ng-template #elseTemplate>
+
+</ng-template>

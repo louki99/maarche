@@ -1,0 +1,53 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content *ngIf="!loadingInit">
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{'lang.makeActionOn' | translate}}
+                <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                    {{'lang.elements' | translate}}</b> ?
+                <div *ngIf="resourcesInfo.withoutEntity.length > 0">
+                    <div class="alert-message alert-message-danger acknowledgementList" role="alert">
+                        <p>
+                            {{'lang.hasNoEntity' | translate}} :
+                        </p>
+                        <ul>
+                            <li *ngFor="let info of resourcesInfo.withoutEntity">
+                                {{info}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div *ngIf="resourcesInfo.withEntity.length > 0">
+                    <div class="alert-message alert-message-success" role="alert">
+                        <p>
+                            {{'lang.destUserSetToDefault' | translate}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+            </div>
+            <ng-container *ngIf="showToggle">
+                <div class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                </div>
+                <mat-divider></mat-divider>
+            </ng-container>
+        </div>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary"
+            [disabled]="loading || resourcesInfo.withEntity.length == 0" (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

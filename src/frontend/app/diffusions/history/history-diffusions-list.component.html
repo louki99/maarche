@@ -1,0 +1,39 @@
+<ng-container *ngIf="!loading">
+    <ng-container *ngFor="let diffList of diffListHistory">
+        <div class="dateTitle">
+            <div mat-subheader color="primary" [title]="diffList.creationDate | fullDate">
+                {{'lang.createdBy' | translate}}&nbsp;<b>{{diffList.user}}</b> &nbsp;<b>{{diffList.creationDate | timeAgo : 'full'}}</b>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+        <ng-container *ngFor="let role of availableRoles">
+            <mat-expansion-panel *ngIf="diffList.details[role.id]" class="diffusionList"
+                [expanded]="role.id === 'dest' || expanded">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{role.label}} <ng-container *ngIf="role.id !== 'dest'">
+                            ({{diffList.details[role.id].items.length}})
+                        </ng-container>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list>
+                    <mat-list-item disableRipple class="item-diffusion-list"
+                        *ngFor="let diffusion of diffList.details[role.id].items;let i=index">
+                        <mat-icon mat-list-icon color="primary" class="fa"
+                            [class.fa-user]="diffusion.item_type === 'user_id' || diffusion.item_type === 'user'"
+                            [class.fa-sitemap]="diffusion.item_type === 'entity_id' || diffusion.item_type === 'entity'">
+                        </mat-icon>
+                        <div class="item-diffusion">
+                            <p mat-line [title]="diffusion.itemLabel">{{diffusion.itemLabel}}</p>
+                            <p mat-line class="subInfo" [title]="diffusion.itemSubLabel">
+                                {{diffusion.itemSubLabel}}</p>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </mat-expansion-panel>
+        </ng-container>
+    </ng-container>
+</ng-container>
+<div *ngIf="loading" style="display:flex;">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>

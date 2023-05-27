@@ -1,0 +1,54 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content *ngIf="!loadingInit">
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div class="row">
+            <div>
+                <div class="alert-message alert-message-info" role="alert">
+                    <p>
+                        {{'lang.registeredMailsIncludedExplication' | translate}}
+                    </p>
+                    <p>
+                        {{'lang.registeredMailsIncluded' | translate}}
+                    </p>
+                    <p>
+                        <b>{{'lang.registeredMail_2C' | translate}}</b> : <span [innerHTML]="types['2C']"></span><br>
+                        <b>{{'lang.registeredMail_2D' | translate}}</b> : <span [innerHTML]="types['2D']"></span><br>
+                        <b>{{'lang.registeredMail_RW' | translate}}</b> : <span [innerHTML]="types['RW']"></span><br>
+                    </p>
+                </div>
+                <div *ngIf="cannotGenerate.length !== 0" class="alert-message alert-message-danger" role="alert">
+                    {{'lang.cannotGenerateDepositListForMails' | translate}}
+                    <ul>
+                        <li *ngFor="let identifier of cannotGenerate">
+                            {{identifier}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-12" *ngIf="canGenerate.length !== 0">
+                <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+            </div>
+        </div>
+        <ng-container *ngIf="showToggle">
+            <div class="row">
+                <div class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary"
+            [disabled]="loading || (canGenerate.length === 0)"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ArchiveTransferReply xmlns="fr:gouv:culture:archivesdefrance:seda:v2.0">
+    <?merge ArchiveTransferReply.Comment ?><Comment><?merge .value ?></Comment>
+    <Date><?merge ArchiveTransferReply.Date ?></Date>
+    <?merge ArchiveTransferReply.MessageIdentifier $messageIdentifier ?><?xinclude /resources/MessageIdentifier.xml ?>
+    <?merge ArchiveTransferReply.MessageRequestIdentifier $messageRequestIdentifier ?><?xinclude /resources/MessageRequestIdentifier.xml ?>
+    <?merge ArchiveTransferReply.ArchivalAgreement $archivalAgreement ?><?xinclude /resources/ArchivalAgreement.xml ?>
+    <ReplyCode><?merge ArchiveTransferReply.ReplyCode ?></ReplyCode>
+    <?xinclude /resources/CodeListVersions.xml ?>
+    <?merge ArchiveTransferReply.DataObjectPackage $dataObjectPackage ?>
+    <?merge ArchiveTransferReply.DataObjectPackage.bool() ?>
+    <?xinclude /resources/DataObjectPackage.xml ?>
+    <GrantDate><?merge ArchiveTransferReplyCode.GrantDate ?></GrantDate>
+    <ArchivalAgency>
+        <?merge ArchiveTransferReply.ArchivalAgency $organization ?>
+        <?xinclude /resources/Organization.xml ?>
+    </ArchivalAgency>
+    <TransferringAgency>
+        <?merge ArchiveTransferReply.TransferringAgency $organization ?>
+        <?xinclude /resources/Organization.xml ?>
+    </TransferringAgency>
+</ArchiveTransferReply>

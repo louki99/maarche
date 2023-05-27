@@ -1,0 +1,141 @@
+
+
+.dateType {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    font-size: 10px !important;
+    justify-content: center;
+    text-align: center;
+
+    .type {
+        .badge {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 10px !important;
+            color: white;
+            font-weight: normal;
+            width: 100px;
+            border-radius: .25em;
+        }
+
+    }
+
+    .date {
+        opacity: 0.5;
+    }
+}
+
+.desc {
+    font-size: 13px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.contact {
+    font-size: 10px;
+    flex-direction: column;
+    display: flex;
+}
+
+.filterTypes {
+    overflow: auto;
+    overflow-y: hidden;
+    width: auto;
+    max-width: 100%;
+    margin-left: 10px;
+
+    ::ng-deep.mat-button-toggle-checked {
+        background: var(--maarch-color-secondary);
+        color: white;
+        font-weight: bold;
+        height: 25px;
+        font-size: 10px;
+
+        .mat-button-toggle-label-content {
+            line-height: 0px;
+        }
+
+        .mat-button-toggle-button {
+            height: 100%;
+        }
+    }
+
+    :not(::ng-deep.mat-button-toggle-checked) {
+        ::ng-deep.mat-button-toggle-button {
+            color: var(--maarch-color-primary);
+            font-weight: bold;
+            height: 25px;
+            font-size: 10px;
+
+            .mat-button-toggle-label-content {
+                line-height: 0px;
+            }
+        }
+    }
+}
+
+.subinfo {
+    padding: 5px;
+    display: flex;
+    font-size: 10px;
+    //opacity: 0.5;
+    width: 100%;
+}
+
+.canManage {
+    cursor: pointer;
+    transition: all 0.5s;
+
+    &:hover {
+        background: var(--maarch-color-primary-opacity-10);
+        transition: all 0.5s;
+    }
+}
+
+.attach {
+    font-size: 13px;
+    display: flex;
+    padding: 5px;
+    color: var(--maarch-color-primary);
+
+    i {
+        flex: 1;
+        cursor: help;
+    }
+}
+
+.addSentResource {
+    position: sticky;
+    z-index: 2;
+    bottom: 10px;
+    margin-left: 10px;
+}
+
+.loading {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.waitingSent {
+    cursor: not-allowed;
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.emptyResource {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    opacity:0.3;
+}

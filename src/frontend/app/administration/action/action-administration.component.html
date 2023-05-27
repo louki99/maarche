@@ -1,0 +1,391 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div *ngIf="action.is_system == true" class="alert alert-danger" role="alert">
+                        <b>{{'lang.isSytemAction' | translate}} !</b> {{'lang.doNotModifyUnlessExpert' | translate}}
+                    </div>
+                    <form class="form-horizontal" (ngSubmit)="onSubmit()" #actionsFormUp="ngForm">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="action.label_action" required name="action_name"
+                                        id="action_name" title="{{'lang.label' | translate}}" type="text"
+                                        placeholder="{{'lang.label' | translate}}" maxlength="255">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <app-plugin-select-search [showLabel]="true" [class]="''"
+                                    [label]="'lang.actionCarriedOut' | translate"
+                                    [placeholderLabel]="'lang.actionCarriedOut' | translate"
+                                    [formControlSelect]="selectActionPageId" [datas]="actionPages"
+                                    [optGroupList]="group" [optGroupTarget]="'category'" (afterSelected)="getCustomFields()" style="width:100%;">
+                                </app-plugin-select-search>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="action.actionPageId=='close_mail'">
+                            <div class="col-sm-12">
+                                <app-plugin-select-search [showLabel]="true" [class]="''"
+                                    [label]="'lang.checkEmptyFields' | translate"
+                                    [placeholderLabel]="(!this.functions.empty(availableCustomFields) ? 'lang.checkEmptyFields' : 'lang.emptyListOfCustomFields') | translate"
+                                    [formControlSelect]="customFieldsFormControl" [datas]="availableCustomFields"
+                                    (afterSelected)="getSelectedFields()" style="width:100%;">
+                                </app-plugin-select-search>
+                                <mat-chip-list class="checkbox-selected-list">
+                                    <mat-chip *ngFor="let fieldValue of selectedFieldsValue; let i = index" selected
+                                        [removable]="true" (removed)="removeSelectedFields(i)">
+                                        {{fieldValue}}
+                                        <mat-icon matChipRemove class="fa fa-times-circle"></mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="action.actionPageId=='confirm_status'">
+                            <div class="col-sm-12">
+                                <app-plugin-select-search [showLabel]="true" [class]="''"
+                                    [label]="'lang.fieldsToUpdate' | translate"
+                                    [placeholderLabel]="(!this.functions.empty(availableFillCustomFields) ? 'lang.fieldsToUpdate' : 'lang.emptyListOfCustomFields') | translate"
+                                    [formControlSelect]="fillcustomFieldsFormControl" [datas]="availableFillCustomFields"
+                                    (afterSelected)="getSelectedFieldsToFill()" style="width:100%;">
+                                </app-plugin-select-search>
+                                <div class="checkbox-selected-list">
+                                    <div *ngFor="let fieldItemValue of selectedFieldItems.selectedFieldsValue; let i = index">
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;" *ngIf="fieldItemValue.type === 'string'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label>
+                                            <mat-form-field class="action-admin-input-form"
+                                                [floatLabel]="appService.getViewMode() ? '' : 'never'">
+                                                <textarea [id]="fieldItemValue.id" matInput cdkTextareaAutosize
+                                                    [(ngModel)]="fieldItemValue.selectedValues"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    class="subject"
+                                                    style="margin-left: 20px;"></textarea>
+                                                <mat-placeholder class="placeholder" style="margin-left: 15px;">
+                                                    {{fieldItemValue.selectedValues ? '' : 'lang.typeValue' | translate}}
+                                                </mat-placeholder>
+                                                <button mat-button color="warn" matSuffix mat-icon-button
+                                                    [title]="'lang.deleteField' | translate"
+                                                    style="position: absolute;bottom: 30px;"
+                                                    (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                    <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;" *ngIf="fieldItemValue.type === 'integer'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label>
+                                            <mat-form-field class="action-admin-input-form input-integer"
+                                                [floatLabel]="appService.getViewMode() ? '' : 'never'">
+                                                <input [id]="fieldItemValue.id" type="number" matInput
+                                                    [(ngModel)]="fieldItemValue.selectedValues"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    style="margin-right: 10px;margin-left: 20px;"
+                                                    min="0" step="0.1">
+                                                <mat-placeholder class="placeholder" style="margin-left: 15px;">
+                                                    {{fieldItemValue.selectedValues ? '' : 'lang.defaultValue' | translate}}
+                                                </mat-placeholder>
+                                                <button mat-button color="warn" matSuffix mat-icon-button
+                                                    [title]="'lang.deleteField' | translate"
+                                                    style="position: absolute;bottom: 30px;"
+                                                    (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                    <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;" *ngIf="fieldItemValue.type === 'select'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label>
+                                            <mat-form-field class="action-admin-input-form"
+                                                [floatLabel]="appService.getViewMode() ? '' : 'never'">
+                                                <mat-select
+                                                    [(ngModel)]="fieldItemValue.selectedValues"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    style="margin-left: 15px;">
+                                                    <mat-option *ngFor="let optionItem of fieldItemValue.values; let i = index" [value]="optionItem.label">
+                                                        {{optionItem.label}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-placeholder class="placeholder" style="margin-left: 15px;">
+                                                    {{fieldItemValue.selectedValues ? '' : 'lang.defaultValue' | translate}}
+                                                </mat-placeholder>
+                                                <button mat-button color="warn" matSuffix mat-icon-button
+                                                    [title]="'lang.deleteField' | translate"
+                                                    style="position: absolute;bottom: 30px;"
+                                                    (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                    <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;" *ngIf="fieldItemValue.type === 'date'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label>
+                                            <div class="row" style="display: flex;">
+                                                <div class="col-md-1 col-sm-1" style="margin-top: 5px;">
+                                                    <button mat-button color="primary" matPreffix mat-icon-button type="button"
+                                                        (click)="$event.stopPropagation();toggleTodayDate(fieldItemValue);"
+                                                        [title]="'lang.todayDate' | translate"
+                                                        style="margin-bottom: 5px;">
+                                                        <mat-icon color="primary"
+                                                            class="{{fieldItemValue.today ? 'far fa-bell-slash' : 'far fa-bell'}}">
+                                                        </mat-icon>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-11 col-sm-11">
+                                                    <mat-form-field class="action-admin-input-form input-date" (click)="picker.open()"
+                                                        style="cursor:pointer;">
+                                                        <input [id]="fieldItemValue.id"
+                                                            matInput [matDatepicker]="picker"
+                                                            placeholder="{{fieldItemValue.selectedValues ? '' : 'lang.chooseDate' | translate}}"
+                                                            [min]="today"
+                                                            [ngModel]="fieldItemValue.selectedValues"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            (dateChange)="onDateChange($event, fieldItemValue)"
+                                                            readonly style="cursor:pointer;">
+                                                        <mat-datepicker-toggle matSuffix [for]="picker"
+                                                            *ngIf="!fieldItemValue.selectedValues"></mat-datepicker-toggle>
+                                                        <mat-datepicker [touchUi]="appService.getViewMode()" #picker></mat-datepicker>
+                                                        <button mat-button color="warn" matSuffix mat-icon-button
+                                                            *ngIf="fieldItemValue.selectedValues"
+                                                            (click)="$event.stopPropagation();resetFieldItemValue(fieldItemValue, i);"
+                                                            [title]="'lang.eraseValue' | translate">
+                                                            <mat-icon color="warn" class="fa fa-calendar-times"></mat-icon>
+                                                        </button>
+                                                        <button mat-button color="warn" matSuffix mat-icon-button
+                                                            [title]="'lang.deleteField' | translate"
+                                                            style="position: absolute;bottom: 35px;"
+                                                            (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                            <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                        </button>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;" *ngIf="fieldItemValue.type === 'radio'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label>
+                                            <mat-form-field class="action-admin-input-form input-radio"
+                                                [floatLabel]="appService.getViewMode() ? '' : 'never'">
+                                                <input matInput style="display: none;">
+                                                <mat-radio-group class="action-admin-radio-form" color="primary" aria-label="Select an option"
+                                                    [(ngModel)]="fieldItemValue.selectedValues"
+                                                    [ngModelOptions]="{standalone: true}">
+                                                    <mat-radio-button *ngFor="let value of fieldItemValue.values" [value]="value.label">
+                                                        {{value.label}}
+                                                    </mat-radio-button>
+                                                </mat-radio-group>
+                                                <button mat-button color="warn" matSuffix mat-icon-button
+                                                    [title]="'lang.deleteField' | translate"
+                                                    style="position: absolute;bottom: 30px;"
+                                                    (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                    <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;" *ngIf="fieldItemValue.type === 'checkbox'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label> 
+                                            <div class="action-admin-input-form action-admin-checkbox-form" style="border-radius: 10px;">
+                                                <button mat-button color="warn" matSuffix mat-icon-button
+                                                    [title]="'lang.deleteField' | translate"
+                                                    style="position: absolute;top: -11px;right: 0;"
+                                                    (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                    <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                </button>
+                                                <mat-selection-list #shoes class="div-list"
+                                                    [(ngModel)]="fieldItemValue.selectedValues"
+                                                    [ngModelOptions]="{standalone: true}">
+                                                    <mat-list-option color="primary" *ngFor="let value of fieldItemValue.values"
+                                                        style="width: 300px;"
+                                                        [value]="value.label" checkboxPosition="before">
+                                                        {{value.label}}
+                                                    </mat-list-option>
+                                                </mat-selection-list>
+                                                <mat-divider style="position: inherit;"
+                                                    *ngIf="shoes.selectedOptions.selected.length > 0" ></mat-divider>
+                                                <mat-chip-list class="action-admin-checkbox-selected-list">
+                                                    <mat-chip *ngFor="let chip of shoes.selectedOptions.selected" selected>
+                                                        {{getCheckboxListLabel(chip.value, fieldItemValue.values)}}
+                                                    </mat-chip>
+                                                </mat-chip-list>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;" *ngIf="fieldItemValue.type === 'contact'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label> 
+                                            <div class="action-admin-input-form action-admin-contact-form">
+                                                <app-contact-autocomplete [id]="fieldItemValue.id"
+                                                    style="width:100%;"
+                                                    [control]="fieldItemValue.formControl"
+                                                    (afterContactSelected)="selectedContact($event, fieldItemValue)"
+                                                    (removeContactEvent)="removeContactEvent($event, fieldItemValue)">
+                                                </app-contact-autocomplete>
+                                                <button mat-button color="warn" matSuffix mat-icon-button
+                                                    [title]="'lang.deleteField' | translate"
+                                                    style="position: absolute;top: -10px;right: 0;"
+                                                    (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                    <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;"  *ngIf="fieldItemValue.type === 'banAutocomplete'">
+                                            <mat-label>{{fieldItemValue.label}}</mat-label> 
+                                                <div class="action-admin-input-form action-admin-banauto-form">
+                                                    <app-address-ban-input [id]="fieldItemValue.id"
+                                                    style="width:100%;"
+                                                    [control]="fieldItemValue.formControl"
+                                                    (afterAddressBanSelected)="selectedAddressBan($event, fieldItemValue)"
+                                                    (removeAddressBanEvent)="removeAddressBanEvent($event, fieldItemValue)">
+                                                </app-address-ban-input>
+                                                <button mat-button color="warn" matSuffix mat-icon-button
+                                                    [title]="'lang.deleteField' | translate"
+                                                    style="position: absolute;top: -10px;right: 0;"
+                                                    (click)="$event.stopPropagation();removeSelectedFieldsToFill(i);">
+                                                    <mat-icon color="warn" class="fa fa-times-circle"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="intermediateStatusActions.indexOf(action.actionPageId) !== -1">
+                            <div *ngIf="action.actionPageId === 'send_shipping'" class="col-sm-6">
+                                <app-plugin-select-search [showLabel]="true" [class]="''" [title]="'lang.intermediateStatus' | translate"
+                                    [label]="'lang.intermediateStatus' | translate"
+                                    [placeholderLabel]="'lang.intermediateStatus' | translate"
+                                    [formControlSelect]="selectIntermidiateStatusId" [datas]="statuses"
+                                    [required]="true"
+                                    (afterSelected)="intermediateStatus = selectIntermidiateStatusId.value" style="width:100%;">
+                                </app-plugin-select-search>
+                            </div>
+                            <!-- Maileva status -->
+                            <div *ngIf="action.actionPageId === 'send_shipping'"  class="col-sm-6">
+                                <app-select-with-filter #intermediateStatus [required]="true"
+                                    name="linkedIntermediateStatus" [label]="'lang.mailevaStatus' | translate"
+                                    [(ngModel)]="intermediateSelectedStatus" [array]="intermediateStatusParams.data" [multiple]="true" (selectionChange)="getSelectedStatus($event, 'intermediateStatus')">
+                                </app-select-with-filter>
+                            </div>
+                            <!--  -->
+                            <div [class]="action.actionPageId === 'send_shipping' ? 'col-sm-6' : 'col-sm-12'">
+                                <app-plugin-select-search [showLabel]="true" [class]="''" [title]="'lang.finalStatusAlt' | translate"
+                                    [label]="'lang.finalStatus' | translate"
+                                    [placeholderLabel]="'lang.finalStatusAlt' | translate"
+                                    [formControlSelect]="selectSuccessStatusId" [datas]="statuses"
+                                    [required]="true"
+                                    (afterSelected)="successStatus = selectSuccessStatusId.value" style="width:100%;">
+                                </app-plugin-select-search>
+                            </div>
+                            <!-- Maileva status -->
+                            <div *ngIf="action.actionPageId === 'send_shipping'"  class="col-sm-6">
+                                <app-select-with-filter #finalStatus [required]="true"
+                                    name="linkedFinalStatus" [label]="'lang.mailevaStatus' | translate"
+                                    [(ngModel)]="finalSelectedStatus" [array]="finalStatusParams.data" [multiple]="true" (selectionChange)="getSelectedStatus($event, 'finalStatus')">
+                                </app-select-with-filter>
+                            </div>
+                            <!--  -->
+                            <div [class]="action.actionPageId === 'send_shipping' ? 'col-sm-6' : 'col-sm-12'">
+                                <app-plugin-select-search [showLabel]="true" [class]="''" [title]="'lang.errorStatusAlt' | translate"
+                                    [label]="'lang.errorStatus' | translate"
+                                    [placeholderLabel]="'lang.errorStatusAlt' | translate"
+                                    [formControlSelect]="selectErrorStatusId" [datas]="statuses"
+                                    [required]="true"
+                                    (afterSelected)="errorStatus = selectErrorStatusId.value" style="width:100%;">
+                                </app-plugin-select-search>
+                            </div>
+                            <!-- Maileva status -->
+                            <div *ngIf="action.actionPageId === 'send_shipping'"  class="col-sm-6">
+                                <app-select-with-filter #errorStatus [required]="true"
+                                    name="linkedErrorStatus" [label]="'lang.mailevaStatus' | translate"
+                                    [(ngModel)]="errorSelectedStatus" [array]="errorStatusParams.data" [multiple]="true" (selectionChange)="getSelectedStatus($event, 'errorStatus')">
+                                </app-select-with-filter>
+                            </div>
+                            <!--  -->
+                            <em class="col-sm-12" *ngIf="action.actionPageId !== 'sendToRecordManagement'">{{'lang.intermediateStatusMailing' | translate}}</em>
+                        </div>
+                        <div class="form-group" *ngIf="action.actionPageId=='create_acknowledgement_receipt'">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <mat-select [required]="action.actionPageId=='create_acknowledgement_receipt'"
+                                        id="generateARmode" name="generateARmode"
+                                        title="{{'lang.generateARMode' | translate}}"
+                                        placeholder="{{'lang.generateARMode' | translate}}" [(ngModel)]="arMode">
+                                        <mat-option value="auto">{{'lang.autoAR' | translate}}</mat-option>
+                                        <mat-option value="manual">{{'lang.manualAR' | translate}}</mat-option>
+                                        <mat-option value="both">{{'lang.bothAR' | translate}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-12">
+                                <mat-slide-toggle name="canAddCopies" title="{{'lang.canAddCopies' | translate}}"
+                                    id="canAddCopies" color="primary" [(ngModel)]="canAddCopies"
+                                    [checked]="canAddCopies">
+                                    {{'lang.canAddCopies' | translate}}</mat-slide-toggle>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="action.actionPageId!='reconcile' && action.actionPageId !== 'send_shipping'">
+                            <div class="col-sm-12">
+                                <app-plugin-select-search [showLabel]="true" [class]="''"
+                                    [label]="intermediateStatusActions.indexOf(action.actionPageId) !== -1 ? ('lang.intermediateStatus' | translate) : ('lang.associatedStatus' | translate)"
+                                    [placeholderLabel]="'lang.associatedStatus' | translate"
+                                    [formControlSelect]="selectStatusId" [datas]="statuses"
+                                    (afterSelected)="action.id_status = selectStatusId.value" style="width:100%;">
+                                </app-plugin-select-search>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <mat-select id="keyword" name="keyword" title="{{'lang.keyword' | translate}}"
+                                        placeholder="{{'lang.keyword' | translate}}" [(ngModel)]="action.keyword">
+                                        <mat-option *ngFor="let keyword of keywordsList" [value]="keyword.value">
+                                            {{keyword.label}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12" style="text-align:center;">
+                                <mat-slide-toggle name="history" title="{{'lang.actionHistoryDesc' | translate}}"
+                                    id="history" color="primary" [(ngModel)]="action.history"
+                                    [checked]="action.history == 'Y'">
+                                    {{'lang.actionHistory' | translate}}</mat-slide-toggle>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <mat-select id="categorieslist" name="categorieslist"
+                                        title="{{'lang.chooseCategoryAssociation' | translate}}"
+                                        placeholder="{{'lang.chooseCategoryAssociation' | translate}}"
+                                        [(ngModel)]="action.actionCategories" multiple required>
+                                        <mat-option *ngFor="let category of categoriesList" [value]="category.id" [disabled]="category.id !== 'registeredMail' && action.actionPageGroup === 'registeredMail'">
+                                            {{category.label}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12" style="text-align:center;">
+                                <button mat-raised-button color="primary" type="submit"
+                                    [disabled]="!actionsFormUp.form.valid || !checkCurrentFieldValue()">{{'lang.save' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

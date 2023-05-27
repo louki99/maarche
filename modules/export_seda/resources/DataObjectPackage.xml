@@ -1,0 +1,28 @@
+<DataObjectPackage>
+    <?merge $dataObjectPackage.BinaryDataObject ?>
+    <BinaryDataObject id="[?merge .id ?]">
+        <?merge .Attachment.bool() ?><Attachment filename="[?merge .Attachment.filename ?]" uri="[?merge .Attachment.uri ?]"><?merge .Attachment.value ?></Attachment>
+        <?merge .Uri.bool() ?><Uri><?merge .Uri ?></Uri>
+        <MessageDigest algorithm="[?merge .MessageDigest.algorithm ?]"><?merge .MessageDigest.value ?></MessageDigest>
+        <Size><?merge .Size ?></Size>
+        <FormatIdentification>
+            <MimeType><?merge .FormatIdentification.MimeType ?></MimeType>
+            <FormatId><?merge .FormatIdentification.FormatId ?></FormatId>
+        </FormatIdentification>
+        <?merge .FileInfo.bool() ?>
+        <FileInfo>
+            <Filename><?merge .FileInfo.Filename ?></Filename>
+        </FileInfo>
+    </BinaryDataObject>
+    <?merge $dataObjectPackage.PhysicalDataObject.bool() ?>
+    <PhysicalDataObject>
+        <?merge .bool() ?>
+        <PhysicalId schemeID="[?merge .PhysicalId.schemeID ?]" schemeName="[?merge .PhysicalId.schemeName ?]" schemeAgencyID="[?merge .PhysicalId.schemeAgencyID ?]" schemeAgencyName="[?merge .PhysicalId.schemeAgencyName ?]" schemeVersionID="[?merge .PhysicalId.schemeVersionID ?]" schemeDataURI="[?merge .PhysicalId.schemeDataURI ?]" schemeURI="[?merge .PhysicalId.schemeURI ?]"><?merge .PhysicalId.value ?></PhysicalId>
+    </PhysicalDataObject>
+    <DescriptiveMetadata>
+        <?merge $dataObjectPackage.DescriptiveMetadata.ArchiveUnit ?>
+        <?xinclude /resources/ArchiveUnit.xml ?>
+    </DescriptiveMetadata>
+    <?merge $dataObjectPackage.ManagementMetadata $managementMetadata ?>
+    <?xinclude /resources/ManagementMetadata.xml ?>
+</DataObjectPackage>

@@ -1,0 +1,123 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.importRegisteredMails' | translate}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="csvData.length > 0" class="alert-message alert-message-info" [innerHTML]="'lang.infoImportregisteredMails' | translate" style="min-width: 100%">
+        </div>
+        <mat-toolbar class="import-tool" [class.hide]="csvData.length === 0 || loading">
+            <span style="flex:1;">
+                <mat-slide-toggle color="primary" [checked]="hasHeader" (change)="toggleHeader()">
+                    {{'lang.csvHeader' | translate}}
+                </mat-slide-toggle>
+            </span>
+            <span style="flex:1;text-align: right;"><i class="fas fa-dolly-flatbed"
+                    color="primary"></i>&nbsp;{{'lang.registeredMails' | translate}} : <b
+                    color="primary">{{countAll}}</b>
+            </span>
+            <span style="flex:1;text-align: right;">
+                <mat-form-field appearance="outline" style="width:250px !important;height: 55px;">
+                    <mat-label>{{'lang.indexingModel' | translate}}</mat-label>
+                    <mat-select [(ngModel)]="currentIndexingModel" (click)="$event.stopPropagation()">
+                        <mat-option *ngFor="let model of indexingModels" [value]="model.id">
+                            {{model.label}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </span>
+        </mat-toolbar>
+        <ng-container *ngIf="loading; else elseTemplate">
+            <div class="loader">
+                <mat-spinner></mat-spinner>
+            </div>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <input type="file" name="files[]" #uploadFile id="uploadFile" (change)="uploadCsv($event)" accept=".csv"
+                style="display: none;">
+            <div *ngIf="csvData.length === 0" appUploadFileDragDrop (click)="uploadFile.click()"
+                (fileDropped)="dndUploadFile($event)" class="dndFile">
+                <div>
+                    {{'lang.dndFileCsvDesc' | translate}}
+                    <!--<mat-form-field appearance="outline" style="font-size:14px;" (click)="$event.stopPropagation()">
+                        <mat-label>{{'lang.delimiter' | translate}}</mat-label>
+                        <mat-select [(ngModel)]="currentDelimiter" (click)="$event.stopPropagation()">
+                            <mat-option *ngFor="let delimiter of delimiters" [value]="delimiter">
+                                {{delimiter === '\t' ? 'TAB' : delimiter}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>-->
+                </div>
+            </div>
+            <div *ngIf="csvData.length > 0" class="row" style="margin: 0px;">
+                <div class="col-md-12">
+                    <mat-paginator #paginator [length]="100" [hidePageSize]="true" [pageSize]="10">
+                    </mat-paginator>
+                </div>
+            </div>
+            <div *ngIf="csvData.length > 0" class="tableContent">
+                <div style="overflow: auto;">
+                    <mat-table #table [dataSource]="dataSource"
+                        [style.width.px]="contactColumns.length * 300">
+                        <ng-container *ngFor="let column of contactColumns;let i=index;">
+                            <ng-container [matColumnDef]="column.id">
+                                <mat-header-cell *matHeaderCellDef style="padding-left: 5px;padding-right: 5px;">
+                                    <ng-container *ngIf="!column.form; else formTemplate">
+                                        <i class="fas fa-database" color="primary"
+                                            [title]="'lang.dbColumn' | translate"></i>&nbsp;<b color="primary"
+                                            [title]="'lang.dbColumn' | translate" class="colLabel">{{column.label}}</b>
+                                        &nbsp;<i class="fas fa-arrows-alt-h"></i>&nbsp;
+                                        <i class="fas fa-file-csv" [title]="'lang.csvColumn' | translate"></i>&nbsp;
+                                        <mat-form-field [title]="'lang.csvColumn' | translate"
+                                            (click)="$event.stopPropagation()" style="width: 80px !important;">
+                                            <mat-select [(ngModel)]="associatedColumns[column.id]"
+                                                (selectionChange)="changeColumn(column, $event.value)">
+                                                <mat-option value=""></mat-option>
+                                                <mat-option *ngFor="let col of csvColumns" [value]="col">
+                                                    {{col}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </ng-container>
+                                    <ng-template #formTemplate>
+                                        <ng-container *ngIf="column.id !== 'departureDate'; else elseDateType">
+                                            <button mat-button [matMenuTriggerFor]="menu" style="padding:0px;"><b class="colLabel"
+                                                    color="primary">{{column.label}}</b>
+                                                <mat-icon matSuffix class="fa fa-caret-down"></mat-icon>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button *ngFor="let val of column.values" mat-menu-item
+                                                    (click)="changeColumn(column, val.id)">
+                                                    <span>{{val.label}}</span>
+                                                </button>
+                                            </mat-menu>
+                                        </ng-container>
+                                        <ng-template #elseDateType>
+                                            <mat-form-field style="display: none;">
+                                                <input matInput [matDatepicker]="picker" (dateChange)="changeColumn(column, $event.value)">
+                                                <mat-datepicker #picker></mat-datepicker>
+                                            </mat-form-field>
+                                            <button mat-button (click)="picker.open()" style="padding:0px;"><b
+                                                    color="primary">{{column.label}}</b>
+                                                <mat-icon matSuffix class="fa fa-caret-down"></mat-icon>
+                                            </button>
+                                        </ng-template>
+                                    </ng-template>
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element" style="padding-left: 5px;padding-right: 5px;">
+                                    {{getLabel(column.id,element[column.id])}}
+                                </mat-cell>
+                            </ng-container>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="getcontactColumnsIds()"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: getcontactColumnsIds();"></mat-row>
+                    </mat-table>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button *ngIf="csvData.length > 0" color="primary" [disabled]="loading"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading"
+            [mat-dialog-close]="">{{'lang.cancel' | translate }}</button>
+    </div>
+</div>

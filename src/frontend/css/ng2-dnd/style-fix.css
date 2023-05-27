@@ -1,0 +1,11 @@
+.dnd-drag-start {
+    -moz-transform:initial !important;
+    -webkit-transform:initial !important;
+    transform:initial !important;
+}
+
+.dnd-sortable-drag {
+  -moz-transform:initial !important;
+  -webkit-transform:initial !important;
+  transform:initial !important;
+}

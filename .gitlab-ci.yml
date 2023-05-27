@@ -1,0 +1,203 @@
+variables:
+  POSTGRES_DB: "MaarchCourrier"
+  POSTGRES_USER: maarch
+  POSTGRES_PASSWORD: ""
+
+stages:
+  - sync
+  - test
+  - deploy
+  - after_deploy
+
+before_script:
+  - apt-get update -yqq > /dev/null
+  - mkdir -p /usr/share/man/man1
+  - mkdir -p /usr/share/man/man7
+  - apt-get install cron -yqq > /dev/null
+  - apt-get install git -yqq > /dev/null
+  - bash ci/docker_install_php.sh > /dev/null
+  - bash ci/docker_install_database.sh > /dev/null
+  - mkdir -p /opt/maarch/docservers/indexes/{letterbox_coll,attachments_coll,version_attachments_coll}
+  - mkdir -p /opt/maarch/docservers/{ai,resources,attachments,templates,acknowledgement_receipts}
+  - mkdir -p /opt/maarch/docservers/{convert_attachments,convert_resources}
+  - mkdir -p /opt/maarch/docservers/{fulltext_attachments,fulltext_resources}
+  - mkdir -p /opt/maarch/docservers/{thumbnails_attachments,thumbnails_resources}
+  - mkdir -p /var/www/html/
+  - ln -s $CI_PROJECT_DIR /var/www/html/MaarchCourrier
+  - cd /var/www/html/MaarchCourrier
+  - sed 's/127.0.0.1/postgres/' config/config.json.default > config/config.json
+  - sed -i 's/\"lockAdvancedPrivileges\"\ \:\ true/\"lockAdvancedPrivileges\"\ \:\ false/' config/config.json
+  - cp modules/visa/xml/remoteSignatoryBooks.xml.default modules/visa/xml/remoteSignatoryBooks.xml
+  - apt-get install -yqq openjdk-11-jdk > /dev/null
+  - sed -i 's/rights="none" pattern="PDF"/rights="read | write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
+  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - php composer-setup.php
+  - php -r "unlink('composer-setup.php');"
+  - mv composer.phar /usr/local/bin/composer
+
+job_e2e:
+  image: php:7.4-apache
+  stage: test
+  services:
+    - name: postgres:10.1
+      command: [ "-c", "datestyle=iso,dmy" ]
+  script:
+    - composer install
+    - apt-get install -yqq libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+    - service apache2 start
+    - touch installed.lck
+    - chown -R www-data. /opt/maarch/
+    - chown -R www-data. /var/www/html/
+    - chmod -R 775 /opt/maarch/
+    - chmod -R 775 /var/www/html/
+    - curl -sL https://deb.nodesource.com/setup_18.x | bash - > /dev/null
+    - apt-get install -yqq nodejs > /dev/null
+    - npm install npm@8.15.0 -g
+    - node -v
+    - npm -v
+    - npm set registry https://registry.npmjs.org/
+    - npm run reload-packages
+    - npm install > /dev/null
+    - npm run build-prod
+    - curl -o /dev/null --silent --head --write-out '%{http_code}\n' http://127.0.0.1/MaarchCourrier
+    - sed -i 's~https://preview.maarchcourrier.com~http://127.0.0.1/MaarchCourrier~' /var/www/html/MaarchCourrier/test/e2e/cypress-config.json
+    - npm run cypress:run
+  artifacts:
+    paths:
+      - queries_error.log
+      - test/e2e/output/
+    expire_in: 2 days
+    when: always
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TAG_MODE == null'
+
+job_php-8.1:
+  image: php:8.1-apache
+  stage: test
+  services:
+    - name: postgres:10.1
+      command: [ "-c", "datestyle=iso,dmy" ]
+  script:
+    - composer install
+    - curl --location -s --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar
+    - chmod +x /usr/local/bin/phpunit
+    - phpunit --coverage-text --colors=never
+  rules:
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+  artifacts:
+    paths:
+      - test/unitTests/build/
+    expire_in: 2h
+  # coverage: '^\s*Lines:\s*\d+.\d+\%'
+
+job_php-8.0:
+  image: php:8.0-apache
+  stage: test
+  services:
+    - name: postgres:10.1
+      command: [ "-c", "datestyle=iso,dmy" ]
+  script:
+    - composer install
+    - curl --location -s --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar
+    - chmod +x /usr/local/bin/phpunit
+    - phpunit --coverage-text --colors=never
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  artifacts:
+    paths:
+      - test/unitTests/build/
+    expire_in: 2h
+  # coverage: '^\s*Lines:\s*\d+.\d+\%'
+
+job_php-7.4:
+  image: php:7.4-apache
+  stage: test
+  services:
+    - name: postgres:10.1
+      command: [ "-c", "datestyle=iso,dmy" ]
+  script:
+    - composer install
+    - curl --location -s --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar
+    - chmod +x /usr/local/bin/phpunit
+    - phpunit --coverage-text --colors=never
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+  artifacts:
+    paths:
+      - test/unitTests/build/
+    expire_in: 2h
+  # coverage: '^\s*Lines:\s*\d+.\d+\%'
+
+create_merge_request:
+  image: debian:10-slim
+  stage: sync
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /(feat|fix)\/[0-9]*/ && $CI_OPEN_MERGE_REQUESTS == null && $CI_COMMIT_BEFORE_SHA == "0000000000000000000000000000000000000000"'
+  before_script:
+    - apt-get update -yqq > /dev/null
+    - apt install -y curl
+    - apt install -y jq
+  script:
+    - chmod +x ./ci/create_mr.sh
+    - ./ci/create_mr.sh
+
+end_merge_request:
+  image: debian:10-slim
+  stage: sync
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /^Merge branch/ && $CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "2301_releases")'
+  before_script:
+    - apt-get update -yqq > /dev/null
+    - apt install -y curl
+    - apt install -y jq
+  script:
+    - chmod +x ./ci/end_mr.sh
+    - ./ci/end_mr.sh
+
+check_branch_releases:
+  image: debian:10-slim
+  stage: after_deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TAG_MODE == "minor"'
+  before_script:
+    - apt-get update -yqq > /dev/null
+    - apt install -y curl
+    - apt install -y jq
+    - apt install -y git
+  script:
+    - chmod +x ./ci/check_releases.sh
+    - ./ci/check_releases.sh
+
+create_minor_tag:
+  image: php:8.1.14-cli
+  stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TAG_MODE == "minor"'
+  before_script:
+    - apt-get update -yqq > /dev/null
+    - apt install -y git
+    - apt install -y curl
+    - apt install -y jq
+    - chmod +x ./ci/generate_app_dependencies.sh
+    - ./ci/generate_app_dependencies.sh
+  script:
+    - chmod +x ./ci/new_minor_tag.sh
+    - ./ci/new_minor_tag.sh
+
+create_major_tag:
+  image: php:8.1.14-cli
+  stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $TAG_MODE == "major"'
+  before_script:
+    - apt-get update -yqq > /dev/null
+    - apt install -y git
+    - apt install -y curl
+    - apt install -y jq
+    - chmod +x ./ci/generate_app_dependencies.sh
+    - ./ci/generate_app_dependencies.sh
+  script:
+    - chmod +x ./ci/new_major_tag.sh
+    - ./ci/new_major_tag.sh

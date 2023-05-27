@@ -1,0 +1,129 @@
+<div class="userBaskets col-sm-6">
+    <mat-list>
+        <mat-list-item>
+            <mat-icon mat-list-icon color="primary">
+                <mat-checkbox color="primary"
+                    (change)="$event ? masterToggleBaskets($event) : null"
+                    [checked]="selectionBaskets.hasValue()"
+                    matTooltip="{{'lang.selectAll' | translate}}"></mat-checkbox>
+            </mat-icon>
+            <p mat-line>
+                <span id="selectAll" *ngIf="!selectionBaskets.hasValue()">
+                    {{'lang.selectAll' | translate}}
+                </span>
+                <app-plugin-autocomplete *ngIf="selectionBaskets.hasValue()"
+                    [labelPlaceholder]="'lang.redirectBaskets' | translate"
+                    [routeDatas]="['/rest/autocomplete/users']"
+                    [targetSearchKey]="'idToDisplay'"
+                    [subInfoKey]="'descriptionToDisplay'"
+                    [disableItems]="[headerService.user.id]"
+                    (triggerEvent)="addBasketRedirection($event)"
+                    appearance="outline"></app-plugin-autocomplete>
+            </p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let basket of userBaskets;let i = index">
+            <mat-list-item *ngIf="basket.userToDisplay == null"
+                (mouseover)="showActions(basket)" (mouseout)="hideActions(basket)"
+                style="cursor: pointer;">
+                <mat-icon  mat-list-icon color="primary" *ngIf="basket.enabled">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selectionBaskets.toggle(basket) : null"
+                        [checked]="selectionBaskets.isSelected(basket)"
+                        color="primary">
+                    </mat-checkbox>
+                </mat-icon>
+                <h4 id="selectionBasket" mat-line color="primary">
+                    <span (click)="selectionBaskets.toggle(basket);"
+                        matTooltip="{{basket.basket_name}} [{{basket.group_desc}}]"
+                        style="flex: 2;overflow: hidden;text-overflow: ellipsis;">
+                        {{basket.basket_name}}
+                        <span class="label label-primary"
+                            style="font-weight:normal">{{basket.group_desc}}</span>
+                    </span>
+                </h4>
+            </mat-list-item>
+        </ng-container>
+    </mat-list>
+</div>
+<div class="redirectedBaskets col-sm-6">
+    <mat-tab-group>
+        <mat-tab label="{{'lang.redirectedBaskets' | translate}}">
+            <mat-list>
+                <ng-container
+                    *ngFor="let basket of redirectedBaskets;let i = index">
+                    <mat-list-item>
+                        <mat-icon mat-list-icon color="primary" class="paper-plane fa fa-paper-plane">
+                        </mat-icon>
+                        <h4 mat-line color="primary">{{basket.basket_name}}
+                            <span class="label label-primary"
+                                style="font-weight:normal">{{basket.group_desc}}</span>
+                        </h4>
+                        <p mat-line>
+                            <mat-form-field>
+                                <input type="text" color="warn" matInput disabled
+                                    value="{{'lang.redirectedTo' | translate}} {{basket.userToDisplay}}">
+                                <button mat-button color="warn" matSuffix
+                                    mat-icon-button aria-label="Clear"
+                                    (click)="delBasketRedirection(basket,i)"
+                                    matTooltip="{{'lang.deleteRedirection' | translate}}">
+                                    <mat-icon color="warn"
+                                        class="fa fa-times text-danger"></mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </p>
+                    </mat-list-item>
+                </ng-container>
+            </mat-list>
+        </mat-tab>
+    </mat-tab-group>
+
+    <mat-tab-group>
+        <mat-tab label="{{'lang.assignedBaskets' | translate}}">
+            <mat-list>
+                <ng-container
+                    *ngFor="let basket of assignedBaskets;let i = index">
+                    <mat-list-item>
+                        <mat-icon mat-list-icon color="primary"
+                            style="margin-top:-60px;" class="fa fa-reply">
+                        </mat-icon>
+                        <h4 mat-line color="primary" (click)="basket.redirectMode=false">{{basket.basket_name}}
+                            <span class="label label-primary"
+                                style="font-weight:normal">{{basket.group_desc}}</span>
+                        </h4>
+                        <p mat-line>
+                            <app-plugin-autocomplete
+                                *ngIf="basket.redirectMode"
+                                [labelPlaceholder]="('lang.redirectBasket' | translate) + ': '+basket.basket_name"
+                                [routeDatas]="['/rest/autocomplete/users']"
+                                [targetSearchKey]="'idToDisplay'"
+                                [subInfoKey]="'descriptionToDisplay'"
+                                [disableItems]="[headerService.user.id]"
+                                (triggerEvent)="reassignBasketRedirection($event,basket,i)"
+                                appearance="outline"></app-plugin-autocomplete>
+                            <mat-form-field *ngIf="!basket.redirectMode">
+                                <input type="text" color="warn" matInput disabled
+                                    value="{{'lang.assignBy' | translate}} {{basket.userToDisplay}}">
+                                <button mat-button color="warn" matSuffix
+                                    mat-icon-button aria-label="Clear"
+                                    (click)="basket.redirectMode=true"
+                                    matTooltip="{{'lang.reassign' | translate}}">
+                                    <mat-icon color="primary" class="fa fa-edit">
+                                    </mat-icon>
+                                </button>
+                                <button mat-button color="warn" matSuffix
+                                    mat-icon-button aria-label="Clear"
+                                    (click)="delBasketAssignRedirection(basket,i)"
+                                    matTooltip="{{'lang.deleteAssignation' | translate}}">
+                                    <mat-icon color="warn"
+                                        class="fa fa-times text-danger"></mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </p>
+                    </mat-list-item>
+                </ng-container>
+            </mat-list>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+<div style="clear:both;"></div>

@@ -1,0 +1,194 @@
+
+
+.selectedFolder {
+    border-left: solid 5px var(--maarch-color-primary);
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.mat-icon-rtl-mirror {
+    opacity: 0.5;
+}
+
+.folderAction {
+    color: #666;
+}
+
+.mat-form-field-appearance-outline {
+    font-size: 11px;
+}
+
+::ng-deep.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: var(--maarch-color-primary);
+}
+
+.example-tree-invisible {
+    display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+.example-tree-node {
+    display: block;
+}
+
+.example-tree-node .example-tree-node {
+    padding-left: 40px;
+}
+
+.expandButton {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.mat-list-item {
+    color: rgb(102, 102, 102);
+    font-size: 12px;
+    font-weight: bold;
+    height: 40px;
+    width: 90%;
+}
+
+.mat-tree-node {
+    min-height: 0px;
+    height: 40px;
+
+    ::ng-deep.mat-list-item-content {
+        padding-left: 0px;
+    }
+}
+
+form {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.treeLabel {
+    white-space: pre;
+    color: rgb(102, 102, 102);
+}
+
+.drag {
+    color: var(--maarch-color-secondary) !important;
+}
+
+.more {
+    width: 100%;
+    opacity: 0.6;
+    ::ng-deep.mat-list-item-content {
+        justify-content: center;
+    }
+}
+
+.rootFolder {
+    width: 100%;
+}
+
+
+.private {
+    margin-left: 5px;
+    color: var(--maarch-color-secondary);
+}
+
+.countResources {
+    color: var(--maarch-color-primary);
+    font-weight: bold;
+}
+
+button:disabled {
+    opacity: 1;
+}
+
+.countResources {
+    font-weight: bold;
+    color: var(--maarch-color-primary);
+}
+
+.empty {
+    opacity: 0.5;
+    font-size: 12px;
+    color: rgb(102, 102, 102);
+}
+.folderTools {
+    padding-right: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+
+    .filter {
+        flex: 1;
+    }
+}
+
+.noFolder {
+    font-size: 12px;
+    color: rgb(102, 102, 102);
+    text-align: center;
+    font-style: italic;
+
+    a {
+        cursor: pointer;
+    }
+}
+
+::ng-deep.folderListMenu {
+    .mat-menu-content {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .mat-menu-item {
+            .pinnedActionIcon {
+                color: var(--maarch-color-danger);
+                height: auto;
+
+                i {
+                    font-size: 13px;
+                    transition: all 0.3s;
+                    transform: rotate(15deg) translate(0px, -50%);
+                }
+
+            }
+            .revertPinnedActionIcon {
+                color: var(--maarch-color-primary);
+                height: auto;
+
+                i {
+                    font-size: 13px;
+                    transition: all 0.3s;
+                    transform: rotate(0deg) translate(0px, 0px);
+                }
+
+            }
+        }
+
+        .mat-menu-item:hover {
+            .pinnedActionIcon {
+                color: var(--maarch-color-primary);
+                i {
+                    transition: all 0.3s;
+                    transform: rotate(0deg) translate(0px, 0px);
+                }
+            }
+
+            .revertPinnedActionIcon {
+                color: var(--maarch-color-danger);
+                i {
+                    transition: all 0.3s;
+                    transform: rotate(15deg) translate(0px, -50%);
+                }
+            }
+        }
+
+    }
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+}

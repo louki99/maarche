@@ -1,0 +1,16 @@
+<div class="stepContent">
+    <h2 class="stepContentTitle"><i class="fa fa-hdd"></i> {{'lang.docserver' | translate}}</h2>
+    <div class="alert-message alert-message-info" role="alert" style="margin-top: 30px;min-width: 100%;">
+        {{'lang.stepDocserver_desc' | translate}}
+    </div>
+    <form [formGroup]="stepFormGroup" style="width: 850px;margin: auto;">
+        <mat-form-field appearance="outline" style="color: initial;">
+            <mat-label>{{'lang.docserverPath' | translate}}</mat-label>
+            <input matInput formControlName="docserversPath">
+            <span matSuffix>/__CUSTOM_iD__/</span>
+        </mat-form-field>
+        <div style="text-align: center;">
+            <button mat-raised-button type="button" color="primary" (click)="checkAvailability()" [disabled]="!this.stepFormGroup.controls['docserversPath'].valid">{{'lang.checkInformations' | translate}}</button>
+        </div>
+    </form>
+</div>

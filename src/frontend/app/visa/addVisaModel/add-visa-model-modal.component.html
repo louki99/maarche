@@ -1,0 +1,14 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>Ajouter un modèle</h1>
+    <mat-dialog-content class="modal-container">
+        <mat-form-field appearance="outline">
+            <input type="text" matInput [(ngModel)]="template.title" placeholder="Nom du modèle">
+        </mat-form-field>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

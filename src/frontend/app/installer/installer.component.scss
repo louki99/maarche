@@ -1,0 +1,144 @@
+::ng-deep.mat-stepper-horizontal {
+    height: 100% !important;
+}
+
+.container {
+    padding-left: 80px !important;
+    padding-right: 80px !important;
+}
+
+.previousStepButton {
+    position: fixed;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+
+    .mat-icon {
+        font-size: 25px;
+        height:auto;
+        width: auto;
+    }
+}
+
+.nextStepButton {
+    position: fixed;
+    top: 50%;
+    right: 13px;
+    transform: translateY(-50%);
+
+    .mat-icon {
+        font-size: 25px;
+        height:auto;
+        width: auto;
+    }
+}
+/*.mat-stepper-horizontal {
+    display: flex;
+    flex-direction: column;
+
+
+    ::ng-deep.mat-step-icon {
+        background-color: white;
+        color: #135f7f;
+    }
+
+    ::ng-deep.mat-step-label {
+        color: white;
+        opacity: 0.5;
+    }
+
+    ::ng-deep.mat-step-label-active {
+        opacity: 1;
+    }
+}
+
+::ng-deep.mat-step-icon {
+    background-color: white;
+    color: #135f7f;
+}
+
+::ng-deep.mat-step-label-active {
+    opacity: 1;
+}
+
+::ng-deep.mat-step-label {
+    color: white;
+    opacity: 0.5;
+}
+
+.stepIcon {
+    font-size: 10px !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+::ng-deep.mat-step-label {
+    transition: all 0.2s;
+}
+
+::ng-deep.mat-step-label-selected {
+    font-size: 160%;
+    transition: all 0.2s;
+}
+
+::ng-deep.mat-horizontal-stepper-content {
+    height: 100%;
+}
+
+::ng-deep.mat-horizontal-content-container {
+    flex: 1;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.stepContainer{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.stepContent {
+    flex: 1;
+    overflow: auto;
+
+    &Title {
+        margin-bottom: 30px;
+        border-bottom: solid 1px;
+        padding: 0;
+    }
+}
+
+.formStep {
+    display: contents;
+}*/
+
+::ng-deep.mat-step-icon {
+    background-color: white;
+    color: #135f7f;
+}
+
+::ng-deep.mat-step-label-active {
+    opacity: 1 !important;
+}
+
+::ng-deep.mat-step-label {
+    color: white;
+    opacity: 0.5;
+}
+
+.stepIcon {
+    font-size: 10px !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+::ng-deep.mat-step-label {
+    transition: all 0.2s;
+}
+
+::ng-deep.mat-step-label-selected {
+    font-size: 160%;
+    transition: all 0.2s;
+    opacity: 1;
+}

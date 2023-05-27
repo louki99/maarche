@@ -1,0 +1,64 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <mat-sidenav-container autosize style="height:100%;">
+            <mat-sidenav-content style="background: white;padding:10px;">
+                <div>
+                    {{'lang.makeActionOn' | translate}}
+                    <b *ngIf="data.resIds.length === 0" color="primary"
+                        class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                    <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                    <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                        {{'lang.elements' | translate}}</b> ?
+                </div>
+                <app-maarch-message *ngIf="delegation.isDelegated && !noResourceToProcess" mode="danger">
+                    {{'lang.signInsteadOf' | translate}}&nbsp;<b style="overflow: hidden;text-overflow: ellipsis;" [title]="delegation.userDelegated">{{ delegation.userDelegated }}</b>
+                </app-maarch-message>
+                <div *ngIf="resourcesError.length > 0" class="alert-message alert-message-danger mailList" role="alert">
+                    <p>
+                        {{'lang.canNotMakeAction' | translate}} :
+                    </p>
+                    <ul>
+                        <li *ngFor="let ressource of resourcesError">
+                            <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                        </li>
+                    </ul>
+                </div>
+                <mat-form-field (click)="picker.open()" appearance="outline" style="cursor:pointer;margin-top: 10px;">
+                    <mat-label>{{'lang.opinionLimitDate' | translate}}</mat-label>
+                    <input matInput [(ngModel)]="opinionLimitDate" [matDatepicker]="picker"
+                        [placeholder]="'lang.chooseDate' | translate" [min]="today" readonly style="cursor:pointer;" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker" *ngIf="!opinionLimitDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <button mat-button color="warn" matSuffix mat-icon-button *ngIf="opinionLimitDate"
+                        (click)="$event.stopPropagation();opinionLimitDate = null;" [title]="'lang.eraseValue' | translate">
+                        <mat-icon color="warn" class="fa fa-calendar-times">
+                        </mat-icon>
+                    </button>
+                </mat-form-field>
+                <app-note-editor #noteEditor [title]="'lang.addOpinionReason' | translate" [resIds]="data.resIds"
+                    [disableRestriction]="true"></app-note-editor>
+                <app-avis-workflow *ngIf="data.resIds.length == 1 || (!noResourceToProcess && data.resIds.length > 1)"
+                    [adminMode]="true" [mode]="'parallel'" #appAvisWorkflow>
+                </app-avis-workflow>
+                <div *ngIf="showToggle" class="row" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary" style="margin-bottom: 15px;"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                    <mat-divider></mat-divider>
+                </div>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || !isValidAction()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

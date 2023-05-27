@@ -1,0 +1,1121 @@
+
+.selectedId {
+    background-color: var(--maarch-color-secondary);
+}
+
+#tab_visaSetWorkflow td {
+    white-space: pre;
+}
+
+[draggable=true] {
+    cursor: move;
+}
+
+[draggable=true]:hover {
+    box-shadow: 0 0 5px green;
+    /* CSS3 */
+}
+
+[draggable=false]:hover {
+    cursor: not-allowed;
+}
+
+#visa_content {
+    display: block;
+    width: 100%;
+}
+
+.droptarget {
+    position: relative;
+    background-color: #135F7F33;
+    display: table;
+    margin: 10px;
+    padding: 5px;
+    text-align: left;
+    width: 95%;
+    cursor: default;
+    border: dashed 2px #135F7F33
+}
+
+.droptarget_arrow {
+    border: none;
+    display: table-cell;
+}
+
+.vised {
+    opacity: 1;
+    color: green;
+    border: solid 2px green;
+}
+
+.moved {
+    opacity: 0.5 !important;
+    color: #666 !important;
+    border: solid 2px white !important;
+    text-decoration: line-through !important;
+}
+
+.droptarget input {
+    width: 100%;
+}
+
+#visaUserList {
+    width: 45%;
+    float: left;
+}
+
+.droptarget.currentVis {
+    color: var(--maarch-color-primary);
+    border: solid 2px var(--maarch-color-primary);
+}
+
+.visaUserInfo,
+.visaUserStatus,
+.visaUserConsigne,
+.visaUserAction {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.visaUserStatus {
+    width: 5%;
+}
+
+.vised .visaUserStatus {
+    opacity: 1;
+}
+
+.visaUserInfo {
+    width: 55%;
+    font-weight: bold;
+}
+
+.visaUserInfo .nbRes {
+    background-color: grey;
+    font-weight: normal;
+}
+
+.visaUserInfo sub {
+    font-weight: normal;
+}
+
+.droptarget:hover.vised #dropZone {
+    visibility: hidden;
+}
+
+.droptarget:hover #dropZone {
+    visibility: visible;
+}
+
+.dropArea {
+    border: dashed 3px white;
+    width: 60%;
+    margin: auto;
+    opacity: 0.5;
+    padding: 5px;
+
+}
+
+.dropArea::after {
+    font-weight: bolder;
+}
+
+#dropZone,
+#dropZone:active {
+    width: 40px;
+    text-align: right;
+    opacity: 0.5;
+    visibility: hidden;
+    float: right;
+    margin: 5px;
+}
+
+#dropZone:hover {
+    cursor: grab;
+}
+
+#dropZone:active {
+    cursor: grabbing;
+}
+
+.visaUserConsigne {
+    width: 30%;
+}
+
+.visaUserAction {
+    color: red;
+    text-align: center;
+    width: 5%;
+}
+
+.visaUserAction i {
+    cursor: pointer;
+}
+
+/* Signature Book CSS */
+
+.visaContent {
+    position: relative;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.visaContent h1 {
+    display: block !important;
+    position: initial !important;
+    padding: 10px;
+    text-align: center !important;
+}
+
+.titleSignatureBook .others {
+    float: right;
+    width: 14%;
+    padding: 5px;
+    vertical-align: middle;
+    text-align: right;
+}
+
+.titleSignatureBook .others input {
+    width: 95%;
+    background: #E6E6E6;
+    border-radius: 2px;
+    border: none;
+    padding: 5px;
+}
+
+.resListContent {
+    width: 8%;
+    height: 100%;
+    text-align: center;
+    border-right: solid 1px;
+    vertical-align: top;
+    overflow: auto;
+    font-size: 10px;
+}
+
+.resListContentInfo {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 95%;
+    text-align: left;
+    padding: 5px;
+    cursor: pointer;
+    margin-top: 0px;
+}
+
+.resListContentInfo i {
+    width: 5%;
+    text-align: center;
+}
+
+.resListContentFrame:hover {
+    background-color: var(--maarch-color-secondary);
+}
+
+.resListContentFrame {
+    border-bottom: solid 1px black;
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+}
+
+.resListContentPos {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.hideLeftContent {
+    z-index: 1;
+    position: absolute;
+    margin-left: -13px;
+    color: #666;
+    top: 45%;
+    padding: 5px;
+    cursor: pointer;
+    background: #fbfbfb;
+    border-radius: 40px;
+}
+
+.hideRightContent {
+    position: absolute;
+    right: -10px;
+    color: #666;
+    top: 45%;
+    padding: 5px;
+    cursor: pointer;
+    background: #fbfbfb;
+    border-radius: 40px;
+}
+
+.hideresListContent {
+    position: absolute;
+    left: -4px;
+    color: #666;
+    top: 45%;
+    padding: 5px;
+    cursor: pointer;
+    background: #fbfbfb;
+    border-radius: 40px;
+}
+
+.contentLeft {
+    position: relative;
+    border-right: solid 1px;
+    vertical-align: top;
+    padding-left: 10px;
+    /*width:39%;*/
+    display: inline-block;
+    height: 100%;
+}
+
+.contentRight {
+    display: inline-block;
+    height: 100%;
+    vertical-align: top;
+}
+
+.visaContent iframe {
+    margin: auto;
+    width: 100%;
+    height: 75vh;
+    border: none;
+}
+
+.contentLeft iframe {
+    height: 99%;
+}
+
+.panelRight {
+    width: 50px;
+    border-left: solid 1px;
+    text-align: center;
+    position: absolute;
+    right: 0px;
+    background-color: white;
+}
+
+.panelRightContent {
+    width: 100%;
+    height: 69%;
+    overflow: auto;
+}
+
+.panelRight .item {
+    padding: 10px;
+    padding-left: 5px;
+    cursor: pointer;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.contentRight .contentShow {
+    display: inline-block;
+    height: 91vh;
+}
+
+.panelRight {
+    display: inline-block;
+    height: calc(100% - 38px);
+}
+
+.contentLeft .contentShow {
+    height: 95vh;
+    overflow: auto;
+    width: 98%;
+}
+
+.contentRight .contentShow,
+.contentLeft .contentShow {
+    padding: 5px;
+    height: 100%;
+}
+
+.contentRight .contentShow {
+    position: relative;
+    vertical-align: top;
+    width: 100%;
+}
+
+.pjDetails,
+.pjDoc {
+    margin-bottom: 5px;
+}
+
+.pjDetails,
+.pjSign {
+    background-color: white;
+    display: block;
+    width: 99%;
+    text-align: left;
+    -moz-box-shadow: inset 0px 0px 5px 0px #656565;
+    -webkit-box-shadow: inset 0px 0px 5px 0px #656565;
+    -o-box-shadow: inset 0px 0px 5px 0px #656565;
+    box-shadow: inset 0px 0px 5px 0px #656565;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=5);
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 10px;
+    height: 100px;
+}
+
+.pjDetails label {
+    font-weight: bold;
+    cursor: inherit;
+}
+
+.pjDetailsMore {
+    z-index: 1;
+    position: absolute;
+    left: 15px;
+    margin-top: 2px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--maarch-color-primary);
+    color: white;
+    padding: 10px;
+    -moz-box-shadow: 0px 0px 10px 0px #656565;
+    -webkit-box-shadow: 0px 0px 10px 0px #656565;
+    -o-box-shadow: 0px 0px 10px 0px #656565;
+    box-shadow: 0px 0px 10px 0px #656565;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=10);
+}
+
+.pjDetails div {
+    white-space: initial;
+}
+
+.pjDetails {
+    color: #666;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 0.02em;
+}
+
+.pjDoc {
+    height: 100px;
+    background-color: white;
+    -moz-box-shadow: inset 0px 0px 5px 0px #656565;
+    -webkit-box-shadow: inset 0px 0px 5px 0px #656565;
+    -o-box-shadow: inset 0px 0px 5px 0px #656565;
+    box-shadow: inset 0px 0px 5px 0px #656565;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=5);
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.pjDoc img {
+    height: 95%;
+    border: solid 2px white;
+    cursor: pointer;
+}
+
+img.panelSelectedThumbnail,
+img:hover.panelSelectedThumbnail {
+    border: solid 2px var(--maarch-color-primary);
+    cursor: pointer;
+}
+
+.actions {
+    float: right;
+    width: 25%;
+    padding: 5px;
+    vertical-align: middle;
+    text-align: right;
+    text-transform: initial;
+    border-left: solid 1px black;
+    border-right: solid 1px black;
+}
+
+.actions i {
+    width: 5%;
+}
+
+.actions select {
+    width: 75%;
+}
+
+.actions input {
+    text-align: center;
+    width: 17%;
+}
+
+#signatureBookActions {
+    background: white;
+    border: solid 1px var(--maarch-color-primary);
+    color: black;
+    font: 400 13.3333px Arial;
+}
+
+.titleSignatureBook {
+    height: 38px;
+    font-size: 12px;
+    display: block;
+    width: 100%;
+    border: solid 1px black;
+    vertical-align: middle;
+    font-weight: bold;
+    background: var(--maarch-color-primary);
+    color: white;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#closeSignatureBook {
+    float: right;
+    padding: 5px;
+    width: 47px;
+    text-align: center;
+}
+
+#labelSignatureBook {
+    float: left;
+    width: 33%;
+    padding-left: 10px;
+    margin-top: 10px;
+}
+
+#labelSignatureBook div {
+    /*width: 100%;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+#tabSignatureBook {
+    float: left;
+    width: auto;
+}
+
+.titleSignatureBook div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#tabSignatureBook .item {
+    border-right: solid 1px black;
+    display: table-cell;
+    padding: 5px;
+    cursor: pointer;
+    vertical-align: middle;
+    width: 60px;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 7px;
+    color: #666;
+    background-color: #fbfbfb;
+}
+
+.contentSignatureBook {
+    border: solid 1px black;
+    border-top: none;
+    display: block;
+    width: 100%;
+    flex: 1;
+    // white-space: nowrap;
+    overflow: hidden;
+    background-color: #fbfbfb;
+}
+
+#tabSignatureBook .item.activeTabSignatureBook {
+    -moz-box-shadow: inset 0px 0px 5px 0px #656565;
+    -webkit-box-shadow: inset 0px 0px 5px 0px #656565;
+    -o-box-shadow: inset 0px 0px 5px 0px #656565;
+    box-shadow: inset 0px 0px 5px 0px #656565;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.resListContentFrameSelected {
+    background-color: var(--maarch-color-secondary);
+
+}
+
+.panelRightContent .item:hover {
+    -moz-box-shadow: inset 0px 0px 5px 0px #656565;
+    -webkit-box-shadow: inset 0px 0px 5px 0px #656565;
+    -o-box-shadow: inset 0px 0px 5px 0px #656565;
+    box-shadow: inset 0px 0px 5px 0px #656565;
+    background-color: var(--maarch-color-secondary);
+}
+
+.panelSelectedThumbnail {
+    -moz-box-shadow: inset 0px 0px 5px 0px #656565;
+    -webkit-box-shadow: inset 0px 0px 5px 0px #656565;
+    -o-box-shadow: inset 0px 0px 5px 0px #656565;
+    box-shadow: inset 0px 0px 5px 0px #656565;
+    background-color: var(--maarch-color-secondary);
+    color: #666 !important;
+}
+
+.infoPj {
+    width: 30%;
+    display: inline-block;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+}
+
+.infoPj label {
+    vertical-align: top;
+}
+
+
+
+/* NG TABLE */
+.ng-table th {
+    text-align: left;
+    padding: 5px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.ng-table th.sortable {
+    cursor: pointer;
+}
+
+.ng-table th.sortable .sort-indicator {
+    padding-right: 18px;
+    position: relative;
+}
+
+.ng-table th.sortable .sort-indicator:after,
+.ng-table th.sortable .sort-indicator:before {
+    content: "";
+    border-width: 0 4px 4px;
+    border-style: solid;
+    border-color: #000 transparent;
+    visibility: visible;
+    right: 5px;
+    top: 50%;
+    position: absolute;
+    opacity: .3;
+    margin-top: -4px;
+}
+
+.ng-table th.sortable .sort-indicator:before {
+    margin-top: 2px;
+    border-bottom: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #000;
+}
+
+.ng-table th.sortable .sort-indicator:hover:after,
+.ng-table th.sortable .sort-indicator:hover:before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ng-table th.sortable.sort-asc,
+.ng-table th.sortable.sort-desc {
+    background-color: rgba(141, 192, 219, .25);
+    text-shadow: 0 1px 1px hsla(0, 0%, 100%, .75);
+}
+
+.ng-table th.sortable.sort-asc .sort-indicator:after,
+.ng-table th.sortable.sort-desc .sort-indicator:after {
+    margin-top: -2px;
+}
+
+.ng-table th.sortable.sort-asc .sort-indicator:before,
+.ng-table th.sortable.sort-desc .sort-indicator:before {
+    visibility: hidden;
+}
+
+.ng-table th.sortable.sort-asc .sort-indicator:after,
+.ng-table th.sortable.sort-asc .sort-indicator:hover:after,
+.ng-table th.sortable.sort-desc .sort-indicator:after {
+    visibility: visible;
+    filter: alpha(opacity=60);
+    -khtml-opacity: .6;
+    -moz-opacity: .6;
+    opacity: .6;
+}
+
+.ng-table th.sortable.sort-desc .sort-indicator:after {
+    border-bottom: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #000;
+    box-shadow: none;
+}
+
+.ng-table th.filter .input {
+    margin: 0;
+    display: block;
+    width: auto;
+    /*min-height:30px;*/
+    font-size: 9px;
+    box-sizing: border-box;
+}
+
+.ng-table .ng-table-group-header th {
+    text-align: left;
+}
+
+.ng-table .ng-table-group-selector {
+    display: block
+}
+
+.ng-table .ng-table-group-close,
+.ng-table .ng-table-group-toggle {
+    float: right
+}
+
+.ng-table .ng-table-group-toggle {
+    margin-right: 5px
+}
+
+@media only screen and (max-width:800px) {
+    .ng-table-responsive {
+        border-bottom: 1px solid #999
+    }
+
+    .ng-table-responsive tr {
+        border-top: 1px solid #999;
+        border-left: 1px solid #999;
+        border-right: 1px solid #999
+    }
+
+    .ng-table-responsive td:before {
+        position: absolute;
+        padding: 8px;
+        left: 0;
+        top: 0;
+        width: 50%;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 700
+    }
+
+    .ng-table-responsive thead tr th {
+        text-align: left
+    }
+
+    .ng-table-responsive thead tr.ng-table-filters th {
+        padding: 0
+    }
+
+    .ng-table-responsive thead tr.ng-table-filters th form>div {
+        padding: 8px
+    }
+
+    .ng-table-responsive td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        white-space: normal;
+        text-align: left
+    }
+
+    .ng-table-responsive td:before {
+        content: attr(data-title-text)
+    }
+
+    .ng-table-responsive,
+    .ng-table-responsive tbody,
+    .ng-table-responsive td,
+    .ng-table-responsive th,
+    .ng-table-responsive thead,
+    .ng-table-responsive tr {
+        display: block
+    }
+}
+
+.ng-table-pagination {
+    margin-top: 0
+}
+
+.filter:after,
+.filter:before,
+.ng-table-group-selector:after,
+.ng-table-group-selector:before {
+    display: table;
+    content: " "
+}
+
+.filter:after,
+.ng-table-group-selector:after {
+    clear: both
+}
+
+.filter>.filter-cell {
+    float: left;
+    box-sizing: border-box
+}
+
+.filter-horizontal>.filter-cell {
+    padding: 0 2px
+}
+
+.filter-horizontal>.filter-cell:first-child {
+    padding-left: 0
+}
+
+.filter-horizontal>.filter-cell.last,
+.filter-horizontal>.filter-cell:last-child {
+    padding-right: 0
+}
+
+.s12 {
+    width: 100%
+}
+
+.s11 {
+    width: 91.66666666666666%
+}
+
+.s10 {
+    width: 83.33333333333334%
+}
+
+.s9 {
+    width: 75%
+}
+
+.s8 {
+    width: 66.66666666666666%
+}
+
+.s7 {
+    width: 58.333333333333336%
+}
+
+.s6 {
+    width: 50%
+}
+
+.s5 {
+    width: 41.66666666666667%
+}
+
+.s4 {
+    width: 33.33333333333333%
+}
+
+.s3 {
+    width: 25%
+}
+
+.s2 {
+    width: 16.666666666666664%
+}
+
+.s1 {
+    width: 8.333333333333332%
+}
+
+@media all and (max-width:468px) {
+
+    .s1,
+    .s2,
+    .s3,
+    .s4,
+    .s5,
+    .s6,
+    .s7,
+    .s8,
+    .s9,
+    .s10,
+    .s11,
+    .s12 {
+        width: 100%
+    }
+
+    .filter>.filter-cell {
+        padding: 0
+    }
+}
+
+.ng-table {
+    margin-bottom: 20px;
+    max-width: 100%;
+    width: 100%;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-bottom: solid 1px var(--maarch-color-primary);
+}
+
+.ng-table td {
+    text-align: left;
+    padding: 10px;
+}
+
+.ng-table th {
+    border-bottom: solid 1px var(--maarch-color-primary);
+}
+
+.ng-table-counts {
+    display: none;
+}
+
+.ng-table-pagination li {
+    display: inline-block;
+    border: solid 1px var(--maarch-color-primary);
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+.ng-table-pagination li.active {
+    background: var(--maarch-color-primary);
+    color: white;
+}
+
+.ng-table-pagination li.active a {
+    color: white;
+}
+
+.ng-table-pagination li:hover {
+    background: var(--maarch-color-primary);
+    color: white;
+}
+
+.ng-table-pagination li:hover a {
+    color: white;
+}
+
+.ng-table tr:nth-child(even) {
+    background-color: rgba(141, 192, 219, .25);
+}
+
+.ng-table th:nth-child(1) {
+    width: 20%;
+}
+
+.ng-table th:nth-child(2) {
+    width: 20%;
+}
+
+.ng-table th:nth-child(3) {
+    width: 60%;
+}
+
+#footer {
+    padding: 0px;
+}
+
+.pjSign {
+    text-align: left;
+    height: auto;
+    position: absolute;
+    bottom: 0px;
+    background: white;
+    margin-bottom: 5px;
+    width: 80px;
+    -webkit-transition: width 0.5s;
+    /* Safari */
+    transition: width 0.5s;
+    overflow: auto !important;
+}
+
+.pjSign.signed {
+    width: auto !important;
+}
+
+.pjSign img {
+    cursor: pointer;
+    border: solid 2px white;
+    height: 30px;
+    width: auto;
+    min-width: 60px;
+    -webkit-transition: all 0.5s;
+    /* Safari */
+    transition: all 0.5s;
+}
+
+.pjSign:hover img {
+    height: 60px;
+    width: auto;
+    -webkit-transition: all 0.5s;
+    /* Safari */
+    transition: all 0.5s;
+}
+
+.pjSign:hover img:hover {
+    border: solid 2px var(--maarch-color-primary);
+}
+
+.pjSign:hover {
+    display: flex;
+    white-space: pre;
+    overflow-y: auto !important;
+    width: 95%;
+    -webkit-transition: width 0.5s;
+    /* Safari */
+    transition: width 0.5s;
+}
+
+.visaPjView {
+    color: initial;
+}
+
+.panelRightListPj {
+    padding: 3px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.panelRightListPj:hover {
+    color: var(--maarch-color-primary);
+}
+
+.panelRightAddPj {
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+    font-size: 10px;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #16a765;
+    color: white;
+    border-radius: 25px;
+    -moz-box-shadow: 0px 0px 10px 0px #656565;
+    -webkit-box-shadow: 0px 0px 10px 0px #656565;
+    -o-box-shadow: 0px 0px 10px 0px #656565;
+    box-shadow: 0px 0px 10px 0px #656565;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=10);
+}
+
+.visaPjUp {
+    margin: auto;
+    margin-bottom: 10px;
+    font-size: 10px;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #4285f4;
+    color: white;
+    border-radius: 25px;
+    -moz-box-shadow: 0px 0px 10px 0px #656565;
+    -webkit-box-shadow: 0px 0px 10px 0px #656565;
+    -o-box-shadow: 0px 0px 10px 0px #656565;
+    box-shadow: 0px 0px 10px 0px #656565;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=10);
+}
+
+.visaPjDel {
+    margin: auto;
+    font-size: 10px;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #d14836;
+    color: white;
+    border-radius: 25px;
+    -moz-box-shadow: 0px 0px 10px 0px #656565;
+    -webkit-box-shadow: 0px 0px 10px 0px #656565;
+    -o-box-shadow: 0px 0px 10px 0px #656565;
+    box-shadow: 0px 0px 10px 0px #656565;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=10);
+}
+
+.visaNoPdfWarning {
+    border: dashed;
+    font-weight: bold;
+    opacity: 0.5;
+    white-space: normal;
+    font-size: 40px;
+    text-align: center;
+}
+
+.visaNoWorkflowWarning {
+    height: 97%;
+    width: 100%;
+    font-size: 40px;
+    border: dashed;
+    font-weight: bold;
+    opacity: 0.5;
+    white-space: normal;
+    margin-top: 10px;
+}
+
+.visaNoPjWarning {
+    height: 80vh;
+    font-size: 40px;
+    border: dashed;
+    font-weight: bold;
+    opacity: 0.5;
+    white-space: normal;
+    margin-top: 10px;
+}
+
+.visaDisabledButton {
+    cursor: inherit;
+    opacity: 0.3;
+}
+
+.chosen-container-single .chosen-default {
+    color: black !important;
+}
+
+#visa_content select {
+    font-size: 11px;
+}
+
+.nbResZero {
+    background: #666;
+    color: white;
+    padding: 3px;
+    border-radius: 7px;
+}
+
+.nbRes {
+    background: var(--maarch-color-secondary);
+    color: white;
+    padding: 3px;
+    border-radius: 7px;
+}
+
+.haveContent {
+    font-size: 9px !important;
+    color: var(--maarch-color-secondary);
+    margin-left: 2px;
+}
+
+.button-form-primary-filled {
+    background: var(--maarch-color-primary);
+    border: solid 1px white;
+    color: white;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    -webkit-transition: all 0.1s;
+    transition: all 0.1s;
+    margin-left: 5px;
+}
+
+.inputConsigne {
+    height: 22px;
+    margin-top: 2px;
+    color: black;
+    font-weight: normal;
+}
+
+.tool-disabled {
+    cursor: not-allowed !important;
+
+    i {
+        opacity: 0.3;
+    }
+}

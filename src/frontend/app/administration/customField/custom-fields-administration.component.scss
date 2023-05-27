@@ -1,0 +1,66 @@
+
+.mat-divider {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+.customFielsdPanel {
+    padding-left: 0px;
+    ::ng-deep.mat-tab-body-wrapper {
+        padding-left: 0px;
+    }
+}
+
+.mat-expansion-panel-header-description {
+    flex-direction: row-reverse;
+}
+
+.customFieldValues {
+    box-shadow: none;
+    border: 1px solid rgba(0,0,0,0.12);
+}
+
+.mat-expansion-panel {
+    margin: 5px;
+}
+
+.mat-accordion {
+    padding: 5px;
+}
+
+.mat-tab-group, .mat-tab-body-wrapper, .mat-tab-body-content {
+    height: 100%;
+}
+
+.actionsCustomFields {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionValuesCustom {
+    display: flex;
+}
+
+.alert-message-info {
+    margin-top: 30px;
+    max-width: 100%;
+}
+
+.addCustomFieldTypeContainer {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    width:60px;
+}
+
+.customFieldsTypesItem {
+   display:flex;
+   padding-top: 10px;
+   padding-bottom: 10px;
+}
+
+.mat-badge-content {
+    top: 2px !important;
+}

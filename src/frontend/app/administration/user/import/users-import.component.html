@@ -1,0 +1,81 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.usersImport' | translate}}</h1>
+    <div mat-dialog-content>
+        <mat-toolbar class="import-tool" [class.hide]="csvData.length === 0 || loading">
+            <span style="flex:1;">
+                <mat-slide-toggle color="primary" [checked]="hasHeader" (change)="toggleHeader()">{{'lang.csvHeader' | translate}}</mat-slide-toggle>
+            </span>
+            <span style="flex:1;text-align: center;"><i class="fa fa-users"
+                    color="primary"></i>&nbsp;{{'lang.usersOfFile' | translate}} : <b color="primary">{{countAll}}</b>
+            </span>
+            <span style="flex:1;text-align: center;"><i class="fa fa-user-plus"
+                    color="primary"></i>&nbsp;{{'lang.additions' | translate}} : <b
+                    color="primary">{{countAdd}}</b></span>
+            <span style="flex:1;text-align: right;"><i class="fa fa-user-edit"
+                    color="primary"></i>&nbsp;{{'lang.modifications' | translate}} : <b
+                    color="primary">{{countUp}}</b></span>
+        </mat-toolbar>
+        <ng-container *ngIf="loading; else elseTemplate">
+            <div class="loader">
+                <mat-spinner></mat-spinner>
+            </div>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <input type="file" name="files[]" #uploadFile id="uploadFile" (change)="uploadCsv($event)" accept=".csv"
+            style="display: none;">
+            <div *ngIf="csvData.length === 0" appUploadFileDragDrop (click)="uploadFile.click()"
+                (fileDropped)="dndUploadFile($event)" class="dndFile">
+                <div>
+                    {{'lang.dndFileCsvDesc' | translate}}
+                </div>
+            </div>
+            <div *ngIf="csvData.length !== 0"  class="row" style="margin: 0px;">
+                <div class="col-md-12">
+                    <mat-paginator #paginator [length]="100" [hidePageSize]="true" [pageSize]="8">
+                    </mat-paginator>
+                </div>
+            </div>
+            <mat-table *ngIf="csvData.length > 0" #table [dataSource]="dataSource">
+                <ng-container *ngFor="let column of userColmuns;let i=index;">
+                    <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>
+                            <i class="fas fa-database" color="primary"
+                                [title]="'lang.dbColumn' | translate"></i>&nbsp;<b color="primary"
+                                [title]="'lang.dbColumn' | translate">{{column}}</b>
+                            &nbsp;<i class="fas fa-arrows-alt-h"></i>&nbsp;
+                            <i class="fas fa-file-csv" [title]="'lang.csvColumn' | translate"></i>&nbsp;<mat-form-field
+                                [title]="'lang.csvColumn' | translate" (click)="$event.stopPropagation()"
+                                style="width: 80px !important;">
+                                <mat-select [(ngModel)]="associatedColmuns[column]"
+                                    (selectionChange)="changeColumn(column, $event.value)">
+                                    <mat-option value=""></mat-option>
+                                    <mat-option *ngFor="let col of csvColumns" [value]="col">
+                                        {{col}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element[column]}}
+                        </mat-cell>
+                    </ng-container>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="userColmuns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: userColmuns;"></mat-row>
+            </mat-table>
+            <div class="alert-message alert-message-info" [innerHTML]="'lang.infoImportNoIdToCreate' | translate"
+                style="min-width: 100%">
+            </div>
+            <div class="alert-message alert-message-info"
+                    [innerHTML]="'lang.infoImportusers2' | translate" style="min-width: 100%">
+            </div>
+        </ng-template>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button *ngIf="csvData.length > 0" color="primary" [disabled]="loading"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading"
+            [mat-dialog-close]="">{{'lang.cancel' | translate }}</button>
+    </div>
+</div>

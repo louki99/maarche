@@ -1,0 +1,110 @@
+<mat-list *ngIf="!loading">
+    <mat-form-field appearance="outline" *ngIf="adminMode">
+        <input type="text" #searchAvisUserInput matInput placeholder="Ajouter des personnes" id="searchAvisUserInput"
+            [formControl]="searchAvisUser" [matAutocomplete]="autoGroup">
+        <mat-autocomplete #autoGroup="matAutocomplete" (optionSelected)="addItemToWorkflow($event.option.value)"
+            (opened)="initFilterAvisModelList()">
+            <mat-option disabled *ngIf="avisModelListNotLoaded">
+                <div style="display: flex;justify-content: center;">
+                    <mat-spinner diameter="35"></mat-spinner>
+                </div>
+            </mat-option>
+            <mat-optgroup [label]="'lang.publicModel' | translate" *ngIf="(filteredPublicModels | async)?.length > 0"
+                class="avisSignList">
+                <mat-option *ngFor="let model of filteredPublicModels | async | sortBy : 'label'" [value]="model">
+                    {{model.label}}
+                </mat-option>
+            </mat-optgroup>
+            <mat-optgroup [label]="'lang.privateModel' | translate" *ngIf="(filteredPrivateModels | async)?.length > 0"
+                class="avisSignList">
+                <mat-option *ngFor="let model of filteredPrivateModels | async | sortBy : 'label'" [value]="model">
+                    <div style="display: flex;align-items: center;">
+                        <div style="flex:1">
+                            {{model.label}}
+                        </div>
+                        <button mat-icon-button color="warn"
+                            (click)="$event.stopPropagation();deletePrivateModel(model)">
+                            <mat-icon class="fa fa-trash" style="margin: 0px;"></mat-icon>
+                        </button>
+                    </div>
+                </mat-option>
+            </mat-optgroup>
+            <mat-optgroup [label]="'lang.user' | translate | titlecase" *ngIf="(filteredSignAvisUsers | async)?.length > 0"
+                class="avisSignList">
+                <mat-option *ngFor="let user of filteredSignAvisUsers | async | sortBy : 'label'" [value]="user">
+                    {{user.label}} <small *ngIf="!functions.empty(user.entity)">({{user.entity}})</small>
+                </mat-option>
+            </mat-optgroup>
+        </mat-autocomplete>
+        <button mat-icon-button matSuffix *ngIf="avisWorkflow.items.length > 0 && showListModels" color="primary"
+            (click)="$event.stopPropagation();openPromptSaveModel()" title="{{'lang.saveAsPrivateModel' | translate}}">
+            <mat-icon class="fa fa-plus"></mat-icon>
+        </button>
+    </mat-form-field>
+    <div cdkDropList #dataAvailableList="cdkDropList" [cdkDropListData]="avisWorkflow.items" class="cdk-list"
+        (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!adminMode">
+        <div class="emptyContent" *ngIf="adminMode && avisWorkflow.items.length === 0">
+            {{'lang.noCircuitAvailable' | translate}}
+        </div>
+        <div class="emptyContent" *ngIf="!adminMode && avisWorkflow.items.length === 0">
+            {{'lang.cannotAddAvisCircuit' | translate}}
+        </div>
+        <mat-list-item disableRipple *ngFor="let diffusion of avisWorkflow.items;let i=index" cdkDrag class="columns workflow"
+            [cdkDragDisabled]="!adminMode || !functions.empty(diffusion.process_date)"
+            [class.notDraggable]="!adminMode || !functions.empty(diffusion.process_date)"
+            [class.notEditable]="!adminMode" [class.processed]="diffusion.process_date != null">
+            <mat-icon *ngIf="getCurrentAvisUserIndex() === i && !adminMode" class="fa fa-chevron-right fa-2x"
+                mat-list-icon color="accent">
+            </mat-icon>
+            <mat-icon
+                [ngClass]="{'fa fa-user fa-2x': functions.empty(diffusion.picture),'avatar': !functions.empty(diffusion.picture)}"
+                mat-list-icon color="primary"
+                [class.invalid]="!diffusion.hasPrivilege || !diffusion.isValid"
+                [style.background-image]="!functions.empty(diffusion.picture) ? 'url('+diffusion.picture+')' : ''">
+            </mat-icon>
+            <ng-container *ngIf="!adminMode || diffusion.process_date != null">
+                <mat-icon mat-list-icon class="fa-2x far" [class.fa-hourglass]="diffusion.process_date == null"
+                    [class.fa-thumbs-up]="diffusion.process_date != null" [class.valid]="diffusion.process_date != null"
+                    style="opacity:0.5;"></mat-icon>
+            </ng-container>
+            <div mat-line class="workflowLine">
+                <div class="workflowLineContainer">
+                    <div class="workflowLineLabel" [title]="diffusion.labelToDisplay" [class.unauthorized]="!diffusion.hasPrivilege || !diffusion.isValid">
+                        {{diffusion.labelToDisplay}}
+                        <ng-container *ngIf="diffusion.process_date != null && diffusion.delegatedBy !== null">
+                            <mat-icon mat-list-icon class="fas fa-exclamation-circle"
+                                      [title]="('lang.insteadOf' | translate) + ' ' + diffusion.delegatedBy"
+                                      style="opacity:0.5;font-size: 125%;height: 15px;color: red"></mat-icon>
+                        </ng-container>
+                    </div>
+                    <div class="workflowLineSubLabel" [class.unauthorized]="!diffusion.hasPrivilege || !diffusion.isValid">
+                        {{diffusion.item_entity}}
+                    </div>
+                    <div *ngIf="diffusion.process_date != null" class="workflowLineProcessDate"
+                        title='{{diffusion.process_date | fullDate}}' color="accent">{{'lang.avisSent' | translate}} {{diffusion.process_date
+                                                | timeAgo : 'full'}}</div>
+                </div>
+                <div *ngIf="mode === 'parallel'">
+                    <button class="currentRoleButton" color="primary"
+                        [disabled]="!adminMode || !functions.empty(diffusion.process_date)" mat-raised-button [matMenuTriggerFor]="menu" [title]="getRoleLabel(diffusion.item_mode)">{{getRoleLabel(diffusion.item_mode)}}</button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item *ngFor="let role of availableRoles" (click)="changeRole(role, i)">{{role.label}}</button>
+                    </mat-menu>
+                </div>
+                <div *ngIf="!diffusion.hasPrivilege" class="invalid">
+                    {{'lang.noPrivileges' | translate}}
+                </div>
+                <div *ngIf="!diffusion.isValid" class="invalid">
+                    {{'lang.userNotValid' | translate}}
+                </div>
+            </div>
+            <button mat-icon-button *ngIf="adminMode && functions.empty(diffusion.process_date)"
+                (click)="deleteItem(i)">
+                <mat-icon class="fa fa-times" color="warn"></mat-icon>
+            </button>
+        </mat-list-item>
+    </div>
+</mat-list>
+<div *ngIf="loading" style="display:flex;padding: 10px;">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>

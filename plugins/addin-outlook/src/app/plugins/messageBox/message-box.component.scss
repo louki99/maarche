@@ -1,0 +1,30 @@
+.content {
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-left: 3px solid #eee;
+
+    &-success {
+        background-color: #F4FDF0;
+        border-color: var(--maarch-color-success);
+        color: var(--maarch-color-success-dark);
+    }
+
+    &-danger {
+        background-color: #8e3e521a;
+        border-color: var(--maarch-color-danger);
+        color: var(--maarch-color-danger-dark);
+    }
+
+    &-info {
+        background-color: #f4f8fa;
+        border-color: var(--maarch-color-primary);
+        color: var(--maarch-color-primary-dark);
+    }
+
+    &-default {
+        background-color: #EEE;
+        border-color: #B4B4B4;
+    }
+}

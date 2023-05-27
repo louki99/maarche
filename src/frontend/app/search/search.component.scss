@@ -1,0 +1,205 @@
+
+.bg-head-content {
+    flex-direction: column;
+    padding-bottom: 70px;
+}
+
+.dragPreview {
+    text-align: center;
+    border-radius: 5px;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    color: var(--maarch-color-primary);
+}
+
+.banner-opened {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    border-radius: 20px;
+    border: solid 1px #ccc;
+    position: relative;
+    padding: 20px;
+    background: var(--maarch-color-primary-light);
+    width: 100%;
+
+    .title {
+        white-space: pre;
+        overflow: hidden;
+        max-width: 85%;
+        text-overflow: ellipsis;
+        z-index: 1;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        position: absolute;
+        top: -18px;
+        left: 20px;
+        padding: 0px;
+        margin: 0px;
+        color: white;
+
+        &-divider {
+            position: absolute;
+            width: 99%;
+            z-index: -1;
+            top: 17px;
+            background: var(--maarch-color-primary-light);
+            height: 1px;
+        }
+    }
+
+    .content {
+        display: flex;
+        font-size: 16px;
+
+        &-item {
+            flex: 1;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .private {
+            font-style: italic;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+    }
+}
+
+.banner-closed {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    position: relative;
+    width: 100%;
+
+    .title {
+        white-space: pre;
+        overflow: hidden;
+        max-width: 85%;
+        text-overflow: ellipsis;
+        z-index: 1;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        position: absolute;
+        top: -18px;
+        left: 20px;
+        padding: 0px;
+        margin: 0px;
+        color: white;
+    }
+}
+
+.followIcon {
+    color: var(--maarch-color-secondary);
+}
+
+.folder-info {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.badge-folder {
+    cursor: pointer;
+    background: var(--maarch-color-secondary);
+    margin: 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    opacity: 0.8;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filterBadges {
+    width: 100%;
+}
+.filterBadges>.badge-eraser {
+    margin: 5px;
+    background: none;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+}
+
+.filterBadges>.label {
+    white-space: inherit;
+}
+
+.filterBadges>.badge-search {
+    margin: 5px;
+    background: white;
+    color: var(--maarch-color-primary);
+    cursor: pointer;
+}
+
+.filtersContent {
+    width: 100%;
+    display: flex;
+
+    .orderTool {
+        flex: 1;
+    }
+}
+
+
+.basket-order {
+    color: white;
+    width: 300px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 55px;
+
+    .mat-icon {
+        font-size: 30px;
+
+    }
+
+    ::ng-deep.mat-select-value {
+        color: white;
+    }
+
+    ::ng-deep.mat-form-field-infix {
+        padding-bottom: 15px;
+    }
+
+    ::ng-deep.mat-form-field-flex {
+        background: #135F7F;
+        border: solid 2px white;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    ::ng-deep.mat-form-field-prefix {
+        padding-left: 15px;
+        padding-right: 10px;
+    }
+
+    ::ng-deep.mat-form-field-label-wrapper {
+        color: white;
+    }
+
+    ::ng-deep.mat-select-arrow {
+        color: white;
+        margin-right: 25px;
+    }
+
+    ::ng-deep .mat-form-field-underline {
+        display: none;
+    }
+}
+
+.ascDescTool {
+    .mat-fab {
+        background: #135F7F;
+        border: solid 2px white;
+        color: white !important;
+        box-shadow: none;
+    }
+}

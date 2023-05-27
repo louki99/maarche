@@ -1,0 +1,281 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list *ngIf="!creationMode">
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <a mat-list-item (click)="linkGroup()">
+                <mat-icon color="primary" mat-list-icon class="fa fa-link"></mat-icon>
+                <p mat-line>
+                    {{'lang.linkGroup' | translate}}
+                </p>
+            </a>
+            <mat-divider></mat-divider>
+            <a mat-list-item disableRipple="true" matTooltip="{{'lang.isSearchBasketInfo' | translate}}">
+                <mat-icon color="primary" mat-list-icon>
+                    <mat-slide-toggle [checked]="basket.isSearchBasket" color="primary"
+                        (change)="toggleIsSearchBasket(basket);false"></mat-slide-toggle>
+                </mat-icon>
+                <p mat-line [ngStyle]="{'opacity': basket.isSearchBasket ? '' : '0.3'}"
+                    (click)="toggleIsSearchBasket(basket);false">
+                    {{'lang.isSearchBasket' | translate}}
+                </p>
+            </a>
+            <a mat-list-item disableRipple="true" matTooltip="{{'lang.basketNotification' | translate}}">
+                <mat-icon color="primary" mat-list-icon>
+                    <mat-slide-toggle [checked]="basket.flagNotif" color="primary"
+                        (change)="toggleFlagNotif(basket);false"></mat-slide-toggle>
+                </mat-icon>
+                <p mat-line [ngStyle]="{'opacity': basket.flagNotif ? '' : '0.3'}"
+                    (click)="toggleFlagNotif(basket);false">
+                    {{'lang.activateNotification' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <mat-tab-group [(selectedIndex)]="selectedIndex">
+                        <mat-tab label="{{'lang.informations' | translate}}">
+                            <form class="form-horizontal" (ngSubmit)="onSubmit()" #basketForm="ngForm">
+                                <mat-form-field>
+                                    <input matInput *ngIf="creationMode" name="identifier" placeholder="{{'lang.id' | translate}}"
+                                        [(ngModel)]="basket.id" (blur)="isAvailable()" maxlength="32"
+                                        pattern="^[\w.-]*$" required>
+                                    <input matInput *ngIf="!creationMode" name="identifier" placeholder="{{'lang.id' | translate}}"
+                                        title="{{'lang.id' | translate}}" [(ngModel)]="basket.id" required disabled>
+                                </mat-form-field>
+                                <div class="row">
+                                    <div class="col-md-11 col-xs-10">
+                                        <mat-form-field>
+                                            <input matInput name="label" title="{{'lang.label' | translate}}"
+                                                placeholder="{{'lang.label' | translate}}" [(ngModel)]="basket.basket_name"
+                                                maxlength="255" [ngStyle]="{'color': basket.color}" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-1 col-xs-2">
+                                        <mat-form-field>
+                                            <input matInput type="color" name="color" matTooltip="{{'lang.chooseColor' | translate}}"
+                                                [(ngModel)]="basket.color">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <mat-form-field>
+                                    <input matInput name="description" title="{{'lang.description' | translate}}"
+                                        placeholder="{{'lang.description' | translate}}" [(ngModel)]="basket.basket_desc"
+                                        maxlength="255" required>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <textarea matInput name="clause" title="{{'lang.clause' | translate}}"
+                                        placeholder="{{'lang.clause' | translate}}" [(ngModel)]="basket.clause" cdkTextareaAutosize
+                                        matAutosizeMinRows="1" required></textarea>
+                                    <mat-icon style="cursor:pointer;" color="primary" matSuffix
+                                        class="fa fa-info-circle" matTooltip="{{'lang.keywordHelper' | translate}}"
+                                        (click)="snav2.toggle()"></mat-icon>
+                                </mat-form-field>
+                                <div id="listOrder">
+                                    <div class="row" *ngFor="let columnOrder of orderColumnsSelected;let i = index">
+                                        <div class="col-md-5 col-xs-5 text-center">
+                                            <mat-form-field>
+                                                <mat-select placeholder="{{'lang.defaultSort' | translate}} {{i+1}}"
+                                                    [(ngModel)]="orderColumnsSelected[i].column"
+                                                    name="basket_res_order{{i}}" required>
+                                                    <mat-option *ngFor="let column of orderColumns" [value]="column">
+                                                        {{langVarName[orderColumns.indexOf(column)]}}</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-5 col-xs-5 text-center">
+                                            <mat-form-field>
+                                                <mat-select placeholder="{{'lang.orderBy' | translate}}"
+                                                    [(ngModel)]="columnOrder.order" name="order_by_select{{i}}"
+                                                    required>
+                                                    <mat-option *ngFor="let order of orderByColumns" [value]="order">
+                                                        {{langOrderName[orderByColumns.indexOf(order)]}}</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-2 col-xs-2 text-left">
+                                            <button [disabled]="orderColumnsSelected.length==1" color="warn"
+                                                mat-icon-button type="button" (click)="removeLine(i)">
+                                                <mat-icon class='fa fa-minus-square fa-2x'></mat-icon>
+                                            </button>
+                                            <button *ngIf="orderColumnsSelected.length==(i+1)"
+                                                [disabled]="orderColumnsSelected.length==2" color="primary"
+                                                mat-icon-button type="button" (click)="addLine()">
+                                                <mat-icon class='fa fa-plus-square fa-2x'></mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center" style="padding:10px;">
+                                    <button mat-raised-button
+                                        [disabled]="!basketForm.form.valid || orderColumnsSelected.length == 0"
+                                        color="primary">{{'lang.save' | translate}}</button>
+                                </div>
+                            </form>
+                        </mat-tab>
+                        <mat-tab *ngFor="let group of basketGroups;let i = index" label="{{group.group_desc}}">
+                            <ng-template mat-tab-label>
+                                <span>{{group.group_desc}}</span>
+                                <mat-icon color="warn" class="fa fa-times" matTooltip="{{'lang.unlinkGroup' | translate}}"
+                                    (click)="unlinkGroup(i)"></mat-icon>
+                            </ng-template>
+                            <mat-tab-group *ngIf="selectedIndex > 0">
+                                <mat-tab label="{{'lang.actions' | translate}}">
+                                    <div class="col-md-6">
+                                        <h5>{{'lang.actionChosen' | translate}}</h5>
+                                        <mat-chip-list #chipList class="mat-chip-list-stacked">
+                                            <span *ngFor="let action of group.groupActions | sortBy: 'label_action'"
+                                                style="width:100%;">
+                                                <mat-chip color="primary" (click)="openSettings(group,action)"
+                                                    matTooltip="id : {{action.id}}"
+                                                    [ngStyle]="{'font-weight': action.default_action_list == true ? 'bold' : ''}"
+                                                    style="cursor:pointer;margin:5px;border-radius:0px;display:flex;"
+                                                    *ngIf="action.checked == true" selectable="true" removable="true"
+                                                    (removed)="unlinkAction(group,action)">
+                                                    &nbsp;
+                                                    <span>{{action.label_action}}</span>&nbsp;
+                                                    <small
+                                                        *ngIf="action.default_action_list == true">({{'lang.default' | translate}})</small>
+                                                    <span style="flex: 1 1 auto;"></span>
+                                                    <button mat-raised-button [disabled]="action.default_action_list"
+                                                        (click)="$event.stopPropagation();setDefaultAction(group,action)">{{'lang.setByDefault' | translate}}</button>
+                                                    <mat-icon matTooltip="{{'lang.delete' | translate}}" matChipRemove color="warn"
+                                                        *ngIf="action.default_action_list != true" class="fa fa-times"
+                                                        (click)="$event.stopPropagation();"></mat-icon>
+                                                </mat-chip>
+                                            </span>
+                                        </mat-chip-list>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <mat-accordion class="basketActionsList">
+                                            <mat-expansion-panel (opened)="initAction(i)">
+                                                <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                        {{'lang.actionAvailable' | translate}}
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+                                                <div>
+                                                    <mat-form-field>
+                                                        <input matInput #filterAction (keyup)="applyFilter($event.target.value)"
+                                                            placeholder="{{'lang.filterBy' | translate}}">
+                                                        <button mat-button *ngIf="filterAction.value" matSuffix mat-icon-button 
+                                                            aria-label="Clear" (click)="applyFilter(''); filterAction.value = ''"
+                                                            [title]="'lang.clearFilter' | translate">
+                                                            <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                                                        </button>
+                                                    </mat-form-field>
+                                                    <mat-table #table [dataSource]="dataSource">
+                                                        <ng-container matColumnDef="label_action">
+                                                            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                                                            <mat-cell *matCellDef="let element" style="flex:6;"
+                                                                matTooltip="id : {{element.id}}">
+                                                                <mat-checkbox color="primary"
+                                                                    [disabled]="element.default_action_list==true"
+                                                                    (change)="addAction(group)"
+                                                                    [(ngModel)]="element.checked">
+                                                                    <span>{{element.label_action}}</span></mat-checkbox>
+                                                            </mat-cell>
+                                                        </ng-container>
+                                                        <ng-container matColumnDef="actions">
+                                                            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                                                            <mat-cell *matCellDef="let element" style="text-align:right"
+                                                                matTooltip="id : {{element.id}}">
+                                                                <button mat-icon-button [matMenuTriggerFor]="menu"
+                                                                    [disabled]="!element.checked">
+                                                                    <mat-icon class="fa fa-bars"></mat-icon>
+                                                                </button>
+                                                                <mat-menu #menu="matMenu">
+                                                                    <button mat-menu-item
+                                                                        [disabled]="element.default_action_list==true"
+                                                                        (click)="setDefaultAction(group,element)">
+                                                                        <mat-icon class="fa fa-check-circle"></mat-icon>
+                                                                        <span>{{'lang.defaultAction' | translate}}</span>
+                                                                    </button>
+                                                                    <button mat-menu-item
+                                                                        (click)="openSettings(group,element)">
+                                                                        <mat-icon class="fa fa-cogs"></mat-icon>
+                                                                        <span>{{'lang.moreOptions' | translate}}</span>
+                                                                    </button>
+                                                                </mat-menu>
+                                                            </mat-cell>
+                                                        </ng-container>
+                                                        <mat-row *matRowDef="let row; columns: displayedColumns;">
+                                                        </mat-row>
+                                                    </mat-table>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </div>
+                                </mat-tab>
+                                <mat-tab label="{{'lang.resultPage' | translate}}">
+                                    <app-list-administration [currentBasketGroup]="group" (refreshBasketGroup)="updateGroupInfo(group, $event)"></app-list-administration>
+                                </mat-tab>
+                            </mat-tab-group>
+                        </mat-tab>
+                    </mat-tab-group>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="appService.getViewMode() ? false : false">
+
+        <mat-nav-list>
+            <h3 mat-subheader>{{'lang.keywordHelp' | translate}}</h3>
+        </mat-nav-list>
+        <mat-list role="list" style="width: 300px;padding: 5px;">
+            <p style="font-size:10px;">{{'lang.keywordHelpDesc_11' | translate}}</p>
+            <div style="border:1px black solid; padding:3px;font-size:10px;">
+                <b>DESTINATION = @my_primary_entity or DESTINATION in (@subentities[@my_primary_entity])</b>
+            </div>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@user :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_1' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@user_id :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_12' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@email :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_2' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@my_entities :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_3' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@my_entities_id :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_13' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@my_primary_entity :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_4' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@my_primary_entity_id :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_14' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@subentities[('entity_1',...,'entity_n')] :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_5' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@subentities_id[(1, 2, ...)] :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_15' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@parent_entity['entity_id'] :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_6' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@sisters_entities['entity_id'] :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_7' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@entity_type['type'] :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_8' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@all_entities :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_9' | translate}}</p>
+            <h4 mat-line style="font-weight:bold;font-size:10px;">@immediate_children['entity_1',..., 'entity_id']
+                :</h4>
+            <p mat-line style="font-size:10px;">{{'lang.keywordHelpDesc_10' | translate}}</p>
+        </mat-list>
+    </mat-sidenav>
+
+</mat-sidenav-container>

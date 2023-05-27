@@ -1,0 +1,15 @@
+.mat-icon {
+    height: auto;
+}
+.mat-mini-fab {
+    background: white;
+    border: solid 1px #135F7F;
+    color: #135F7F;
+    box-shadow: none;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.mat-mini-fab:disabled {
+    border: solid 1px white;
+}

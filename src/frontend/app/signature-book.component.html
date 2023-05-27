@@ -1,0 +1,356 @@
+<div *ngIf="loading" class='visaContent'>
+    <i class="fa fa-spinner fa-spin fa-5x" style="margin-left: 50%;margin-top: 16%;font-size: 8em"></i>
+</div>
+<div *ngIf="!loading" class='visaContent'>
+    <div class="titleSignatureBook">
+        <div id="tabSignatureBook">
+            <div *ngIf="signatureBook.documents[0] && !signatureBook.documents[0].inSignatureBook"
+                title="{{'lang.mail' | translate}}" class="item"
+                [ngClass]="{'activeTabSignatureBook': headerTab == 'document'}"
+                (click)="changeSignatureBookLeftContent('document')">
+                <i class="fa fa-file-alt fa-2x"></i>
+            </div>
+            <div *ngFor="let module of processTool" title="{{module.label}}" class="item"
+                [ngClass]="{'activeTabSignatureBook': headerTab == module.id}"
+                [class.tool-disabled]="!isToolEnabled(module.id)"
+                (click)="isToolEnabled(module.id) ? changeSignatureBookLeftContent(module.id) : false">
+                <i [class]="module.icon"></i>
+                <i *ngIf="module.count > 0" class="fas fa-circle haveContent"></i>
+            </div>
+        </div>
+        <div id="labelSignatureBook" title="{{signatureBook.documents[0].title}}">
+            <div>{{signatureBook.documents[0].alt_id}} : {{signatureBook.documents[0].title}}</div>
+        </div>
+        <div id="closeSignatureBook">
+            <i style="cursor: pointer" (click)="backToBasket()" class="fa fa-times-circle fa-2x"></i>
+        </div>
+        <div class="actions">
+            <i style="cursor: pointer;vertical-align: middle;" title="{{'lang.linkDetails' | translate}}"
+                class="fa fa-info-circle fa-2x" (click)="backToDetails()"></i>&nbsp;
+            <select id="signatureBookActions">
+                <option *ngFor="let option of signatureBook.actions" value="{{option.id}}">{{option.label}}</option>
+            </select>
+            <input name="send" id="send" value="{{'lang.validate' | translate}}"
+                class="button button-form-primary-filled" type="button" (click)="validForm()">
+        </div>
+        <div class="others" *ngIf="!functions.empty(signatureBook.consigne)">
+            <span id="consigne">
+                <input type="text" value="{{signatureBook.consigne}}" title="{{signatureBook.consigne}}"
+                    readonly="readonly" class="inputConsigne">
+            </span>
+        </div>
+    </div>
+    <div class="contentSignatureBook">
+        <div class="resListContent" [ngStyle]="{'display': showResLeftPanel ? 'inline-block' : 'none'}"
+            id="resListContent">
+            <div class="resListContentPos">
+                <div class="resListContentFrame" *ngFor="let res of signatureBook.resList"
+                    (click)="changeLocation(res.res_id, 'view')"
+                    [ngClass]="{'resListContentFrameSelected': resId == res.res_id}">
+                    <div class="resListContentInfo">
+                        <i class="fa fa-compass" title="{{'lang.chronoNumber' | translate}}"></i> {{res.alt_identifier}}
+                        <i *ngIf="res.allSigned" class="fa fa-certificate"></i>&nbsp;
+                        <i class="fa fa-circle" title="{{res.priorityLabel}}" aria-hidden="true"
+                            [ngStyle]="{'color': res.priorityColor}"
+                            style="position: absolute;right: 0px;top: -10px;font-size: 25px;"></i>
+                    </div>
+                    <div class="resListContentInfo">
+                        <i class="fa fa-info" title="{{'lang.object' | translate}}"></i> {{res.subject}}
+                    </div>
+                    <div class="resListContentInfo">
+                        <i class="fa fa-book" title="{{'lang.contactInfo' | translate}}"></i> {{res.sender}}
+                    </div>
+                    <div class="resListContentInfo">
+                        <i class="fa fa-calendar-alt" title="{{'lang.arrivalDate' | translate}}"></i>
+                        {{res.creation_date | date:'dd/MM/y'}}
+                    </div>
+                    <div class="resListContentInfo" style="margin-top:-10px;">
+                        <i class="fa fa-bell" title="{{'lang.processLimitDate' | translate}}"></i>
+                        {{res.process_limit_date | date:'dd/MM/y'}}
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="signatureBook.resList.length == 0" style="position: absolute;top: 48%; left: 3%">
+                <i class="fa fa-spinner fa-spin fa-4x"></i>
+            </div>
+        </div>
+        <div *ngIf="showLeftPanel" class="contentLeft" [ngStyle]="{'width': leftContentWidth}" id="contentLeft">
+            <div *ngIf="showLeftPanel && showRightPanel" class="hideresListContent" (click)="displayPanel('RESLEFT')">
+                <i class="fa fa-chevron-left" aria-hidden="true" *ngIf="showResLeftPanel"></i>
+                <i class="fa fa-chevron-right" aria-hidden="true" *ngIf="!showResLeftPanel"></i>
+            </div>
+            <div *ngIf="headerTab == 'document'" class="contentShow">
+                <div *ngIf="showTopLeftPanel" class="pjDoc">
+                    <div style="height:100%;">
+                        <img title="{{document.title}}" id="thumnails_img"
+                            *ngFor="let document of signatureBook.documents; let i = index"
+                            (click)="changeLeftViewer(i)" [src]="document.thumbnailLink | secureUrl | async"
+                            class="leftPanelThumbnails"
+                            [ngClass]="{'panelSelectedThumbnail': i == leftSelectedThumbnail}" />
+                    </div>
+                </div>
+                <div *ngIf="signatureBook.documents.length - 1 > 0" class="pjDetailsMore"
+                    (click)="displayPanel('TOPLEFT')"
+                    title="{{signatureBook.documents.length - 1}} {{'lang.mailAttachments' | translate}}"
+                    style="left:25px;">
+                    <i *ngIf="!showTopLeftPanel" class="fa fa-envelope-square fa-2x" aria-hidden="true"></i>
+                    <sup *ngIf="!showTopLeftPanel" class="nbRes"
+                        style="position: absolute;right: 6px;top: 5px;">{{signatureBook.documents.length - 1}}</sup>
+                    <i *ngIf="showTopLeftPanel" class="fa fa-chevron-up" aria-hidden="true"></i>
+                </div>
+                <pdf-viewer
+                    *ngIf="leftViewerLink != '' && (leftSelectedThumbnail == 0 || signatureBook.documents[leftSelectedThumbnail].format == 'pdf' || signatureBook.documents[leftSelectedThumbnail].isConverted)"
+                    id="leftPanelShowDocumentIframe" #leftPanelShowDocumentIframe
+                    [src]="leftViewerLink | secureUrl | async" [render-text]="true" [fit-to-page]="false"
+                    [original-size]="true" [ngStyle]="{'height': showTopLeftPanel ? '84%' : '99%'}" [show-all]="true"
+                    (error)="pdfViewerError(leftViewerLink)"></pdf-viewer>
+                <div *ngIf="leftSelectedThumbnail > 0 && signatureBook.documents[leftSelectedThumbnail].format != 'pdf' && !signatureBook.documents[leftSelectedThumbnail].isConverted"
+                    [ngStyle]="{'height': showTopLeftPanel ? '79%' : '96%'}" class="visaNoPdfWarning">
+                    <div style="padding-top: 25%;">
+                        {{'lang.noOverviewAvailable' | translate}}<br /><sub>{{'lang.pdfVersionFile' | translate}}
+                            "{{signatureBook.documents[leftSelectedThumbnail].title}}.{{signatureBook.documents[leftSelectedThumbnail].format}}"
+                            {{'lang.isNotAvailable' | translate}}.</sub></div>
+                    <div class="visaPjView">
+                        <a title="{{'lang.dlAttachment' | translate}}"
+                            (click)="downloadOriginalFile(signatureBook.documents[leftSelectedThumbnail].res_id)"
+                            style="cursor: pointer;">
+                            <i class="fa fa-download fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="headerTab == 'notes'" class="contentShow" style="width:98%;">
+                <app-notes-list #appNotesList [editMode]="true" [resId]="resId"
+                    (reloadBadgeNotes)="refreshBadge($event,'notes')">
+                </app-notes-list>
+            </div>
+            <div *ngIf="headerTab == 'visaCircuit'" class="contentShow" style="width:98%;overflow-x: hidden;">
+                <app-visa-workflow #appVisaWorkflow [resId]="resId"
+                    [adminMode]="privilegeService.hasCurrentUserPrivilege('config_visa_workflow')"
+                    [target]="'signatureBook'"></app-visa-workflow>
+            </div>
+            <div *ngIf="headerTab == 'history'" class="contentShow" style="width:98%;">
+                <app-history-list #appHistoryList [resId]="resId"></app-history-list>
+            </div>
+            <div *ngIf="headerTab == 'linkedResources'" class="contentShow" style="width:98%;">
+                <app-linked-resource-list #appLinkedResourceList [resId]="resId"
+                    (reloadBadgeLinkedResources)="refreshBadge($event,'linkedResources')">
+                </app-linked-resource-list>
+            </div>
+            <button style="position: absolute;bottom: 20px;right:20px;" mat-fab
+                [title]="'lang.saveModifications' | translate" *ngIf="isToolModified()" (click)="saveTool()"
+                color="accent">
+                <mat-icon style="height:auto;font-size:20px;" class="fas fa-check"></mat-icon>
+            </button>
+            <div class="hideRightContent" (click)="displayPanel('MIDDLE')"
+                [ngStyle]="{'right': showRightPanel ? '-10px' : '0px'}">
+                <i class="fa fa-chevron-right" aria-hidden="true" *ngIf="showRightPanel"></i>
+                <i class="fa fa-chevron-left" aria-hidden="true" *ngIf="!showRightPanel"></i>
+            </div>
+        </div>
+        <div *ngIf="showRightPanel" class="contentRight" id="contentRight" [ngStyle]="{'width': rightContentWidth}">
+            <div class="hideLeftContent" (click)="displayPanel('LEFT')" id="hideLeftContent"
+                [ngStyle]="{'margin-left': showLeftPanel ? '-13px' : '-2px'}">
+                <i class="fa fa-chevron-left" aria-hidden="true" *ngIf="showLeftPanel"></i>
+                <i class="fa fa-chevron-right" aria-hidden="true" *ngIf="!showLeftPanel"></i>
+            </div>
+            <div class="contentShow" style="overflow: auto">
+                <div *ngIf="signatureBook.attachments[rightSelectedThumbnail] && !showAttachmentPanel"
+                    style="height:100%;overflow: auto;">
+                    <div [ngStyle]="{'display': showTopRightPanel ? 'block' : 'none'}" class="pjDetails">
+                        <div class="infoPj"
+                            title="{{signatureBook.attachments[rightSelectedThumbnail].attachment_type}}">
+                            <label>Type :&nbsp;</label>
+                            <span>{{signatureBook.attachments[rightSelectedThumbnail].attachment_type}} <sup
+                                    *ngIf="signatureBook.attachments[rightSelectedThumbnail].status == 'SIGN'"
+                                    style="color:#135F7F;">{{'lang.signed' | translate}}</sup></span>
+                        </div>
+                        <div class="infoPj" title="{{signatureBook.attachments[rightSelectedThumbnail].title}}">
+                            <label>{{'lang.object' | translate}} :&nbsp;</label>
+                            <span>{{signatureBook.attachments[rightSelectedThumbnail].title}}</span>
+                        </div>
+                        <div class="infoPj" title="{{signatureBook.attachments[rightSelectedThumbnail].destUser}}">
+                            <label>{{'lang.for' | translate}} :&nbsp;</label>
+                            <span>{{signatureBook.attachments[rightSelectedThumbnail].destUser}}</span>
+                        </div>
+                        <div>
+                            <div *ngIf="!signatureBook.attachments[rightSelectedThumbnail].updated_by"
+                                title="{{signatureBook.attachments[rightSelectedThumbnail].typist}}" class="infoPj">
+                                <label>{{'lang.createdBy' | translate}} :&nbsp;</label>
+                                <span>{{signatureBook.attachments[rightSelectedThumbnail].typist}}</span>
+                            </div>
+                            <div *ngIf="signatureBook.attachments[rightSelectedThumbnail].updated_by"
+                                title="{{'lang.modifiedBy' | translate}} : {{signatureBook.attachments[rightSelectedThumbnail].updated_by}} le {{signatureBook.attachments[rightSelectedThumbnail].doc_date | date:'dd/MM/y'}}"
+                                class="infoPj">
+                                <label><i>*</i> {{'lang.createdBy' | translate}} :&nbsp;</label>
+                                <span>{{signatureBook.attachments[rightSelectedThumbnail].typist}}</span>
+                            </div>
+                            <div class="infoPj">
+                                <label>{{'lang.createdOn' | translate}} :&nbsp;</label>
+                                <span>{{signatureBook.attachments[rightSelectedThumbnail].creation_date | date:'dd/MM/y à HH:mm'}}</span>
+                            </div>
+                            <div class="infoPj"
+                                title="{{signatureBook.attachments[rightSelectedThumbnail].validation_date | date:'dd/MM/y'}}">
+                                <label>{{'lang.back' | translate}} :&nbsp;</label>
+                                <span>{{signatureBook.attachments[rightSelectedThumbnail].validation_date | date:'dd/MM/y'}}</span>
+                            </div>
+                            <div class="infoPj"
+                                title="{{signatureBook.attachments[rightSelectedThumbnail].identifier}}">
+                                <label>{{'lang.chrono' | translate}} :&nbsp;</label>
+                                <span>{{signatureBook.attachments[rightSelectedThumbnail].identifier}}</span>
+                            </div>
+                            <div class="infoPj">
+                                <label>Version :&nbsp;</label>
+                                <span>{{signatureBook.attachments[rightSelectedThumbnail].relation}}</span>
+                                <i [ngStyle]="{'display': signatureBook.attachments[rightSelectedThumbnail].relation > 1 ? '' : 'none'}"
+                                    style="color:#135F7F" class="fa fa-chevron-circle-up" id="obsVersion"
+                                    data-tooltip-content="#obsVersionTooltip" aria-hidden="true"></i>
+                            </div>
+                            <div class="infoPj">
+                                <label>Format :&nbsp;</label>
+                                <span>{{signatureBook.attachments[rightSelectedThumbnail].format.toUpperCase()}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pjDetailsMore" (click)="displayPanel('TOPRIGHT')"
+                        title="{{'lang.details' | translate}}">
+                        <i *ngIf="!showTopRightPanel" class="fa fa-list-alt fa-2x" aria-hidden="true"></i>
+                        <i *ngIf="showTopRightPanel" class="fa fa-chevron-up" aria-hidden="true"></i>
+                    </div>
+                    <!--<pdf-viewer #rightPanelShowDocumentIframe [src]="rightViewerLink| secureUrl | async"
+                        [render-text]="true" [autoresize]="true" [original-size]="false"
+                        [ngStyle]="{'height': showTopRightPanel ? '84%' : '99%'}" [show-all]="true"
+                        *ngIf="signatureBook.attachments[rightSelectedThumbnail].isConverted"
+                        (error)="pdfViewerError(rightViewerLink)"></pdf-viewer>-->
+                    <app-document-viewer #appDocumentViewer id="rightPanelShowDocumentIframe"
+                        *ngIf="signatureBook.attachments[rightSelectedThumbnail].isConverted"
+                        style="height:100%;width:100%;" [editMode]="true" [hideTools]="true"
+                        [mode]="signatureBook.attachments[rightSelectedThumbnail].isResource ? 'mainDocument' : 'attachment'"
+                        [resId]="signatureBook.attachments[rightSelectedThumbnail].signed ? signatureBook.attachments[rightSelectedThumbnail].viewerId : signatureBook.attachments[rightSelectedThumbnail].res_id"
+                        [title]="signatureBook.attachments[rightSelectedThumbnail].identifier">
+                    </app-document-viewer>
+                    <div *ngIf="signatureBook.attachments[rightSelectedThumbnail].format != 'pdf' && signatureBook.attachments[rightSelectedThumbnail].status != 'TMP' && !signatureBook.attachments[rightSelectedThumbnail].isConverted"
+                        [ngStyle]="{'height': showTopRightPanel ? '79%' : '96%'}" class="visaNoPdfWarning">
+                        <div style="padding-top: 25%;">
+                            {{'lang.noOverviewAvailable' | translate}}<br /><sub>{{'lang.pdfVersionFile' | translate}}
+                                "{{signatureBook.attachments[rightSelectedThumbnail].title}}.{{signatureBook.attachments[rightSelectedThumbnail].format}}"
+                                {{'lang.isNotAvailable' | translate}}.</sub></div>
+                        <div class="visaPjView">
+                            <a title="{{'lang.dlAttachment' | translate}}"
+                                (click)="downloadOriginalFile(signatureBook.attachments[rightSelectedThumbnail].res_id)"
+                                style="cursor: pointer;">
+                                <i class="fa fa-download fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div *ngIf="signatureBook.attachments[rightSelectedThumbnail].status == 'TMP' && !signatureBook.attachments[rightSelectedThumbnail].isConverted"
+                        [ngStyle]="{'height': showTopRightPanel ? '79%' : '96%'}" class="visaNoPdfWarning">
+                        <div style="padding-top: 25%;" [innerHTML]="'lang.editingAttachmentInterrupted' | translate">
+                        </div>
+                        <div>
+                            <a title="{{'lang.editAttachment' | translate}}"
+                                (click)="showAttachment(signatureBook.attachments[rightSelectedThumbnail])">
+                                <i class="fa fa-edit fa-2x" style="cursor:pointer;"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div *ngIf="signatureBook.signatures[0] && signatureBook.canSign && signatureBook.attachments[rightSelectedThumbnail].status != 'TMP' && signatureBook.attachments[rightSelectedThumbnail].sign && signatureBook.attachments[rightSelectedThumbnail].isConverted"
+                        (mouseenter)="showSignaturesPanel = true" (mouseleave)="showSignaturesPanel = false"
+                        class="pjSign"
+                        [ngClass]="[signatureBook.attachments[rightSelectedThumbnail].status == 'SIGN' ? 'signed' : '']"
+                        [ngStyle]="{'box-shadow': signatureBook.listinstance.requested_signature ? 'inset 0px 0px 5px 0px red' : 'inset 0px 0px 5px 0px #656565;'}">
+                        <span
+                            *ngIf="signatureBook.attachments[rightSelectedThumbnail].status != 'SIGN' && signatureBook.signatures[0]">
+                            <span *ngIf="!loadingSign">
+                                <img *ngFor="let signature of signatureBook.signatures; let i = index"
+                                    [src]="('../rest/users/' + signature.user_serial_id + '/signatures/' + signature.id + '/content') | secureUrl | async"
+                                    (click)="signFile(signatureBook.attachments[rightSelectedThumbnail], signature)"
+                                    [ngStyle]="{'display': !showSignaturesPanel && i > 0 ? 'none' : ''}"
+                                    title="{{signature.signature_label}}">
+                            </span>
+                            <i *ngIf="loadingSign" class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                        </span>
+                        <span *ngIf="signatureBook.attachments[rightSelectedThumbnail].status == 'SIGN'"
+                            (click)="unsignFile(signatureBook.attachments[rightSelectedThumbnail])"
+                            style="cursor: pointer;color: green;">
+                            <i title="{{'lang.unsign' | translate}}" class="fa fa-check fa-2x" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <app-attachments-list *ngIf="showAttachmentPanel" #appAttachmentsList [resId]="resId"
+                    [target]="'process'" [canModify]="canUpdateDocument" (reloadBadgeAttachments)="refreshAttachments()"
+                    (afterActionAttachment)="refreshAttachments()">
+                </app-attachments-list>
+            </div>
+            <div class="visaNoWorkflowWarning">
+                <div style="margin-top:200px;" [innerHTML]="'lang.noVisaWorkflowNoSignature' | translate"></div>
+            </div>
+            <div *ngIf="!signatureBook.attachments[rightSelectedThumbnail]" class="visaNoPjWarning">
+                <div style="margin-top:200px;" [innerHTML]="'lang.noAttachmentClickToAddOne' | translate"></div>
+            </div>
+        </div>
+        <div class="panelRight">
+            <div *ngIf="signatureBook.attachments" id="rightPanelContent" class="panelRightContent">
+                <div title="[{{attachment.attachment_type}}] {{attachment.title}}" style="position: relative;"
+                    class="item" *ngFor="let attachment of signatureBook.attachments; let i = index"
+                    (click)="changeRightViewer(i)"
+                    [ngClass]="{'panelSelectedThumbnail': i == rightSelectedThumbnail && !showAttachmentPanel}">
+                    <span class="fa-stack fa-lg">
+                        <i class="far fa-file fa-stack-2x"></i><i
+                            style="font-weight:bold;letter-spacing: -1px;">{{attachment.icon}}</i>
+                    </span>
+                    <i *ngIf="attachment.sign && attachment.status == 'SIGN'" title="Le document a été signé"
+                        style="position: absolute;top: 12px;right: 6px;" class="fa fa-circle"></i>
+                    <i *ngIf="attachment.sign && attachment.status != 'SIGN' && attachment.status != 'TMP'"
+                        title="Le document n'a pas encore été signé" style="position: absolute;top: 12px;right: 6px;"
+                        class="far fa-circle"></i>
+                    <i *ngIf="attachment.sign && attachment.status == 'TMP'"
+                        style="color:green;-ms-transform: rotate(-35deg);-webkit-transform: rotate(-35deg);transform: rotate(-35deg);position: absolute;top: 39px;right: 1px;">{{'lang.draft' | translate}}</i>
+                    <br /><i style="position: absolute;margin-left: -9px;">.{{attachment.format}}</i>
+                </div>
+            </div>
+            <div style="bottom: 0px;position: absolute;width:100%;">
+                <div class="panelRightListPj" (click)="displayAttachmentPanel()"
+                    title="{{'lang.displayAtt' | translate}}"
+                    [ngClass]="{'panelSelectedThumbnail': showAttachmentPanel}">
+                    <i class="fa fa-bars fa-2x"></i>
+                </div>
+                <hr style="background-color:#666;margin-top:0px;" />
+                <div class="panelRightAddPj" (click)="createAttachment()" title="{{'lang.createAtt' | translate}}">
+                    <i class="fa fa-paperclip fa-2x"></i>
+                    <i class="fa fa-plus" style="position:absolute;"></i>
+                </div>
+                <div *ngIf="signatureBook.attachments[rightSelectedThumbnail]">
+                    <div [ngClass]="{'visaDisabledButton': !canUpdateDocument || signatureBook.attachments[rightSelectedThumbnail].status == 'SIGN'}"
+                        title="{{'lang.editDocument' | translate}}" class="visaPjUp"
+                        (click)="showAttachment(signatureBook.attachments[rightSelectedThumbnail])">
+                        <i class="fa fa-edit fa-2x"></i>
+                    </div>
+                    <div [ngClass]="{'visaDisabledButton': !canUpdateDocument}" title="{{'lang.deleteAtt' | translate}}"
+                        class="visaPjDel" (click)="delAttachment(signatureBook.attachments[rightSelectedThumbnail])">
+                        <i class="fa fa-trash-alt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tooltip_templates" style="display: none">
+    <span id="obsVersionTooltip">
+        <div
+            *ngIf="signatureBook.attachments[rightSelectedThumbnail] && signatureBook.attachments[rightSelectedThumbnail].relation > 1">
+            <div *ngFor="let version of signatureBook.attachments[rightSelectedThumbnail].obsAttachments">
+                <span>{{'lang.version' | translate}} : </span>
+                <span>{{version.relation}}</span>&nbsp;
+                <span>{{'lang.object' | translate}} : </span>
+                <span>{{version.title}}</span>&nbsp;
+                <a style="color:#135F7F" title="{{'lang.dlAttachment' | translate}}"
+                    (click)="downloadOriginalFile(version.resId)" style="cursor: pointer;">
+                    <i class="fa fa-download fa-2x"></i>
+                </a>
+            </div>
+        </div>
+    </span>
+</div>

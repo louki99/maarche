@@ -1,0 +1,52 @@
+<div class="col-md-12" *ngIf="!loading">
+    <div>
+        <div class="alert-message alert-message-info" role="alert">
+            <p>{{'lang.sentToIxbusParapheur' | translate}}</p>
+        </div>
+    </div>
+    <ng-container *ngIf="natures.length == 0">
+        <div *ngIf="natures.length == 0">
+            <div class="alert-message alert-message-danger mailList" role="alert">
+                <p>{{'lang.noIxbusNature' | translate}}</p>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="natures.length != 0">
+        <div class="form-group" style="margin-top: 10px">
+            <div class="col-sm-12">
+                <app-plugin-select-search [showLabel]="true" [class]="''" [label]="'lang.natureIxbusParapheur' | translate"
+                                      [placeholderLabel]="'lang.natureIxbusParapheur' | translate" [formControlSelect]="selectNature"
+                                      [datas]="natures" (afterSelected)="ixbusDatas.nature = selectNature.value; changeModel(selectNature.value)"
+                                      style="width:100%;" [required]="true">
+                </app-plugin-select-search>
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 10px">
+            <div class="col-sm-12">
+                <app-plugin-select-search [showLabel]="true" [class]="''" [label]="'lang.workflowModelIxbus' | translate"
+                                      [placeholderLabel]="'lang.workflowModelIxbus' | translate" [formControlSelect]="selectWorkflow"
+                                      [datas]="messagesModel" [disabled]="messagesModel.length === 0" (afterSelected)="ixbusDatas.messageModel = selectWorkflow.value"
+                                      style="width:100%;" [required]="true">
+                </app-plugin-select-search>
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 10px">
+            <div class="col-sm-12">
+                <app-plugin-select-search [showLabel]="true" [class]="''" [label]="'lang.loginIxbus' | translate"
+                                      [placeholderLabel]="'lang.loginIxbus' | translate" [formControlSelect]="selectUser"
+                                      [datas]="users" [disabled]="users.length === 0" (afterSelected)="ixbusDatas.userId = selectUser.value"
+                                      style="width:100%;" [required]="true">
+                </app-plugin-select-search>
+            </div>
+        </div>
+        <mat-radio-group id="handwrittenSignature" name="handwrittenSignature" [(ngModel)]="ixbusDatas.signatureMode"
+            color="primary">
+            <mat-radio-button value="manual" color="primary">
+                {{'lang.handwrittenSignature' | translate}}
+            </mat-radio-button>
+            <mat-radio-button value="electronic" color="primary" style="margin-left: 5px">
+                {{'lang.electronicSignature' | translate}}
+            </mat-radio-button>
+        </mat-radio-group>
+    </ng-container>
+</div>

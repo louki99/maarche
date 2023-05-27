@@ -1,0 +1,341 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list *ngIf="!loading">
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <a mat-list-item (click)="openAbsModal()">
+                <mat-icon *ngIf="!haveAbsScheduled" color="warn" mat-list-icon class="fa fa-plane"></mat-icon>
+                <mat-icon *ngIf="haveAbsScheduled" color="warn" mat-list-icon class="fa fa-plane-slash"></mat-icon>
+                <p mat-line>
+                    {{ (!haveAbsScheduled ? 'lang.activateMyAbs' : 'lang.deactivateAbsence') | translate}}
+                </p>
+            </a>
+            <a *ngIf="user.canModifyPassword" mat-list-item (click)="changePasswd();">
+                <mat-icon color="primary" mat-list-icon class="fa fa-key"></mat-icon>
+                <p mat-line>
+                    {{'lang.changeMyPassword' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="initComponents($event)">
+                        <mat-tab label="{{'lang.myInformations' | translate}}">
+                            <div *ngIf="showPassword" style="margin-bottom: 5%">
+                                <form [formGroup]="firstFormGroup">
+                                    <div class="form-group">
+                                        <mat-form-field style="padding:10px;">
+                                            <input matInput placeholder="{{'lang.typeCurrentPassword' | translate}}"
+                                                formControlName="currentPasswordCtrl" required
+                                                [type]="hidePassword ? 'password' : 'text'">
+                                            <mat-icon matSuffix (click)="hidePassword = !hidePassword" class="fa fa-2x"
+                                                [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                            <mat-error
+                                                *ngIf="firstFormGroup.controls['currentPasswordCtrl'].hasError('required')">
+                                                {{'lang.requiredField' | translate}}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="text-align:center;color: rgba(0,0,0,0.54);font-size: 75%;">
+                                            {{this.ruleText}}</div>
+                                        <div class="col-sm-6" style="padding-left:0px;padding-right: 0px;">
+                                            <mat-form-field style="padding:10px;">
+                                                <input matInput #inputPasswd
+                                                    placeholder="{{'lang.typeNewPassword' | translate}}"
+                                                    formControlName="newPasswordCtrl" required
+                                                    [type]="hidePassword ? 'password' : 'text'">
+                                                <mat-icon matSuffix (click)="hidePassword = !hidePassword"
+                                                    class="fa fa-2x"
+                                                    [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                                <mat-hint *ngIf="validPassword">
+                                                    <i color="accent" class="fa fa-check"></i>
+                                                    <span color="accent">{{'lang.passwordValid' | translate}}</span>
+                                                </mat-hint>
+                                                <mat-error>{{getErrorMessage()}}</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-6" style="padding-left:0px;padding-right:0px;">
+                                            <mat-form-field style="padding:10px;">
+                                                <input matInput #inputPasswd2
+                                                    placeholder="{{'lang.retypeNewPassword' | translate}}" required
+                                                    [type]="hidePassword ? 'password' : 'text'"
+                                                    formControlName="retypePasswordCtrl">
+                                                <mat-icon matSuffix (click)="hidePassword = !hidePassword"
+                                                    class="fa fa-2x"
+                                                    [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                                <mat-hint
+                                                    *ngIf="!firstFormGroup.controls['retypePasswordCtrl'].hasError('mismatch') && firstFormGroup.controls['retypePasswordCtrl'].value != ''">
+                                                    <i color="accent" class="fa fa-check"></i>
+                                                    <span color="accent">{{'lang.passwordMatch' | translate}}</span>
+                                                </mat-hint>
+                                                <mat-error>{{'lang.passwordNotMatch' | translate}} !</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="passwordRules.renewal.enabled || passwordRules.historyLastUse.enabled"
+                                        class="form-group">
+                                        <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                                            <div class="alert alert-warning" role="alert" [innerHTML]="otherRuleText"
+                                                style="text-align:center;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="text-align:center;">
+                                            <button mat-raised-button color="primary" type="button"
+                                                (click)="updatePassword()"
+                                                [disabled]="!firstFormGroup.valid">{{'lang.update' | translate}}</button>
+                                            <button mat-raised-button color="default" type="button"
+                                                (click)="showPassword=false">{{'lang.cancel' | translate}}</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <form class="form-horizontal" (ngSubmit)="onSubmit()" #profileForm="ngForm"
+                                *ngIf="!showPassword">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <div class="pull-left">
+                                            <div class="avatar" style="font-size:90px;text-align:center;">
+                                                <i class="fa fa-user" style="font-size:90px;padding-top:5px;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <mat-form-field>
+                                                <input matInput type="text" title="{{'lang.id' | translate}}"
+                                                    value="{{user.user_id}}" placeholder="{{'lang.id' | translate}}"
+                                                    disabled>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-5" style="font-weight:bold;">
+                                        <mat-form-field>
+                                            <input matInput type="text" id="lastname" name="lastname"
+                                                title="{{'lang.lastname' | translate}}"
+                                                placeholder="{{'lang.lastname' | translate}}"
+                                                [(ngModel)]="user.lastname" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-5" style="font-weight:bold;">
+                                        <mat-form-field>
+                                            <input matInput type="text" id="firstname" name="firstname"
+                                                title="{{'lang.firstname' | translate}}"
+                                                placeholder="{{'lang.firstname' | translate}}"
+                                                [(ngModel)]="user.firstname" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-2" style="font-style:italic;">
+                                        <mat-form-field>
+                                            <input matInput type="text" id="initials" name="initials"
+                                                title="{{'lang.initials' | translate}}"
+                                                placeholder="{{'lang.initials' | translate}}"
+                                                [(ngModel)]="user.initials">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <mat-form-field>
+                                            <input matInput type="tel" id="phone" name="phone"
+                                                title="{{'lang.phoneNumber' | translate}}"
+                                                placeholder="{{'lang.phoneNumber' | translate}}"
+                                                [(ngModel)]="user.phone" pattern="\+?((|\ |\.|\(|\)|\-)?(\d)*)*\d$">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <mat-form-field>
+                                            <input matInput type="email" id="mail" name="mail"
+                                                title="{{'lang.email' | translate}}"
+                                                placeholder="{{'lang.email' | translate}}" [(ngModel)]="user.mail"
+                                                pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)" required>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <div style="text-align:center;">
+                                        <button mat-raised-button color="primary" type="submit"
+                                            [disabled]="!profileForm.form.valid">{{'lang.update' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-tab>
+                        <mat-tab label="{{'lang.myParameters' | translate}}">
+                            <mat-accordion>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <mat-icon color="primary" class="fa fa-file-word"
+                                                style="font-size:25px;width:50px;"></mat-icon>
+                                            <span>{{'lang.editorOption' | translate}}</span>
+                                        </mat-panel-title>
+                                        <mat-panel-description *ngIf="!appService.getViewMode()">
+                                            {{'lang.editorOptionAdmin' | translate}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <app-editor-option [docEdition] = "user.preferences.documentEdition"></app-editor-option>
+                                </mat-expansion-panel>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <mat-icon color="primary" class="fa fa-inbox"
+                                                style="font-size:25px;width:50px;"></mat-icon>
+                                            <mat-icon color="primary" class="fa fa-magic"
+                                                style="position: absolute;margin-left: 30px;margin-top: -10px;">
+                                            </mat-icon>
+                                            <span>{{'lang.basketsColor' | translate}}</span>
+                                        </mat-panel-title>
+                                        <mat-panel-description *ngIf="!appService.getViewMode()">
+                                            {{'lang.basketsColorAdmin' | translate}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <app-basket-color [userGroupBaskets]="user.regroupedBaskets"></app-basket-color>
+                                </mat-expansion-panel>
+                                <mat-expansion-panel [expanded]="myBasketExpansionPanel">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <mat-icon color="primary" class="fa fa-inbox"
+                                                style="font-size:25px;width:50px;"></mat-icon>
+                                            <mat-icon color="primary" class="fa fa-reply"
+                                                style="position: absolute;margin-left: 30px;margin-top: -10px;">
+                                            </mat-icon>
+                                            {{'lang.myBaskets' | translate}}
+                                        </mat-panel-title>
+                                        <mat-panel-description *ngIf="!appService.getViewMode()">
+                                            {{'lang.myBasketsDesc' | translate}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <app-my-baskets [userBaskets]="user.baskets" [redirectedBaskets]="user.redirectedBaskets" [assignedBaskets]="user.assignedBaskets" (redirectedBasketsEvent)="toggleRedirection($event)">
+                                    </app-my-baskets>
+                                </mat-expansion-panel>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <mat-icon color="primary" class="fa fa-envelope"
+                                                style="font-size:25px;width:50px;"></mat-icon>
+                                            {{'lang.mySignMail' | translate}}
+                                        </mat-panel-title>
+                                        <mat-panel-description *ngIf="!appService.getViewMode()">
+                                            {{'lang.mySignMailDesc' | translate}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <ng-template matExpansionPanelContent>
+                                        <app-mail-signatures-administration mode="private"></app-mail-signatures-administration>
+                                    </ng-template>
+                                </mat-expansion-panel>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <mat-icon color="primary" class="fa fa-certificate"
+                                                style="font-size:25px;width:50px;"></mat-icon>
+                                            {{'lang.mySignSignatureBook' | translate}}
+                                        </mat-panel-title>
+                                        <mat-panel-description *ngIf="!appService.getViewMode()">
+                                            {{'lang.mySignSignatureBookDesc' | translate}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+
+                                    <app-signature-book
+                                        [signatureModel]="signatureModel"
+                                        [userSignatures]="user.signatures"
+                                        [loadingSign]="loadingSign"
+                                        [externalIdMaarchParapheur]="user.external_id[authService?.externalSignatoryBook?.id]">
+                                    </app-signature-book>
+                                </mat-expansion-panel>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <mat-icon color="primary" class="fas fa-cubes"
+                                                style="font-size:25px;width:50px;"></mat-icon>
+                                            {{'lang.otherPlugins' | translate}}
+                                        </mat-panel-title>
+                                        <mat-panel-description *ngIf="!appService.getViewMode()">
+                                            {{'lang.otherPluginsDesc' | translate}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+
+                                    <app-other-plugin></app-other-plugin>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </mat-tab>
+                        <mat-tab label="{{'lang.myContactsGroups' | translate}}">
+                            <ng-template matTabContent>
+                                <app-profile-contacts-groups></app-profile-contacts-groups>
+                            </ng-template>
+                        </mat-tab>
+                        <mat-tab label="{{'lang.myHistoric' | translate}}">
+                            <ng-template matTabContent>
+                                <app-profile-history></app-profile-history>
+                            </ng-template>
+                        </mat-tab>
+                    </mat-tab-group>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="appService.getViewMode() ? false : true"
+        style="overflow-x:hidden;max-width:500px;">
+
+        <mat-list>
+            <h3 mat-subheader>{{'lang.groups' | translate}}</h3>
+            <mat-list-item *ngFor="let userGroup of user.groups">
+                <mat-icon color="primary" mat-list-icon class="fa fa-users"></mat-icon>
+                <h4 mat-line>{{userGroup.group_desc}}</h4>
+                <p mat-line>
+                    <mat-form-field style="font-size:10px;">
+                        <input matInput type="text" id="role" name="role" title="{{'lang.role' | translate}}"
+                            placeholder="{{'lang.role' | translate}}" [(ngModel)]="userGroup.role" disabled>
+                        <mat-hint matTooltip="{{'lang.perimeter' | translate}}">{{userGroup.maarch_comment}}</mat-hint>
+                    </mat-form-field>
+                </p>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>{{'lang.entities' | translate}}</h3>
+            <mat-list-item *ngFor="let userEntity of user.entities">
+                <mat-icon color="primary" *ngIf="userEntity.primary_entity == 'Y'" mat-list-icon class="fa fa-sitemap">
+                </mat-icon>
+                <mat-icon color="primary" *ngIf="userEntity.primary_entity != 'Y'" mat-list-icon class="fa fa-sitemap"
+                    style="position:relative;">
+                    <!--<button mat-icon-button
+                        style="cursor:pointer;position: absolute;right: -20px;top: -20px;font-size:10px;"
+                        (click)="updatePrimaryEntity(userEntity)" matTooltip="{{'lang.entityTooglePrimary' | translate}}">
+                        <mat-icon class="fa fa-arrow-up"></mat-icon>
+                    </button>-->
+                </mat-icon>
+                <h4 mat-line [ngStyle]="{'font-weight': userEntity.primary_entity == 'Y' ? 'bold' : 'normal'}"
+                    matTooltip="{{userEntity.entity_label}}">
+                    {{userEntity.entity_label}}
+                    <span *ngIf="userEntity.primary_entity == 'Y'" class="label label-primary"
+                        style="font-weight:normal">{{'lang.primary' | translate}}</span>
+                </h4>
+                <p mat-line>
+                    <mat-form-field style="font-size:10px;">
+                        <input matInput type="text" id="role" name="role" title="{{'lang.role' | translate}}"
+                            placeholder="{{'lang.role' | translate}}" [(ngModel)]="userEntity.user_role" disabled>
+                    </mat-form-field>
+                </p>
+            </mat-list-item>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

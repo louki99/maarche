@@ -1,0 +1,37 @@
+<div class="mat-dialog-content-container">
+    <div mat-dialog-content [@.disabled]="disableAnimation">
+        <mat-accordion>
+            <mat-expansion-panel hideToggle expanded>
+                <div class="launch-action">
+                    <h2 class="text-center" color="primary">{{'lang.almostThere' | translate}}</h2>
+                    <button mat-raised-button type="button" color="primary"
+                        (click)="installStepAction.open();launchInstall()" style="font-size: 25px;padding: 20px;">
+                        <i class=" far fa-hdd"></i> {{'lang.launchInstall' | translate}}
+                    </button>
+                </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel #installStepAction [expanded]="false">
+                <mat-list-item *ngFor="let step of steps">
+                    <div mat-line class="step" [class.endStep]="step.state==='OK' || step.state==='KO'"
+                        [class.currentStep]="step.state==='inProgress'"><span class="stepLabel">{{step.label}}</span>
+                        <ng-container *ngIf="step.state==='inProgress'">...</ng-container>&nbsp;
+                        <i *ngIf="step.state==='OK'" class="fa fa-check" style="color: green"></i>
+                        <i *ngIf="step.state==='KO'" class="fa fa-times" style="color: red"></i>
+                        <div *ngIf="step.msgErr!==''" class="alert-message alert-message-danger" role="alert"
+                            style="margin-top: 30px;min-width: 100%;">
+                            {{step.msgErr}}
+                        </div>
+                    </div>
+                </mat-list-item>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <ng-container *ngIf="isInstallComplete() || isInstallError() || !isInstallBegin()">
+        <span class="divider-modal"></span>
+        <div mat-dialog-actions class="actions">
+            <button *ngIf="!isInstallError() && isInstallComplete()" mat-raised-button mat-button color="primary"
+                (click)="goToInstance()">{{'lang.goToNewInstance' | translate}}</button>
+            <button *ngIf="isInstallError() || !isInstallBegin()" mat-raised-button mat-button [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+        </div>
+    </ng-container>
+</div>

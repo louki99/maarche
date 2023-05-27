@@ -1,0 +1,26 @@
+
+.correspondentGroups {
+  width: 100%;
+  padding-top: 5px;
+
+  mat-chip {
+    font-size: 12px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    min-height: 25px;
+    background-color: var(--maarch-color-primary);
+    color: white;
+  }
+}
+
+.mat-chip-remove {
+  width: 12px !important;
+  height: 12px !important;
+  font-size: 12px !important;
+  color: white !important;
+}
+
+.correspondent-type-icon {
+  color: white;
+  font-size: 14px;
+}

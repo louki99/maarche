@@ -1,0 +1,340 @@
+/******* CSS ACCORDING TO FINAL CSS *********/
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.maarch-container {
+    position: absolute !important;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #eee;
+}
+
+.mat-sidenav-content {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.bg-head {
+    background: #135F7F;
+    // min-height: 200px;
+    color: white;
+
+    &-title {
+        font-size: 20px;
+        padding: 20px;
+        padding-left: 50px;
+        padding-right: 50px;
+        display: flex;
+        align-items: center;
+
+        &-label,
+        &-tool {
+            flex: 1;
+            align-items: center;
+
+        }
+
+        &-tool {
+            flex: none;
+            justify-content: flex-end;
+        }
+    }
+
+    &-content {
+        display: flex;
+        align-items: center;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-bottom: 90px;
+    }
+
+    &-content:empty {
+        padding-bottom: 60px;
+    }
+}
+
+.panel-left,
+.panel-right {
+    min-width: 300px;
+    box-shadow: none;
+    border: none !important;
+}
+
+.container {
+    flex: 1;
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-top: -60px;
+    width: 100%;
+    overflow: hidden;
+
+    &-content {
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        height: 100%;
+        min-height: 200px;
+        width: 100%;
+        border-radius: 20px;
+        background-color: #FFFFFF;
+        box-shadow: 0 4px 9px 0 rgba(0, 0, 0, 0.09);
+
+    }
+}
+
+.fullContainer {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.customContainerRight {
+    padding-right: 10px;
+}
+
+.table-head {
+    overflow: auto;
+    overflow-y: hidden;
+    display: flex;
+    padding-left: 25px;
+    padding-right: 25px;
+    height: 10%;
+    align-items: center;
+    white-space: pre;
+
+    div {
+        flex: 1;
+        align-items: center;
+    }
+
+    &-flex div {
+        display: flex;
+    }
+
+    &-result {
+        color: #4A4A4A;
+        font-size: 25px;
+        font-weight: bold;
+
+        small {
+            font-size: 14px;
+            color: #029BB6;
+        }
+
+    }
+
+    &-tool {
+        justify-content: flex-start;
+        display: flex;
+        flex-direction: row-reverse;
+
+        span {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
+}
+
+.mat-paginator {
+    .mat-paginator-container {
+        flex-wrap: initial !important;
+    }
+}
+
+.mat-icon {
+    overflow: initial !important;
+}
+.fm.mat-icon,
+.fa.mat-icon,
+.far.mat-icon,
+.fas.mat-icon,
+.mat-form-field-appearance-legacy .mat-form-field-prefix .fa.mat-icon, 
+.mat-form-field-appearance-legacy .mat-form-field-suffix .fa.mat-icon {
+    height: auto;
+    width: auto;
+}
+
+.mat-tab-label .mat-tab-label-content {
+    gap: 10px;
+    align-items: center;
+}
+
+.mat-list-base .mat-list-item .mat-list-icon {
+    border-radius: 0px;
+    align-items: center;
+    display: flex;
+    overflow: initial;
+}
+
+.mat-list-base .mat-list-item .mat-list-icon {
+    border-radius: 0px;
+    align-items: center;
+    display: flex;
+    overflow: initial;
+}
+
+.mat-icon-button .mat-icon {
+    overflow: initial;
+}
+
+.badgePipe_accent {
+    color: #00CB55;
+    font-size: 8px;
+}
+
+.badgePipe_secondary {
+    color: #EF8717;
+    font-size: 8px;
+}
+
+.badgePipe_warn {
+    color: red;
+    font-size: 8px;
+}
+
+.mat-menu-content:not(:empty) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.mat-menu-panel {
+    min-height: auto !important;
+}
+
+.sideBarForm {
+    width: 600px !important;
+    .mat-drawer-inner-container {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+}
+
+.sideBarFormMobile {
+    width: 95% !important;
+    .mat-drawer-inner-container {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+}
+
+
+/**
+ * Banner
+ */
+ .banner-opened {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px -5px 10px;
+    border-radius: 20px;
+    margin-left: 20px;
+    padding-left: 20px;
+    padding: 0px;
+    width: 100%;
+    border: solid 1px #ccc;
+    position: relative;
+    background: var(--maarch-color-primary-light);
+    transition: all 0.3s;
+
+    .title {
+        overflow: hidden;
+        white-space: pre;
+        text-overflow: ellipsis;
+        max-width: 85%;
+        z-index: 1;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        position: absolute;
+        top: -18px;
+        left: 20px;
+        padding: 0px;
+        margin: 0px;
+        color: white;
+
+        &-divider {
+            position: absolute;
+            width: 99%;
+            z-index: -1;
+            top: 17px;
+            background: var(--maarch-color-primary-light);
+            height: 1px; 
+        }
+    }
+
+    .content {
+        align-items: center;
+        transition: height 0.3s;
+        height: 80px;
+        display: flex;
+        overflow: hidden;
+        overflow-x: auto;
+        padding-left: 10px;
+
+        &-item {
+            flex: 1;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+}
+
+.banner-closed {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px -5px 10px;
+    border-radius: 20px;
+    margin-left: 20px;
+    padding-left: 20px;
+    padding: 0px;
+    width: 100%;
+    border: none;
+    position: relative;
+    background: var(--maarch-color-primary-light);
+    transition: all 0.3s;
+
+    .title {
+        overflow: hidden;
+        white-space: pre;
+        text-overflow: ellipsis;
+        max-width: 85%;
+        z-index: 1;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        position: absolute;
+        top: -18px;
+        left: 20px;
+        padding: 0px;
+        margin: 0px;
+        color: white;
+
+        &-divider {
+            position: absolute;
+            width: 99%;
+            z-index: -1;
+            top: 17px;
+            background: var(--maarch-color-primary-light);
+            height: 0px; 
+        }
+    }
+
+    .content {
+        align-items: center;
+        transition: height 0.3s;
+        height: 0px;
+        overflow: hidden;
+        display: flex;
+        padding-left: 10px;
+
+        &-item {
+            flex: 1;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+}

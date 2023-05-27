@@ -1,0 +1,42 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.contactsReassign' | translate}}</h1>
+    <mat-dialog-content>
+        <form #redirectConfForm="ngForm">
+            <div class="modal-body">
+                <div class="alert-message alert-message-danger" role="alert">
+                    {{'lang.contactLinkedToMails' | translate}}
+                </div>
+                <div class="input-group">
+                    <mat-radio-group id="processMode" name="processMode"
+                        style="display: inline-flex;flex-direction: column;" [(ngModel)]="this.processMode"
+                        color="primary" required>
+                        <mat-radio-button value="delete" color="primary">
+                            {{'lang.deleteContactwithtoutReassign' | translate}}
+                        </mat-radio-button>
+                        <mat-radio-button value="reaffect" color="primary">
+                            {{'lang.reaffectContactRedirect' | translate}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    <app-plugin-autocomplete *ngIf="this.processMode == 'reaffect'"
+                        [labelPlaceholder]="'lang.contactReplacement' | translate"
+                        [routeDatas]="['/rest/autocomplete/contacts']" [targetSearchKey]="'contact'"
+                        (triggerEvent)="setRedirectUser($event)" singleMode required></app-plugin-autocomplete>
+
+                    <div *ngIf="this.processMode" class="alert-message alert-message-info" role="alert">
+                        <span *ngIf="this.processMode == 'delete'"><em>{{'lang.deleteContactInformations' | translate}}</em></span>
+                        <span
+                            *ngIf="this.processMode == 'reaffect'"><em>{{'lang.reaffectContactInformations' | translate}}</em></span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary" type="submit"
+            [disabled]="!redirectConfForm.form.valid || (!this.redirectContact && this.processMode == 'reaffect')"
+            (click)="dialogRef.close({contactId:this.redirectContact, processMode:this.processMode})">{{'lang.delete' | translate}}</button>
+        <button class="actions" color="" mat-raised-button
+            (click)="dialogRef.close('')">{{'lang.cancel' | translate}}</button>
+    </mat-dialog-actions>
+</div>

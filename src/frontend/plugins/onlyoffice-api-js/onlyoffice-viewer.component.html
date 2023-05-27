@@ -1,0 +1,17 @@
+<div *ngIf="loading" style="display:block;padding: 10px;">{{'lang.checkOnlyofficeServer' | translate}}...</div>
+    <button *ngIf="!hideCloseEditor" class="onlyofficeButton_fullscreen" [disabled]="loading" [class.buttonsHide]="hideButtons" [class.fullScreen]="fullscreenMode" mat-mini-fab color="warn"
+        [title]="'lang.closeEditor' | translate" [ngStyle]="{'z-index': fullscreenMode && router.url.includes('indexing') ? '3' : ''}" (click)="quit()">
+        <mat-icon class="fa fa-times" style="height:auto;"></mat-icon>
+    </button>
+    <button mat-mini-fab class="onlyofficeButton_close" [disabled]="loading" [class.buttonsHide]="hideButtons" [class.fullScreen]="fullscreenMode" color="default"
+        [title]="fullscreenMode ? ('lang.closeFullscreen' | translate) : ('lang.openFullscreen' | translate)" [ngStyle]="{'z-index': fullscreenMode && router.url.includes('indexing') ? '3' : ''}"
+        (click)="openFullscreen()">
+        <mat-icon class="fas" [class.fa-expand]="!fullscreenMode" [class.fa-compress]="fullscreenMode" style="height:auto;"></mat-icon>
+    </button>
+    <button class="onlyofficeButton_hide" [disabled]="loading" [class.fullScreen]="fullscreenMode" [class.buttonsHide]="hideButtons" mat-mini-fab color="default"
+            [title]="!hideButtons ? ('lang.hideTool' | translate) : ('lang.showTool' | translate)" [ngStyle]="{'z-index': fullscreenMode && router.url.includes('indexing') ? '3' : ''}"
+            (click)="hideButtons = !hideButtons; formatAppToolsCss(fullscreenMode ? 'fullscreen' : 'default', hideButtons)">
+        <mat-icon class="fa fa-arrow-right" style="height:auto;"></mat-icon>
+    </button>
+
+<div id="placeholder"></div>

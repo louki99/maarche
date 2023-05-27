@@ -1,0 +1,42 @@
+<div *ngIf="loading" style="display:flex;height:100%;">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading">
+    <app-note-editor *ngIf="editMode" #noteEditor [addMode]="true" [resIds]="resIds" [defaultRestriction]="true"
+        (refreshNotes)="loadNotes($event)" style="margin: 20px;display: flex;flex-direction: column;"></app-note-editor>
+    <div *ngIf="notes.length == 0" style="text-align:center;font-size:24px;font-weight:bold;opacity:0.3;">
+        {{'lang.noNote' | translate}}
+    </div>
+    <mat-card *ngFor="let note of notes" style="margin-top: 10px;"
+        [ngStyle]="{'background-color': note.entities_restriction ? '#FFEDCC' : 'white'}">
+        <mat-card-header>
+            <div mat-card-avatar><i color="primary" class="fa fa-user"></i></div>
+            <mat-card-title [title]="note.firstname + ' ' + note.lastname">{{note.firstname}} {{note.lastname}}</mat-card-title>
+            <mat-card-subtitle>{{note.entity_label}}</mat-card-subtitle>
+            <mat-card-subtitle title='{{note.creation_date | fullDate}}' class="dateNote">{{note.creation_date
+                | timeAgo}}</mat-card-subtitle>
+            <mat-card-subtitle *ngIf="note.user_id == headerService.user.id" class="removeNote">
+                <button matSuffix mat-icon-button title="{{'lang.editNote' | translate}}" class="editNote" (click)="editNote(note)">
+                    <mat-icon fontSet="fas" fontIcon="fa-pencil-alt fa-2x"></mat-icon>
+                </button>
+                <button matSuffix mat-icon-button title="{{'lang.removeNote' | translate}}" style="color: red;"
+                    (click)="removeNote(note)">
+                    <mat-icon fontSet="far" fontIcon="fa-trash-alt fa-2x"></mat-icon>
+                </button>
+            </mat-card-subtitle>
+        </mat-card-header>
+        <app-note-editor *ngIf="note.edit" #noteEditor [resIds]="resIds" [upMode]="true" [noteId]="note.id"
+            [entitiesNoteRestriction]="getRestrictionEntitiesId(note.entities_restriction)" [noteContent]="note.value"
+            (refreshNotes)="loadNotes($event)" style="margin: 20px;display: flex;flex-direction: column;">
+        </app-note-editor>
+        <mat-card-content *ngIf="!note.edit">
+            <p class="noteTextContent">
+                {{note.value}}
+            </p>
+            <div style="overflow: auto;max-height: 75px;" *ngIf="!functions.empty(note.entities_restriction)">
+                <span *ngFor="let entity of note.entities_restriction" class="label label-default noteRestriction"
+                    title="{{'lang.restrictedEntity' | translate}}"><i class="fa fa-sitemap"></i> {{entity.short_label}}</span>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

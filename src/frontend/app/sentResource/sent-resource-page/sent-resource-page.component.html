@@ -1,0 +1,42 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{data.title}}
+        </span>
+        <button [title]="'lang.saveAndClose' | translate" mat-icon-button (click)="closeModal()">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content class="modal-container">
+        <div *ngIf="loading" class="loading">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <app-mail-editor #appMailEditor *ngIf="!loading" [resId]="data.resId" [emailId]="data.emailId" [emailType]="data.emailType" (afterLoadPaperAr)="paperArContent=$event"></app-mail-editor>
+        <app-document-viewer *ngIf="paperArContent !== null" #appDocumentViewer
+            style="display:block;height:400px;width:100%;overflow: auto;" [editMode]="false"
+            [base64]="paperArContent">
+        </app-document-viewer>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions" *ngIf="!loading">
+        <button mat-raised-button color="primary"
+            style="min-width: auto;width: 30px;padding: 0;background-color: white; color: grey;"
+            *ngIf="!appMailEditor?.readonly && privilegeService.hasCurrentUserPrivilege('sendmail')"
+            [matMenuTriggerFor]="emailActionMenu">
+            <mat-icon style="height:auto;" class="fas fa-ellipsis-v"></mat-icon>
+        </button>
+        <mat-menu #emailActionMenu="matMenu" [class]="'attachListMenu'">
+            <button mat-menu-item (click)="appMailEditor?.switchEditionMode()" *ngIf="appMailEditor?.htmlMode">
+                {{'lang.switchInPlainText' | translate}}
+            </button>
+            <button mat-menu-item (click)="appMailEditor?.switchEditionMode()" *ngIf="!appMailEditor?.htmlMode">
+                {{'lang.switchInHtml' | translate}}
+            </button>
+        </mat-menu>
+        <button mat-raised-button color="primary"
+            *ngIf="!appMailEditor?.readonly && privilegeService.hasCurrentUserPrivilege('sendmail')" (click)="onSubmit()"
+            [disabled]="appMailEditor?.recipients.length === 0 || appMailEditor?.emailSubject.length > 256">{{'lang.send' | translate}}</button>
+        <button mat-raised-button color="warn" (click)="deleteEmail()"
+            *ngIf="data.emailId && data.emailType === 'email'"
+            [disabled]="headerService.user.id !== appMailEditor?.emailCreatorId || appMailEditor?.emailStatus === 'SENT'">{{'lang.delete' | translate}}</button>
+    </div>
+</div>

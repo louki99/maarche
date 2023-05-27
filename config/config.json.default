@@ -1,0 +1,92 @@
+{
+    "config": {
+        "lang": "fr",
+        "applicationName": "COURRIER DEMO",
+        "cookieTime": 10080,
+        "idleTime": 10080,
+        "timezone": "Europe/Paris",
+        "maarchDirectory" : "/var/www/html/MaarchCourrier/",
+        "customID" : "",
+        "maarchUrl" : "https://demo.maarchcourrier.com/",
+        "lockAdvancedPrivileges" : true
+    },
+    "database": [
+        {
+            "server": "127.0.0.1",
+            "port": "5432",
+            "type": "POSTGRESQL",
+            "name": "MaarchCourrier",
+            "user": "maarch",
+            "password": "maarch"
+        }
+    ],
+    "signatureBook": {
+        "userWS": "superadmin",
+        "passwordWS": "superadmin",
+        "validatedStatus": "EENV",
+        "validatedStatusOnlyVisa": "EENV",
+        "refusedStatus": "REJ_SIGN",
+        "validatedStatusAnnot": "COU",
+        "refusedStatusAnnot": "RET"
+    },
+    "exportSeda": {
+        "sae": "MaarchRM",
+        "token": "phdF9WkJuTKkDuPXoqDZuCFEQT7En7YqsVROsdD1HoNZV7jD5+XyCtKbhx0Chb4s3skokalo0wEn48DE3M4kGrAceH0/XFbyLZVRoVOO+Y/wxyRdE1QJleI8yijEfGut",
+        "urlSAEService": "https://demo-ap.maarchrm.com",
+        "senderOrgRegNumber": "org_987654321_DGS_SA",
+        "accessRuleCode": "AR039",
+        "certificateSSL": "",
+        "userAgent": "service",
+        "statusReplyReceived": "REPLY_SEDA",
+        "statusReplyRejected": "REPLY_SEDA",
+        "statusMailToPurge": "REPLY_SEDA",
+        "externalSAE": {
+            "retentionRules": [
+                {
+                    "id": "id1",
+                    "label": "label1"
+                }
+            ],
+            "archiveEntities": [
+                {
+                    "id": "id1",
+                    "label": "label1"
+                }
+            ],
+            "archivalAgreements": [
+                {
+                    "id": "id1",
+                    "label": "label1"
+                }
+            ]
+        },
+        "M2M": {
+            "gec": "maarch_courrier"
+        }
+    },
+    "log": {
+        "enable": true,
+        "dateTimeFormat" : "d/m/Y H:i:s",
+        "logFonctionnel": {
+            "level": "ERROR",
+            "file": "./fonctionnel.log",
+            "maxFileSize": "10MB",
+            "maxBackupFiles": 10,
+            "lineFormat": "[%datetime%] %level_name% [%extra.process_id%] [%channel%][%WHERE%][%ID%][%HOW%][%USER%][%WHAT%][%ID_MODULE%][%REMOTE_IP%]\n"
+        },
+        "logTechnique": {
+            "level": "ERROR",
+            "file": "./technique.log",
+            "maxFileSize": "10MB",
+            "maxBackupFiles": 10,
+            "lineFormat": "[%datetime%] %level_name% [%extra.process_id%] [%channel%][%WHERE%][%ID%][%HOW%][%USER%][%WHAT%][%ID_MODULE%][%REMOTE_IP%]\n"
+        },
+        "queries": {
+            "level": "ERROR",
+            "file": "./queries.log",
+            "maxFileSize": "10MB",
+            "maxBackupFiles": 10,
+            "lineFormat": "[%datetime%] %level_name% [%extra.process_id%] [%channel%][%QUERY%][%DATA%][%EXCEPTION%]\n"
+        }
+    }
+}

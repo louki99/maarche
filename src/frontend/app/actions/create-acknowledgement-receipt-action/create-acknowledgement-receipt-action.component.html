@@ -1,0 +1,113 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div id="modal-content" mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{'lang.makeActionOn' | translate}}
+                <b *ngIf="data.resIds.length === 0" color="primary"
+                    class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                    {{'lang.elements' | translate}}</b> ?
+                <app-maarch-message *ngIf="acknowledgement.alreadySend?.number" mode="info">
+                    <p>
+                        <b>{{acknowledgement.alreadySend.number}}</b>&nbsp;<span [innerHTML]="'lang.arAlreadySend' | translate"></span> :
+                    </p>
+                    <div class="chronoList">
+                        <div style="text-decoration: underline;display: inline-block;" *ngFor="let info of acknowledgement.alreadySend.list | sortBy : 'alt_identifier'">
+                            {{info.alt_identifier}}
+                        </div>
+                    </div>
+                </app-maarch-message>
+                <app-maarch-message *ngIf="acknowledgement.alreadyGenerated?.number" mode="info">
+                    <p>
+                        <b>{{acknowledgement.alreadyGenerated.number}}</b>&nbsp;<span [innerHTML]="'lang.arAlreadyGenerated' | translate"></span> :
+                    </p>
+                    <div style="text-decoration: underline;display: inline-block;" *ngFor="let info of acknowledgement.alreadyGenerated.list">
+                        {{info.alt_identifier}}
+                    </div>
+                </app-maarch-message>
+                <app-maarch-message *ngIf="acknowledgement.noSendAR?.number" mode="info">
+                    <p><b>{{acknowledgement.noSendAR.number}}</b>&nbsp;<span [innerHTML]="'lang.canNotSendAr' | translate"></span> :</p>
+                    <div class="acknowledgementList">
+                        <ng-container *ngFor="let info of acknowledgement.noSendAR.list | sortBy : 'info'">
+                            <div class="chrono">
+                                {{info.alt_identifier != null ? info.alt_identifier : 'lang.undefined' | translate}}
+                            </div>
+                            <div>
+                                {{info.info}}
+                            </div>
+                        </ng-container>
+                    </div>
+                </app-maarch-message>
+                <app-maarch-message *ngIf="acknowledgement.sendEmail" mode="success"
+                    [content]="'lang.readyToSendElectronicAr' | translate : {nb : acknowledgement.sendEmail}">
+                </app-maarch-message>
+                <app-maarch-message *ngIf="acknowledgement.sendPaper" mode="success"
+                    [content]="'lang.readyToGeneratePaperAr' | translate : {nb : acknowledgement.sendPaper}">
+                </app-maarch-message>
+
+                <app-mail-editor #appMailEditor
+                    *ngIf="!manualAR && realResSelected.length > 0"
+                    [availableSenders]="senders"
+                    [currentSender]="senders[0]"
+                    [recipientDisabled]="true"
+                    [recipientHide]="data.resIds.length > 1 || !acknowledgement.sendEmail"
+                    [senderHide]="!acknowledgement.sendEmail"
+                    [recipientDisabled]="true"
+                    [senderDisabled]="senders.length === 1"
+                    [cCDisabled]="!canAddCopies"
+                    [cCIDisabled]="!canAddCopies"
+                    [attachmentsHide]="true"
+                    [bodyHide]="true"
+                    [subjectHide]="true"
+                    [resId]="data.resIds.length === 1 ? data.resIds[0] : null"
+                ></app-mail-editor>
+
+                <div *ngIf="arMode == 'both'">
+                    <mat-slide-toggle [(ngModel)]="manualAR" color="primary" (change)="toggleArManual($event.checked)" style="margin-top: 12px;">
+                        {{'lang.editAcknowledgementReceipt' | translate}}</mat-slide-toggle>
+                </div>
+                <app-mail-editor #appMailEditor
+                    *ngIf="manualAR && realResSelected.length > 0"
+                    [availableSenders]="senders"
+                    [currentSender]="senders[0]"
+                    [recipientDisabled]="true"
+                    [recipientHide]="data.resIds.length > 1 || !acknowledgement.sendEmail"
+                    [senderHide]="!acknowledgement.sendEmail"
+                    [senderDisabled]="senders.length === 1"
+                    [cCDisabled]="!canAddCopies"
+                    [cCIDisabled]="!canAddCopies"
+                    [attachmentsHide]="true"
+                    [resId]="data.resIds.length === 1 ? data.resIds[0] : null"
+                    [subjectPrefix]="'[AR]'"
+                ></app-mail-editor>
+            </div>
+            <div class="col-md-12" *ngIf="acknowledgement.sendEmail || acknowledgement.sendPaper">
+                <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+            </div>
+        </div>
+        <ng-container *ngIf="showToggle">
+            <div class="row">
+                <div class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary"
+            [disabled]="loading || (!acknowledgement.sendEmail && !acknowledgement.sendPaper)"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading"
+            [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

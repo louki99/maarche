@@ -1,0 +1,17 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.templateAssociateEntities' | translate}}</h1>
+    <mat-dialog-content>
+        <div class="alert-message alert-message-info" role="alert">
+            <p>{{'lang.templateCheckEntities' | translate}}<b>{{'lang.AR' + data.template_attachment_type | translate}}</b></p>
+        </div>
+        <mat-list>
+            <mat-list-item *ngFor="let entity of data.entitiesList">
+                <mat-icon mat-list-icon><i class="fa fa-share-alt" color="primary"></i></mat-icon>
+                <span mat-line> {{entity.entity_label}} </span>
+            </mat-list-item>
+        </mat-list>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary" type="submit" (click)="dialogRef.close()">{{'lang.close' | translate}}</button>
+    </mat-dialog-actions>
+</div>

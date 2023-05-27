@@ -1,0 +1,78 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <form class="form-horizontal" (ngSubmit)="onSubmit()" #parameterForm="ngForm">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="parameter.id" [disabled]="!creationMode" name="id" title="{{'lang.id' | translate}}" type="text" placeholder="{{'lang.id' | translate}}"
+                                           pattern="^[\w-]*$" required>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="parameter.description" name="description" id="description" title="{{'lang.description' | translate}}" type="text"
+                                           placeholder="{{'lang.description' | translate}}">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <mat-form-field>
+                                    <mat-select name="type" placeholder="{{'lang.type' | translate}}" [(ngModel)]="type" [disabled]="!creationMode" required>
+                                        <mat-option value="string">
+                                            {{'lang.stringInput' | translate}}
+                                        </mat-option>
+                                        <mat-option value="int">
+                                            {{'lang.integer' | translate}}
+                                        </mat-option>
+                                        <mat-option value="date">
+                                            {{'lang.date' | translate}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <mat-form-field *ngIf="type == 'string'">
+                                    <input matInput [(ngModel)]="parameter.param_value_string" name="paramValueString" type="text" placeholder="{{'lang.value' | translate}}" required>
+                                </mat-form-field>
+                                <mat-form-field *ngIf="type == 'int'">
+                                    <input matInput [(ngModel)]="parameter.param_value_int" name="paramValueInt" type="number" placeholder="{{'lang.value' | translate}}" pattern="^[0-9]*$" required>
+                                </mat-form-field>
+                                <mat-form-field *ngIf="type == 'date'">
+                                    <input matInput [(ngModel)]="parameter.param_value_date" name="paramValueDate" [matDatepicker]="picker" placeholder="{{'lang.date' | translate}}" required>
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker startView="month"></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12" style="text-align:center;">
+                                <button mat-raised-button color="primary" type="submit" [disabled]="!parameterForm.form.valid">{{'lang.save' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

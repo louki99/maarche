@@ -1,0 +1,25 @@
+<div class="editInProgress">
+    <div style="opacity: 0.5;">
+        <i class="fas fa-file-word bounce"></i>
+        <div>
+            {{'lang.editInProgress' | translate}}
+        </div>
+        <div *ngIf="documentWebUrl !== null" style="font-weight: bold;">
+            <i class="fas fa-exclamation-circle" style="font-size: 20px;"></i> {{'lang.sharePointWarning' | translate}}
+        </div> 
+ 
+    </div>
+    <div style="display: flex; justify-content: center">
+        <button mat-button (click)="openDocument()" class="button-form-primary-alt" [disabled]="documentWebUrl === null">
+            <mat-icon class="fas fa-external-link-alt" style="padding-top: 5px"></mat-icon>
+            {{'lang.editDocument' | translate}}
+        </button>
+        <button *ngIf="isModified" mat-button (click)="downloadDocument()" class="button-form-primary-alt">
+            <mat-icon class="fas fa-download" style="padding-top: 5px;"></mat-icon>
+            {{'lang.getDocument' | translate}}
+        </button>
+    </div>
+    <div>
+        <button mat-button (click)="closeEditor()">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

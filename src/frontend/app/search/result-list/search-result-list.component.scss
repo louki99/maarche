@@ -1,0 +1,183 @@
+
+
+.followIcon {
+    color: var(--maarch-color-secondary);
+}
+
+.folder-info {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.badge-folder {
+    cursor: pointer;
+    background: var(--maarch-color-secondary);
+    margin: 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    opacity: 0.8;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filterBadges {
+    width: 100%;
+}
+
+.filterBadges>.badge-eraser {
+    margin: 5px;
+    background: none;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+}
+
+.filterBadges>.label {
+    white-space: inherit;
+}
+
+.filterBadges>.badge-search {
+    margin: 5px;
+    background: white;
+    color: var(--maarch-color-primary);
+    cursor: pointer;
+}
+
+.basket-order {
+    color: white;
+    width: 300px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 55px;
+
+    .mat-icon {
+        font-size: 30px;
+
+    }
+
+    ::ng-deep.mat-select-value {
+        color: white;
+    }
+
+    ::ng-deep.mat-form-field-infix {
+        padding-bottom: 15px;
+    }
+
+    ::ng-deep.mat-form-field-flex {
+        background: #135F7F;
+        border: solid 2px white;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    ::ng-deep.mat-form-field-prefix {
+        padding-left: 15px;
+        padding-right: 10px;
+    }
+
+    ::ng-deep.mat-form-field-label-wrapper {
+        color: white;
+    }
+
+    ::ng-deep.mat-select-arrow {
+        color: white;
+        margin-right: 25px;
+    }
+
+    ::ng-deep .mat-form-field-underline {
+        display: none;
+    }
+}
+
+.integratedContent {
+    height: 90%;
+    overflow: auto;
+    position: absolute;
+    width: 100%;
+}
+
+::ng-deep .highlightResult {
+    background: #FFFF00;
+}
+
+.highlightResultIcon {
+    border-radius: 20px;
+    background: #FF0;
+}
+
+.align_leftData {
+    text-align: left;
+}
+
+.align_centerData {
+    text-align: center;
+}
+
+.align_rightData {
+    text-align: right;
+}
+
+.boldFontData {
+    font-weight: bold;
+}
+
+.bigFontData {
+    font-size: 14px;
+}
+
+.smallFontData {
+    font-size: 10px;
+}
+
+.normalData {
+    flex: 1;
+}
+
+.pageInput {
+    padding: 0px;
+
+    ::ng-deep .mat-form-field-wrapper {
+        margin: 0px;
+        padding: 0px;
+    }
+}
+
+.pageList {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 110px;
+    height: 100%;
+    width: 120px;
+}
+
+.freezeIcon {
+    color: var(--maarch-color-secondary);
+}
+
+.unfreezeIcon {
+    color: var(--maarch-color-primary);
+}
+
+.bindIcon {
+    color: var(--maarch-color-secondary);
+}
+
+.noBindIcon {
+    color: var(--maarch-color-primary);
+}
+.watermark {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) rotate(-20deg);
+    color: red;
+    font-weight: bold;
+    opacity: 0.6;
+}
+
+::ng-deep .table-head {
+    height: auto;
+}

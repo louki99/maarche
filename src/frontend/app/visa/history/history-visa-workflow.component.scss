@@ -1,0 +1,79 @@
+
+.mat-form-field-appearance-outline {
+    font-size: 11px;
+}
+
+.visaSignList {
+    ::ng-deep.mat-optgroup-label {
+        color: var(--maarch-color-primary);
+        position: sticky;
+        top: 0px;
+        background: white !important;
+        z-index: 1;
+    }
+}
+
+.currentRoleButton {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    width: 120px;
+    text-align: center;
+}
+
+.emptyContent {
+    opacity: 0.5;
+    text-align: center;
+    font-size: 10px;
+    padding: 10px;
+}
+
+.workflow {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: auto !important;
+    margin-bottom: 10px;
+    background: rgba(216, 216, 216, 0.1);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.workflowLine {
+    display: flex !important;
+    align-items: center;
+
+    &Container {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &Label {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    &SubLabel {
+        font-size: 80%;
+        opacity: 0.5;
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    &ProcessDate {
+        flex: 1;
+        text-align: left;
+        font-size: 80%;
+    }
+
+    .mat-raised-button[disabled] {
+        background: none;
+        color: var(--maarch-color-primary) !important;
+        opacity: 1;
+    }
+}
+
+.primary {
+    color: var(--maarch-color-primary);
+}

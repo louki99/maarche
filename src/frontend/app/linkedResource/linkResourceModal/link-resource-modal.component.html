@@ -1,0 +1,25 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;" [title]="'lang.linkResource' | translate">
+            {{'lang.linkResource' | translate}}
+        </span>
+        <button [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content>
+        <div *ngIf="functions.empty(data.linkedRes)" class="bg-primary">
+            <app-criteria-tool #appCriteriaTool [openedPanel]="true" [data]="result" [defaultCriteria]="['chrono', 'subject','recipients','senders']"
+                (searchUrlGenerated)="appSearchResultList.launchSearch($event)"
+                (refreshDaoResult)="appSearchResultList.listProperties = $event; appSearchResultList.refreshDao();"></app-criteria-tool>
+            <div id="toolTemplate" style="padding-top: 10px;"></div>
+        </div>
+        <app-search-result-list #appSearchResultList [linkedRes]="data.linkedRes" [actionMode]="false" [hideFilter]="true"
+            [from]="'linkedResource'" [appCriteriaTool]="this.appCriteriaTool" [standalone]="true" (dataResult)="result = $event">
+        </app-search-result-list>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="primary"
+            (click)="linkResources()" [disabled]="this.router.url.includes('indexing') ? false : !isSelectedResources()">{{(router.url.includes('indexing') ? 'lang.validate' : 'lang.linkSelectedResources') | translate}}</button>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="mat-dialog-content-container">
+    <h2 mat-dialog-title>{{'lang.documentTypeReplacement' | translate}}</h2>
+    <mat-dialog-content>
+        <form #changeDoctypeForm="ngForm">
+            <div class="alert-message alert-message-info" role="alert">
+                <mat-list>
+                    <mat-list-item>
+                        <mat-icon color="primary" mat-list-icon class="fa fa-file fa-2x"></mat-icon>
+                        <p mat-line>
+                            <b>{{data.count}}</b> {{'lang.documents' | translate}}
+                        </p>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+            <mat-form-field>
+                <mat-select id="new_type_id" name="new_type_id" title="{{'lang.transferToDoctype' | translate}}"
+                    placeholder="{{'lang.transferToDoctype' | translate}}" [(ngModel)]="data.new_type_id" required>
+                    <mat-option *ngFor="let type of data.types" [disabled]="type.disabled" [value]="type.type_id">
+                        {{type.description}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-raised-button color="warn" type="submit"
+            (click)="dialogRef.close(data)" [disabled]="!changeDoctypeForm.form.valid">{{'lang.delete' | translate}}</button>
+    </mat-dialog-actions>
+</div>

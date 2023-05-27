@@ -1,0 +1,81 @@
+
+.loading {
+    display: flex;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: white;
+}
+
+.mat-dialog-title {
+    display: flex;
+    align-items: center;
+}
+
+.recipients,
+.copy {
+    font-size: 12px !important;
+    padding: 5px !important;
+    min-height: auto;
+    height: auto;
+    border-radius: 5px;
+    cursor: pointer;
+
+    .mat-icon {
+        width: auto;
+        font-size: 12px;
+        height: auto;
+    }
+}
+
+.models {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    padding-top: 10px;
+}
+
+.activeButton {
+    color: var(--maarch-color-secondary);
+    font-weight: bold;
+}
+
+.attachLabel {
+    color: var(--maarch-color-primary);
+}
+
+.pdfVersion:hover {
+    color: var(--maarch-color-primary);
+}
+
+::ng-deep.attachListMenu {
+    width: auto;
+    max-width: initial;
+    min-height: auto;
+}
+
+.attachListButton:hover {
+    background: initial !important;
+    cursor: default;
+}
+
+.attachListContainer {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    align-items: center;
+}
+
+.extensionButton {
+    line-height: 20px;
+    min-width: 50px;
+    padding: 0px;
+}
+
+.badFormat {
+    background-color: #d03c3c;
+    color: white;
+}

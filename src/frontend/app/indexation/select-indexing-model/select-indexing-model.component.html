@@ -1,0 +1,56 @@
+<div class="listModels">
+    <div *ngIf="!adminMode; else menuModel" class="primary">
+        Modèle utilisé : {{currentIndexingModel.label}} {{currentIndexingModel.default ? '(' + this.translate.instant('lang.default') + ')': ''}}
+    </div>
+    <ng-template #menuModel>
+        <button mat-button class="button-form-primary listModels-button" [matMenuTriggerFor]="IndexingModelsMenu">
+            <mat-icon mattPrefix class="fab fa-wpforms"></mat-icon>
+            <span class="menu-label" [title]="currentIndexingModel.label">
+                {{currentIndexingModel.label}} {{currentIndexingModel.default ? '(' + this.translate.instant('lang.default') + ')': ''}}
+            </span>
+            <i class="fa fa-chevron-down menu-icon"></i>
+        </button>
+        <mat-menu #IndexingModelsMenu="matMenu" [class]="'menuForm listModels-menu'">
+            <div class="menuTitle">
+                <span>
+                    {{'lang.indexingModel' | translate}}
+                </span>
+                <mat-form-field floatLabel="never" appearance="outline" class="smallInput"
+                    (click)="$event.stopPropagation();" style="width: 220px !important;">
+                    <input matInput id="searchTerm" placeholder="{{'lang.filterBy' | translate}}" #listFilter autocomplete="off"
+                        (click)="$event.stopPropagation();" (keydown)="$event.stopPropagation()">
+                </mat-form-field>
+            </div>
+            <ng-container
+                *ngFor="let indexingModel of indexingModels | filterList:listFilter.value:'label'; let i=index">
+                <button mat-menu-item (click)="selectIndexingModel(indexingModel)" [title]="indexingModel.label"
+                    [class.listModels-menu-selected]="indexingModel.id === currentIndexingModel.id"
+                    [class.private]="indexingModel.master !== null" style="display: flex;align-items: center;">
+                    <div *ngIf="indexingModel.master === null" style="flex:1;">
+                        {{indexingModel.label | shorten: 45: '...'}}
+                        {{indexingModel.default ? '(' + this.translate.instant('lang.default') + ')': ''}}
+                    </div>
+                    <div *ngIf="indexingModel.master !== null && indexingModel.private" style="flex:1;">
+                        {{indexingModel.label | shorten: 45: '...'}}&nbsp;<span
+                            class="listModels-menu-badge">{{'lang.private' | translate}}</span>
+                    </div>
+                    <div *ngIf="indexingModel.master !== null && !indexingModel.private" style="flex:1;">
+                        {{indexingModel.label | shorten: 45: '...'}}&nbsp;<span
+                            class="listModels-menu-badge">{{'lang.public' | translate}}</span>
+                    </div>
+                    <button mat-icon-button class="listModels-menu-delete"
+                        *ngIf="indexingModel.id !== currentIndexingModel.id && ((indexingModel.private && indexingModel.owner === headerService.user.id) || (!indexingModel.private && indexingModel.master !== null && privilegeService.hasCurrentUserPrivilege('create_public_indexing_models')))"
+                        [title]="this.translate.instant('lang.delete')"
+                        (click)="$event.stopPropagation();deletePrivateIndexingModel(indexingModel.id, i)">
+                        <mat-icon class="fa fa-trash" color="warn">
+                        </mat-icon>
+                    </button>
+                </button>
+            </ng-container>
+        </mat-menu>
+        <button mat-icon-button type="button" color="primary" (click)="savePrivateIndexingModel()"
+            [title]="this.translate.instant('lang.createPrivateIndexingModel')">
+            <mat-icon class="far fa-copy"></mat-icon>
+        </button>
+    </ng-template>
+</div>

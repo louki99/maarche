@@ -1,0 +1,67 @@
+
+.active, .active:hover , .active:active, .active:focus {
+    color: var(--maarch-color-primary);
+    border-left: solid 5px var(--maarch-color-primary);
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.paginatorResultList {
+    ::ng-deep.mat-paginator-range-label {
+        justify-content: flex-end;
+        display: flex;
+    }
+}
+
+.threshold_first {
+    color: #E81C2B;
+}
+
+.threshold_second {
+    color: #F4891E;
+}
+
+.threshold_third {
+    color: #0AA34F;
+}
+
+.selected {
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+::ng-deep.correspondentsGroupMenuMenu {
+    width: auto;
+    min-width: 200px !important;
+    max-height: 350px !important;
+}
+
+.smallInput {
+    font-size: 11px;
+    padding-left: 20px;
+    padding-right: 20px;
+    ::ng-deep.mat-form-field-wrapper {
+        padding-bottom: 0px;
+    }
+    ::ng-deep.mat-form-field-infix {
+        padding : 0px;
+        padding-bottom: 5px;
+    }
+}
+
+.action-button {
+    box-shadow: none;
+    border-radius: 20px;
+}
+
+.noData {
+    font-size: 12px;
+    padding-left: 20px; 
+    padding-right: 20px;
+    font-style: italic; 
+    opacity: 0.5;
+}
+
+.noResult {
+    ::ng-deep.pageList {
+        left: 0px;
+    }
+}

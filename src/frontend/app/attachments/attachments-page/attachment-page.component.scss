@@ -1,0 +1,134 @@
+
+
+.attach-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    ::ng-deep.mat-tab-body-wrapper,
+    ::ng-deep.mat-tab-body-content {
+        height: 100% !important;
+    }
+
+    ::ng-deep.mat-drawer-inner-container {
+        overflow-x: hidden;
+    }
+}
+
+.mat-dialog-title {
+    margin: 0px !important;
+    display: flex;
+    align-items: center;
+}
+
+.attach-content {
+    margin: 0px;
+    padding: 0px !important;
+    display: block;
+    overflow: auto;
+    max-height: 100vh !important;
+    height: calc(100% - 75px);
+}
+
+.attachment-form {
+    position: sticky;
+    top: 0px;
+    overflow: auto;
+    height: 100%;
+    padding: 10px;
+
+    ::ng-deep.mat-expansion-panel-body {
+        padding: 0px;
+    }
+
+    &-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        ::ng-deep.mat-form-field-should-float {
+            ::ng-deep.mat-form-field-label-wrapper {
+                margin-top: -7px;
+            }
+
+            ::ng-deep.mat-form-field-label {
+                background: white;
+                width: auto !important;
+                padding-top: 5px;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    }
+}
+
+.pjList {
+    flex: 1;
+
+    ::ng-deep.mat-tab-header {
+        position: sticky;
+        z-index: 1;
+        height: 50px;
+        background: white;
+        top: 0px; 
+    }
+
+    ::ng-deep.mat-tab-body-wrapper {
+        flex: 1;
+    }
+
+    ::ng-deep.mat-tab-body-content {
+        display: block;
+        height: 100% !important;
+        text-align: center;
+        background: var(--maarch-color-primary);
+        color: white;
+    }
+}
+
+.example-loading-shade {
+    background: #ffffffc4;
+    z-index: 2;
+}
+
+.actions {
+    margin: 0px;
+}
+
+.complete {
+    color: green;
+    font-weight: bold;
+}
+
+.fieldState {
+    padding-top: 0px !important;
+}
+
+.stateDoc {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.documentContent {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--maarch-color-primary);
+    overflow: auto;
+    color: white;
+}
+
+.mat-expansion-panel {
+    box-shadow: none !important;
+}
+
+.mat-expansion-panel-header-title {
+    font-size: 14px;
+    color: #666;
+}

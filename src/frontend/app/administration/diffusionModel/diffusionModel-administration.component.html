@@ -1,0 +1,68 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <mat-tab-group>
+                        <mat-tab label="{{'lang.informations' | translate}}">
+                            <form (ngSubmit)="onSubmit()" #diffusionModelForm="ngForm">
+                                <mat-form-field>
+                                    <mat-select id="type" name="type" placeholder="{{'lang.diffusionType' | translate}}"
+                                        [(ngModel)]="diffusionModel.type" [disabled]="!creationMode">
+                                        <mat-option *ngFor="let itemType of this.itemTypeList" [value]="itemType.id">
+                                            {{ itemType.label }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <input matInput name="title" title="{{'lang.label' | translate}}" placeholder="{{'lang.label' | translate}}"
+                                        [(ngModel)]="diffusionModel.title" maxlength="255" required>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <textarea matInput name="description" title="{{'lang.description' | translate}}"
+                                        placeholder="{{'lang.description' | translate}}" [(ngModel)]="diffusionModel.description"
+                                        cdkTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="5"
+                                        maxlength="255"></textarea>
+                                </mat-form-field>
+                                <div class="col-md-12 text-center" style="padding:10px;">
+                                    <button mat-raised-button [disabled]="!isValidForm()"
+                                        color="primary">{{'lang.save' | translate}}</button>
+                                    <button mat-raised-button *ngIf="!creationMode" type="button" color="default"
+                                        (click)="cancelModification()">{{'lang.cancel' | translate}}</button>
+                                </div>
+                            </form>
+                        </mat-tab>
+                    </mat-tab-group>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="!appService.getViewMode()" class="col-md-4 col-xs-11">
+        <mat-nav-list>
+            <mat-tab-group>
+                <mat-tab label="{{'lang.' + diffusionModel.type | translate}}">
+                    <app-visa-workflow *ngIf="diffusionModel.type === 'visaCircuit'" [showListModels]="false"
+                        [showComment]="false" [adminMode]="true" #appVisaWorkflow></app-visa-workflow>
+                    <app-avis-workflow *ngIf="diffusionModel.type === 'opinionCircuit'" [showListModels]="false"
+                        [adminMode]="true" #appAvisWorkflow></app-avis-workflow>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-nav-list>
+    </mat-sidenav>
+</mat-sidenav-container>

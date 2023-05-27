@@ -1,0 +1,98 @@
+<mat-sidenav-container class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <app-select-indexing-model #appSelectIndexingModel [adminMode]="true" [indexingForm]="indexingForm"
+            (afterListModelsLoaded)="loadIndexingModel($event)"
+            (afterSelectedListModel)="this.currentIndexingModel = $event.indexingModel; indexingForm.loadForm($event.indexingModel.id)">
+        </app-select-indexing-model>
+        <ng-container *ngIf="!isEmptyIndexingModels()">
+            <div class="indexing-form-container">
+                <app-indexing-form *ngIf="currentIndexingModel.id !== undefined" #indexingForm
+                    [groupId]="currentGroupId" [indexingFormId]="currentIndexingModel.id"
+                    (retrieveDocumentEvent)="appDocumentViewer.saveDocService()" (resourceToLinkEvent)="resourceToLink = $event"></app-indexing-form>
+            </div>
+            <div class="actions-indexing-form">
+                <ng-container
+                    *ngIf="actionsListLoaded && hasActions() && indexingForm !== undefined && selectedAction !== undefined">
+                    <button mat-button class="button-form-primary" [disabled]="selectedAction.id === 0"
+                        [matMenuTriggerFor]="menu" style="width:350px;margin-right:20px;"
+                        [title]="selectedAction.label">
+                        <span class="menu-label" [innerHTML]="selectedAction.label">
+                        </span>
+                        <i class="fa fa-chevron-down menu-icon"></i></button>
+                    <mat-menu #menu="matMenu" [class]="'menuForm menuAction'">
+                        <div class="menuTitle">
+                            <span>
+                                {{'lang.actions' | translate}}
+                            </span>
+                            <mat-form-field floatLabel="never" appearance="outline" class="smallInput"
+                                (click)="$event.stopPropagation();">
+                                <input matInput id="searchTerm" placeholder="{{'lang.filterBy' | translate}}"
+                                    #listFilter autocomplete="off" (click)="$event.stopPropagation();"
+                                    (keydown)="$event.stopPropagation()">
+                            </mat-form-field>
+                        </div>
+                        <ng-container *ngFor="let action of actionsList | filterList:listFilter.value:'label'">
+                            <button *ngIf="showActionInCurrentCategory(action)" mat-menu-item
+                                (click)="selectAction(action)" [title]="action.label"
+                                [class.listModels-menu-selected]="action.id === selectedAction.id"
+                                [disabled]="!action.enabled">
+                                <span style="flex:1;">{{action.label}}</span><small
+                                    style="position: absolute;top: 15px;left: 140px;" color="warn"
+                                    *ngIf="!action.enabled">{{'lang.badActionParam' | translate}}</small>
+                            </button>
+                        </ng-container>
+                    </mat-menu>
+                    <button mat-button *ngIf="!appService.getViewMode()"
+                        [disabled]="actionService.loading || selectedAction.id === 0 || (appDocumentViewer !== undefined && !appDocumentViewer.isEditorLoaded())"
+                        class="button-form-primary-filled"
+                        style="width: 150px;align-items: center;justify-content: center;text-align: center;display: flex;"
+                        (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+                    <button mat-icon-button *ngIf="appService.getViewMode()" class="button-form-primary"
+                        (click)="onSubmit()">
+                        <mat-icon class="fa fa-check"></mat-icon>
+                    </button>
+                </ng-container>
+                <div class="emptyAction" *ngIf="actionsListLoaded && !hasActions()"
+                    [innerHTML]="'lang.noAvailableAction' | translate"></div>
+            </div>
+        </ng-container>
+        <div *ngIf="isEmptyIndexingModels()" class="emptyModel"
+            [innerHTML]="'lang.noAvailableIndexingModel' | translate"></div>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+        </div>
+        <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            <button mat-button class="attach-button" (click)="snav2.toggle()">
+                <i class="fa fa-paperclip"></i> {{'lang.attachments' | translate}} <span class="count-badge" [class.count-badge-empty]="appIndexationAttachmentsList.getCountAttachments() === 0">{{appIndexationAttachmentsList.getCountAttachments()}}</span>
+            </button>
+        </div>
+        <div class="document-container" [class.fullContainer]="appService.getViewMode()">
+            <div class="content">
+                <app-document-viewer
+                    [style.display]="this.currentIndexingModel.category !== 'registeredMail' ? 'block' : 'none'"
+                    #appDocumentViewer [editMode]="true" [tmpFilename]="tmpFilename" (triggerEvent)="refreshDatas()"
+                    style="height:100%;width:100%;">
+                </app-document-viewer>
+                <div *ngIf="this.currentIndexingModel.category === 'registeredMail'"
+                    style="font-size: 120px;opacity: 0.4;">
+                    <i class="fas fa-dolly-flatbed"></i>
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [fixedInViewport]="appService.getViewMode()" position='end'
+        [opened]="false" [mode]="appService.getViewMode() ? 'over' : 'side'"
+        class="panel-right" style="overflow-x:hidden;width:300px;" [class.docView]="!filtersListService.filterMode"
+        autoFocus="false">
+        <app-indexation-attachments-list #appIndexationAttachmentsList></app-indexation-attachments-list>
+    </mat-sidenav>
+</mat-sidenav-container>

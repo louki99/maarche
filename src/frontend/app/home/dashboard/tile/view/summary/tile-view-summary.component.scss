@@ -1,0 +1,38 @@
+
+.tile-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 90px;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.summary-content {
+    z-index: 2;
+    position: absolute;
+    left: 50%;
+    top: 65%;
+    transform: translateY(-50%);
+    width: 50%;
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.summary-number {
+    color: var(--maarch-color-secondary);
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.summary-label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #d9d9d9;
+}
+
+.link {
+    cursor: pointer;
+}

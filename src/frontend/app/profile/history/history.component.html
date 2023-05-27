@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-6 col-xs-6">
+        <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)"
+                placeholder="{{'lang.filterBy' | translate}}">
+        </mat-form-field>
+    </div>
+    <div class="col-md-6 col-xs-6">
+        <mat-paginator #paginatorHistory [length]="100" [hidePageSize]="true" [pageSize]="10"></mat-paginator>
+    </div>
+</div>
+<mat-table #tableHistorySort="matSort" [dataSource]="dataSource" matSort
+    matSortActive="event_date" matSortDirection="desc">
+        <ng-container matColumnDef="event_date">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.date' | translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.event_date | date : "dd/MM/y HH:mm"}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="record_id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{'lang.technicalId' | translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.record_id}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="info">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{'lang.description' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.info}} </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

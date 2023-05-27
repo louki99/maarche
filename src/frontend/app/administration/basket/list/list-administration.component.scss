@@ -1,0 +1,267 @@
+
+.availableData {
+  margin: 10px;
+  display: flex;
+}
+
+.secondaryInformations {
+  //border: solid 1px #F9983066;
+  font-size: 10px;
+  height: 30px;
+  color: #666;
+
+  &_icon {
+    height: auto;
+  }
+
+  &_label {
+    width: 100%;
+  }
+}
+
+.resultRow {
+  align-items: center;
+  display: flex;
+  padding: 5px;
+
+  &-mobile {
+    font-size: 80%;
+  }
+}
+
+.resultCol {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &-mobile {
+    overflow: inherit;
+    text-overflow: inherit;
+    word-break: break-all;
+  }
+
+  &_chrono {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 90%;
+  }
+}
+
+.actions {
+  text-align: right;
+  box-shadow: none;
+  border: none;
+  flex: 1;
+  justify-content: flex-end;
+  overflow: inherit;
+}
+
+.elemToDrag {
+  flex: 1;
+  border: dashed 1px;
+  padding: 10px;
+  height: 10px;
+  line-height: 0px;
+  cursor: move;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.columns {
+  width: 100%;
+  height: 90px;
+  padding: 20px 10px;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background: white;
+  font-size: 14px;
+}
+
+.mat-badge-content {
+  background: #F99830;
+}
+
+.example-list {
+  display: grid;
+  gap: 10px;
+  height: auto;
+  max-width: 100%;
+  //border-radius: 4px;
+  // overflow: hidden;
+  //border: solid 1px #F9983066;
+  font-size: 10px;
+  background: #f5f5f5;
+}
+
+.example-box {
+  // padding: 20px 10px;
+  //border-right: solid 1px #ccc;
+  color: #666;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: #f5f5f5;
+  flex-grow: 1;
+  flex-basis: 0;
+  height: 20px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.editorTool {
+  display: flex;
+  height: 44px;
+  font-size: 10px;
+  margin-bottom: 30px;
+
+  .area {
+    flex: 1;
+
+    form {
+      width: 100%;
+    }
+  }
+
+  .separator {
+    border-left: solid 1px #666;
+    height: 70%;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .mat-form-field {
+    height: 35px;
+  }
+
+  ::ng-deep .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline {
+    background: inherit;
+  }
+
+  ::ng-deep .mat-form-field-outline {
+    background: white;
+  }
+}
+
+.optionContent {
+  display: flex !important;
+
+  .dataIcon {
+    width: 30px;
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  .dataLabel {
+    flex: 1;
+  }
+}
+
+.isSelectedMenu {
+  background: rgba(249, 152, 48, 0.14);
+}
+
+.align_leftData {
+  text-align: left;
+}
+
+.align_centerData {
+  text-align: center;
+}
+
+.align_rightData {
+  text-align: right;
+}
+
+.boldFontData {
+  font-weight: bold;
+}
+
+.bigFontData {
+  font-size: 14px;
+}
+
+.smallFontData {
+  font-size: 10px;
+}
+
+.normalData {
+  flex: 1;
+}
+
+.longData {
+  flex: 3;
+}
+
+.eventList {
+  padding-top: 10px;
+}
+
+.badge-folder {
+  cursor: default;
+  background: var(--maarch-color-primary);
+  margin: 5px;
+  font-size: 8px;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.formType {
+  align-items: center;
+  // display: flex;
+  // margin: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: solid 1px #ccc;
+  position: relative;
+  padding: 10px;
+
+  &-title {
+      white-space: pre;
+      overflow: hidden;
+      max-width: 85%;
+      text-overflow: ellipsis;
+      z-index: 1;
+      font-size: 10px;
+      font-weight: bold;
+      background: white;
+      position: absolute;
+      top: -7px;
+      left: 10px;
+      padding: 0px;
+      margin: 0px;
+      color: #135f7f;
+  }
+}

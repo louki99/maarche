@@ -1,0 +1,74 @@
+<mat-sidenav-container class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div style="height:90%;overflow:auto;position:absolute;width:100%;">
+                    <div class="alert-message alert-message-info" role="alert" style="max-width: 100%;margin: 30px;"
+                        [innerHTML]="'lang.printSeparatorInfo' | translate"></div>
+
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <mat-form-field>
+                                <mat-label>{{'lang.separatorType' | translate}}</mat-label>
+                                <mat-select [(ngModel)]="separator.type" (selectionChange)="this.docBuffer = null">
+                                    <mat-option *ngFor="let separatorType of separatorTypes" [value]="separatorType">
+                                        {{'lang.' + separatorType | translate}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                            <mat-form-field>
+                                <mat-label>{{'lang.separatorTarget' | translate}}</mat-label>
+                                <mat-select [(ngModel)]="separator.target" (selectionChange)="changeType($event)">
+                                    <mat-option *ngFor="let separatorTarget of separatorTargets"
+                                        [value]="separatorTarget">
+                                        {{'lang.' + separatorTarget | translate}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <mat-form-field>
+                            <input matInput id="jstree_search" name="jstree_search" type="text"
+                                placeholder="{{'lang.searchEntities' | translate}}">
+                            <mat-hint>{{'lang.entityTreeInfoSeparator' | translate}}</mat-hint>
+                        </mat-form-field>
+                        <div id="jstree"></div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-center" style="bottom:0px;padding-top: 10px;position: absolute;height:10%;width:100%;">
+                    <button mat-raised-button color="primary" (click)="generateSeparators()"
+                        [disabled]="loading || (separator.target == 'entities' && separator.entities.length == 0)">{{'lang.generateAndDownload' | translate}}</button>
+                </div>
+                <div class="table-head">
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [fixedInViewport]="appService.getViewMode()" position='end'
+        [opened]="appService.getViewMode() || docBuffer == null ? false : true" [mode]="appService.getViewMode() ? 'over' : 'side'"
+        class="panel-right" style="overflow-x:hidden;" [ngStyle]="{'width': appService.getViewMode() ? '80%' : '30%'}"
+        autoFocus="false">
+        <div class="example-loading-shade" *ngIf="loading">
+            <mat-spinner></mat-spinner>
+        </div>
+        <div class="titlePanel">
+            <span color="primary"
+                style="flex:1;font-size: 20px;font-weight: bold;padding: 10px;">{{'lang.separators' | translate}}</span>
+        </div>
+        <pdf-viewer class="viewSep" [src]="this.docBuffer" [render-text]="false" [autoresize]="true"
+            [original-size]="false" [show-all]="true"></pdf-viewer>
+    </mat-sidenav>
+</mat-sidenav-container>

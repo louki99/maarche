@@ -1,0 +1,16 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.saeInterconnectionTest' | translate}}</h1>
+    <mat-dialog-content class="modal-container">
+        <div *ngIf="loading" class="msg-loading">
+            <mat-icon inline="true" color="primary" class="fas fa-plug" style="padding-right: 10px;">
+            </mat-icon>
+            <div [innerHTML]="result"></div>
+        </div>
+        <app-maarch-message mode="success" *ngIf="!loading && !hasError" [content]="result"></app-maarch-message>
+        <app-maarch-message mode="danger" *ngIf="!loading && hasError" [content]="result"></app-maarch-message>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button color="default" *ngIf="!loading" (click)="dialogRef.close()">{{'lang.close' | translate}}</button>
+    </div>
+</div>

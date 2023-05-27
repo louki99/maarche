@@ -1,0 +1,88 @@
+
+.align_leftData {
+    text-align: left;
+}
+
+.align_centerData {
+    text-align: center;
+}
+
+.align_rightData {
+    text-align: right;
+}
+
+.boldFontData {
+    font-weight: bold;
+}
+
+.bigFontData {
+    font-size: 14px;
+}
+
+.smallFontData {
+    font-size: 10px;
+}
+
+.normalData {
+    flex: 1;
+}
+
+.chronoData {
+    width: 150px;
+}
+
+.longData {
+    flex: 3;
+}
+
+.locked {
+    opacity: 0.5;
+}
+
+.watermark {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) rotate(-20deg);
+    color: red;
+    font-weight: bold;
+    opacity: 0.6;
+}
+
+.dragPreview {
+    text-align: center;
+    border-radius: 5px;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    color: var(--maarch-color-primary);
+}
+
+.folder-info {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.badge-folder {
+    cursor: pointer;
+    background: var(--maarch-color-secondary);
+    margin: 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    opacity: 0.8;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hasEvent {
+    cursor: pointer;
+
+    &:hover {
+        color: var(--maarch-color-primary);
+    }
+}
+
+.followIcon {
+    color: var(--maarch-color-secondary);
+}

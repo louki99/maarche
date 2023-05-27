@@ -1,0 +1,35 @@
+<div *ngIf="loading" style="display:flex;height:100%;">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>
+<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDisableClear
+    matSortDirection="asc" style="width:100%;table-layout: fixed;">
+    <!-- Number Column -->
+    <ng-container matColumnDef="id">
+        <td mat-cell *matCellDef="let row" style="width:15%;text-align:center;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;padding: 5px;vertical-align: middle;">
+            <div style="overflow: hidden;text-overflow: ellipsis;">
+                <mat-icon color="primary" class="fas fa-2x" [ngClass]="{
+                    'fa-file-signature':row.mode == 'sign',
+                    'fa-thumbs-up':row.mode == 'visa',
+                    'fa-comment-dots':row.mode == 'note'
+                  }" title="{{'lang.to_' + row.mode | translate}}"></mat-icon>
+            </div>
+            <div style="padding-top: 5px;color: rgba(0,0,0,0.4);font-size: 90%;overflow: hidden;text-overflow: ellipsis;"
+                title="{{row.reference}}">
+                {{row.reference}}
+            </div>
+        </td>
+    </ng-container>
+    <ng-container matColumnDef="title">
+        <td mat-cell *matCellDef="let row"
+            style="width:45%;overflow:hidden;text-overflow: ellipsis;padding: 5px;vertical-align: middle;">
+            <div style="line-height: 1.5em;height: 3em;overflow: hidden;" title="{{row.title}}">
+                <span>{{row.title}}</span>
+            </div>
+        </td>
+    </ng-container>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goTo(row);" style="cursor:pointer;">
+    </tr>
+</table>
+<div class="noResult" *ngIf="dataSource.filteredData.length === 0">
+    {{'lang.noResult' | translate}}
+</div>

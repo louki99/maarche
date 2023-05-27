@@ -1,0 +1,15 @@
+<?merge $agent.FirstName.bool() ?><FirstName><?merge $agent.FirstName ?></FirstName>
+<?merge $agent.BirthName.bool() ?><BirthName><?merge $agent.BirthName ?></BirthName>
+<?merge $agent.GivenName.bool() ?><GivenName><?merge $agent.GivenName ?></GivenName>
+<?merge $agent.Gender.bool() ?><Gender><?merge $agent.Gender ?></Gender>
+<?merge $agent.BirthDate.bool() ?><BirthDate><?merge $agent.BirthDate ?></BirthDate>
+<?merge $agent.BirthPlace.bool() ?><BirthPlace><?merge $agent.BirthPlace ?></BirthPlace>
+<?merge $agent.DeathDate.bool() ?><DeathDate><?merge $agent.DeathDate ?></DeathDate>
+<?merge $agent.DeathPlace.bool() ?><DeathPlace><?merge $agent.DeathPlace ?></DeathPlace>
+<?merge $agent.Nationality.bool() ?><Nationality><?merge $agent.Nationality ?></Nationality>
+<?merge $agent.Function.bool() ?><Function><?merge $agent.Function ?></Function>
+<?merge $agent.Activity.bool() ?><Activity><?merge $agent.Activity ?></Activity>
+<?merge $agent.Position.bool() ?><Position><?merge $agent.Position ?></Position>
+<?merge $agent.Role.bool() ?><Role><?merge $agent.Role ?></Role>
+<?merge $agent.Corpname.bool() ?><Corpname><?merge $agent.Corpname ?></Corpname>
+<?merge $agent.Identifier.bool() ?><Identifier><?merge $agent.Identifier ?></Identifier>

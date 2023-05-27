@@ -1,0 +1,52 @@
+.avatar {
+	text-decoration:none;
+	background:#135f7f;
+	color:white;
+	width:100px;
+	height:100px;
+	border-radius:5px;
+	display:block;
+    overflow:hidden;
+    margin: 5px;
+}
+.form-group{
+    margin:0px;
+}
+
+.vertical-divider{
+	height: 80%;
+}
+
+.avatarAccount {
+    border: solid 3px #F99830;
+    height: 45px !important;
+    width: 45px !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.accountInfo {
+    margin-left: 0px !important;
+    display: flex !important;
+
+    span {
+        flex: 1;
+        align-items: center;
+        display: flex;
+    }
+}
+
+.mat-list-item-disabled {
+    cursor: not-allowed !important;
+    background-color: initial;
+
+    .mat-line, mat-icon {
+        opacity: 0.5;
+    }
+}
+
+.externalUserLogin {
+    white-space: initial;
+    overflow: hidden
+}

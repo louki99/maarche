@@ -1,0 +1,89 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.activateMyAbs' | translate}}</h1>
+    <div mat-dialog-content style="display: flex; flex-direction: column;">
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <app-maarch-message *ngIf="isAbsScheduled && startDate" [mode]="'success'" [content]="'lang.absScheduleMsg' | translate : {startDate : functions.formatDateObjectToDateString(startDate, false, 'dd/mm/yyyy'), endDate: functions.formatDateObjectToDateString(endDate, false, 'dd/mm/yyyy')}"></app-maarch-message>
+        <mat-list *ngIf="!showCalendar && !isAbsScheduled">
+            <mat-list-item>
+                <button mat-button color="primary" matSuffix
+                    style="width: 100%; align-items:center; font-size: 16px; background: white;"
+                        (click)="$event.stopPropagation(); showCalendar = !showCalendar;" [title]="'lang.absencePeriod' | translate">
+                    <mat-icon inline="true" color="primary" class="far fa-calendar-alt" style="margin-bottom: 5px;">
+                    </mat-icon>
+                        {{ 'lang.absencePeriod' | translate }}
+                </button>
+            </mat-list-item>
+        </mat-list>
+        <mat-list *ngIf="showCalendar && !isAbsScheduled">
+            <div mat-subheader style="font-weight: bold;">{{'lang.absenceDate' | translate}}</div>
+            <mat-list-item>
+                <mat-form-field class="input-form input-date" floatLabel="never" (click)="picker.open()"
+                    style="cursor:pointer;">
+                    <mat-date-range-input [rangePicker]="picker" [min]="today">
+                        <input matStartDate [placeholder]="'lang.start' | translate" [value]="startDate" (dateChange)="startDate=$event.value; valueChanged = true">
+                        <input matEndDate [placeholder]="'lang.end' | translate" [value]="endDate" (dateChange)="endDate=$event.value">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle *ngIf="!startDate || !endDate; else elseBlock" matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <ng-template #elseBlock>
+                        <button mat-button color="warn" matSuffix mat-icon-button
+                        (click)="changeValues($event)" [title]="'lang.eraseValue' | translate">
+                        <mat-icon color="warn" class="fa fa-calendar-times">
+                        </mat-icon>
+                        </button>
+                    </ng-template>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </mat-list-item>
+        </mat-list>
+        <mat-list>
+            <app-maarch-message *ngIf="!isAbsScheduled && data.user.redirectedBaskets.length > 0" [mode]="'info'" [content]="'lang.redirectedFromProfile' | translate"></app-maarch-message>
+            <div mat-subheader style="font-weight: bold;">{{'lang.basketsToRedirect' | translate}}</div>
+        </mat-list>
+        <mat-list style="flex: 1; overflow: auto;">
+            <mat-list-item >
+                <mat-icon mat-list-icon style="display: flex;align-items: center;justify-content: center;">
+                    <mat-checkbox [checked]="allSelected()" color="primary" (change)="toggleAll()" [indeterminate]="oneOrMoreSelected()"></mat-checkbox>
+                </mat-icon>
+                <div mat-line style="cursor:pointer;font-size: 12px;font-style: italic;color:#666" (click)="toggleAll()">{{'lang.selectAll' | translate}}</div>
+            </mat-list-item>
+            <ng-container *ngFor="let basket of baskets;let i = index">
+                <mat-list-item>
+                    <mat-icon mat-list-icon style="display: flex;align-items: center;justify-content: center;">
+                        <mat-checkbox [checked]="checkIfExist(basket, 'id')" color="primary" [(ngModel)]="basket.selected" *ngIf="!isRedirectedBasket(basket)">
+                        </mat-checkbox>
+                        <button *ngIf="isRedirectedBasket(basket)" mat-button color="warn" matSuffix mat-icon-button aria-label="Clear"
+                            (click)="delBasketRedirection(basket)" [title]="'lang.deleteRedirection' | translate">
+                            <mat-icon color="warn" class="fa fa-times"></mat-icon>
+                        </button>
+                    </mat-icon>
+                    <div mat-line style="cursor: pointer;" (click)="!isRedirectedBasket(basket) ? basket.selected=!basket.selected : false">{{basket.basket_name}} <span class="label label-primary"
+                            style="font-weight:normal">{{basket.group_desc}}</span></div>
+                    <div mat-line *ngIf="isRedirectedBasket(basket) || checkIfExist(basket, 'user')" color="warn"> 
+                        <i class="far fa-paper-plane"></i>&nbsp;{{'lang.willBeRedirected' | translate}} {{isRedirectedBasket(basket) ? basket.userToDisplay : checkIfExist(basket, 'user')}}
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            </ng-container>
+        </mat-list>
+
+        <div style="position: sticky;bottom: -10px;background: white;">
+            <app-plugin-autocomplete class="pluginAutocomplete" *ngIf="basketSelected()" [labelPlaceholder]="'lang.redirectBaskets' | translate"
+                [routeDatas]="['/rest/autocomplete/users']" [targetSearchKey]="'idToDisplay'"
+                [subInfoKey]="'descriptionToDisplay'" [disableItems]="[headerService.user.id]"
+                (triggerEvent)="addBasketRedirection($event)" appearance="outline"></app-plugin-autocomplete>
+        </div>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button *ngIf="!loading && isAbsScheduled && !isModified()" mat-button color="warn"
+            (click)="canceled = true; cancelSchedule()">{{'lang.cancelSchedule' | translate}}</button>
+        <button mat-raised-button mat-button *ngIf="isAbsScheduled && isModified()" color="primary" [disabled]="loading || (startDate && !endDate) || (!startDate && endDate)"
+            (click)="isAbsScheduled = false; onSubmit()">{{'lang.update' | translate}}</button>
+        <button mat-raised-button mat-button *ngIf="!loading && ((!isAbsScheduled && isModified()) || (!isAbsScheduled && startDate) || (!isAbsScheduled && !startDate && !endDate))" color="primary" [disabled]="loading || (startDate && !endDate) || (!startDate && endDate)"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading"
+            [mat-dialog-close]="">{{'lang.close' | translate}}</button>
+    </div>
+</div>

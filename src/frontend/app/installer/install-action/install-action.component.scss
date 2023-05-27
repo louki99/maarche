@@ -1,0 +1,32 @@
+.step {
+    opacity: 0.5;
+    transition: all 0.2s;
+
+    .stepLabel {
+        transition: all 0.2s;
+    }
+}
+
+.currentStep {
+    opacity: 1;
+
+    .stepLabel {
+        font-size: 150%;
+        transition: all 0.2s;
+    }
+
+    transition: all 0.2s;
+}
+
+.endStep {
+    opacity: 1;
+}
+
+.mat-expansion-panel {
+    box-shadow: none;
+}
+
+.launch-action {
+    display: flex;
+    flex-direction: column;
+}

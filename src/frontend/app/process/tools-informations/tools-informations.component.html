@@ -1,0 +1,48 @@
+<button mat-mini-fab cdkDrag [matMenuTriggerFor]="menu" color="primary" [title]="'lang.mailInformations' | translate" cdkDragBoundary="html">
+    <mat-icon class="fas fa-info-circle" style="height: auto;font-size: 23px;"></mat-icon>
+</button>
+<mat-menu #menu="matMenu" [class]="'devToolListMenu'">
+    <button mat-menu-item *ngFor="let infoTool of infoTools" (click)="toggleModal(infoTool)" [disabled]="infoTool.display" style="display: flex;align-items: center;">
+        <mat-icon color="primary" [class]="infoTool.icon" style="height: auto;"></mat-icon>
+        <span style="flex:1;">
+            {{infoTool.label}}
+        </span>
+        <i *ngIf="infoTool.count > 0" class="fas fa-circle haveContent"></i>
+    </button>
+</mat-menu>
+<ng-container *ngFor="let modal of infoTools; let i=index">
+    <div class="modal-module {{modal.id}} largeModal" cdkDrag *ngIf="modal.display === true" cdkDragBoundary="html">
+        <div class="modal-module-title" cdkDragHandle>
+            <span>
+                {{modal.label}}
+            </span>
+            <button mat-icon-button (click)="toggleModal(modal)">
+                <mat-icon class="fas fa-times"></mat-icon>
+            </button>
+        </div>
+        <div class="modal-module-content">
+            <app-history-list *ngIf="modal.id === 'history'" #appHistoryList
+                [resId]="resId">
+            </app-history-list>
+            <app-notes-list *ngIf="modal.id === 'notes'" #appNotesList [editMode]="false"
+                [resId]="resId">
+            </app-notes-list>
+            <app-linked-resource-list *ngIf="modal.id === 'linkedResources'" #appLinkedResourceList
+                [resId]="resId" [editMode]="false" [canAccessResources]="false" ></app-linked-resource-list>
+            <app-diffusions-list *ngIf="modal.id === 'diffusionList'" #appDiffusionsList [adminMode]="false"
+                [target]="'details'" [resId]="resId" [expanded]="true">
+            </app-diffusions-list>
+            <app-sent-resource-list *ngIf="modal.id === 'emails'" #appSentResource
+                [resId]="resId" [editMode]="false">
+            </app-sent-resource-list>
+            <app-visa-workflow *ngIf="modal.id === 'visaCircuit'"
+                [adminMode]="false"
+                #appVisaWorkflow [resId]="resId">
+            </app-visa-workflow>
+            <app-avis-workflow *ngIf="modal.id === 'opinionCircuit'" #appAvisWorkflow
+                [resId]="resId"
+                [adminMode]="false">
+            </app-avis-workflow>
+        </div>
+    </div>
+</ng-container>

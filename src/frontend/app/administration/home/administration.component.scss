@@ -1,0 +1,93 @@
+
+.adminArea {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.adminArea_1 {
+  flex: 1;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.adminArea_2 {
+  overflow: hidden;
+  padding: 20px;
+}
+
+.adminArea_3 {
+  overflow: hidden;
+  padding: 20px;
+}
+
+.adminArea_4 {
+  overflow: hidden;
+  padding: 20px;
+}
+
+.loading {
+  display: flex;
+  height: 100%;
+}
+
+.adminArea-label {
+  font-size: 20px;
+  font-weight: bolder;
+  opacity: 0.2;
+  text-align: center
+}
+
+.adminArea-button {
+  white-space: inherit;
+  height: 100px;
+  line-height: 20px;
+}
+
+::ng-deep.autocompleteServices {
+  .mat-optgroup-label {
+    position: sticky;
+    top: 0px;
+    background:
+      white;
+    z-index: 1;
+  }
+}
+
+.countCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100px;
+  color: white;
+  background: var(--maarch-color-primary);
+  cursor: pointer;
+}
+
+.avatarCount {
+  color: var(--maarch-color-primary);
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  background: white;
+  border-radius: 40px;
+  padding: 10px;
+}
+
+.avatarCount2 {
+  color: white;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 30px;
+  background: var(--maarch-color-primary);
+  border-radius: 40px;
+  padding: 10px;
+  width: 55px !important;
+  height: 55px !important;
+}
+
+.countLabel {
+  color: var(--maarch-color-primary);
+  font-size: 16px;
+}

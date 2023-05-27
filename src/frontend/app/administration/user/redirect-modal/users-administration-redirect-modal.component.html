@@ -1,0 +1,91 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{modalTitle | translate}}</h1>
+    <mat-dialog-content>
+        <ng-container *ngIf="isDeletable">
+            <ng-container *ngIf="userDestTemplates.length > 0">
+                <h2>{{'lang.redirectUserListDiff' | translate}}</h2>
+                <div class="alert-message alert-message-info" role="alert">
+                    <b>{{data.user.firstname}} {{data.user.lastname}}</b>&nbsp;<span
+                        [innerHTML]="'lang.chooseNewDest' | translate"></span> :
+                </div>
+
+                <div *ngFor="let redirectModel of userDestTemplates; index as i" id="{{redirectModel.object_id}}"
+                    class="form-group">
+                    <app-plugin-autocomplete [labelPlaceholder]="('lang.newDest' | translate) + ' : ' + redirectModel.title"
+                        [routeDatas]="['/rest/autocomplete/users?inEntity=' + redirectModel.entity_id]"
+                        [targetSearchKey]="'idToDisplay'" [subInfoKey]="'descriptionToDisplay'"
+                        (triggerEvent)="setRedirectUserListModels(i, $event)" singleMode required></app-plugin-autocomplete>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="userDestDifflists.length > 0">
+                <h2>{{'lang.redirectUserListInstances' | translate}}</h2>
+                <div class="alert-message alert-message-info" role="alert">
+                    <b>{{data.user.firstname}} {{data.user.lastname}}</b>&nbsp;<span
+                        [innerHTML]="'lang.chooseNewDestUser' | translate"></span> :
+                </div>
+
+                <div id="{{data.user.user_id}}" class="form-group">
+                    <app-plugin-autocomplete [labelPlaceholder]="('lang.newDestRes' | translate)"
+                        [routeDatas]="['/rest/autocomplete/users']" [targetSearchKey]="'idToDisplay'"
+                        [subInfoKey]="'descriptionToDisplay'" (triggerEvent)="setRedirectUserRes($event)" singleMode
+                        required></app-plugin-autocomplete>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="userVisaWorkflowResources.length > 0">
+                <h2>{{'lang.redirectUserVisaWorkflow' | translate}}</h2>
+                <div class="alert-message alert-message-info" role="alert">
+                    <b>{{data.user.firstname}} {{data.user.lastname}}</b>&nbsp;<span
+                        [innerHTML]="'lang.chooseNewVisaUser' | translate"></span> :
+                </div>
+                <div id="{{data.user.user_id}}" class="form-group">
+                    <app-plugin-autocomplete [labelPlaceholder]="('lang.newDestRes' | translate)"
+                        [routeDatas]="['/rest/autocomplete/users/circuit']" [targetSearchKey]="'idToDisplay'"
+                        [subInfoKey]="'descriptionToDisplay'" (triggerEvent)="setRedirectUserVisaWorkflowRes($event)" singleMode
+                        required></app-plugin-autocomplete>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="userDestTemplates.length === 0 && userDestDifflists.length === 0 && userVisaWorkflowResources.length === 0">
+                <div class="alert-message alert-message-info" role="alert">
+                    {{'lang.' + data.user.actionMode | translate}} {{data.user.firstname}} {{data.user.lastname}}
+                </div>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="!isDeletable">
+            <div class="alert-message alert-message-info" role="alert">
+                <p><span [innerHTML]="'lang.userIsNotDeletable' | translate"></span> <b>{{data.user.firstname}}
+                        {{data.user.lastname}}</b>&nbsp;</p>
+                <p><span [innerHTML]="'lang.userIsDeletableBy' | translate"></span></p>
+            </div>
+            <div class="modal-body" *ngIf="userDestTemplates.length > 0" class="col-md-6">
+                <mat-list>
+                    <p mat-line>{{'lang.diffusionList' | translate}}</p>
+                    <mat-list-item *ngFor="let templateEntity of userDestTemplates">
+                        <mat-icon mat-list-icon><i class="fa fa-share-alt" color="primary"></i></mat-icon>
+                        <p mat-line><span> {{templateEntity}} </span></p>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+            <div class="modal-body" *ngIf="userDestDifflists.length > 0" class="col-md-6">
+                <mat-list>
+                    <p mat-line>{{'lang.mailEntitiesList' | translate}}</p>
+                    <mat-list-item *ngFor="let instanceEntity of userDestDifflists">
+                        <mat-icon mat-list-icon><i class="fa fa-inbox" color="primary"></i></mat-icon>
+                        <p mat-line><span> {{instanceEntity}} </span></p>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </ng-container>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <mat-dialog-actions>
+        <button mat-raised-button color="warn" *ngIf="data.user.actionMode == 'delete' && isDeletable"
+            type="submit" class="btn btn-danger" (click)="onSubmit()"
+            [disabled]="!isValid()">{{'lang.delete' | translate}}
+            {{'lang.user' | translate}}</button>
+        <button mat-raised-button color="primary" *ngIf="data.user.actionMode == 'suspend' && isDeletable"
+            type="submit" (click)="onSubmit()" [disabled]="!isValid()">{{'lang.suspend' | translate}}
+            {{'lang.user' | translate}}</button>
+        <button mat-raised-button color="default" *ngIf="!data.isDeletable" type="submit"
+            (click)="dialogRef.close()">{{'lang.close' | translate}}</button>
+    </mat-dialog-actions>
+</div>

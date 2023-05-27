@@ -1,0 +1,31 @@
+<form>
+    <app-plugin-select-search
+        *ngIf="!loading"
+        [label]="'lang.issuingSite' | translate" [placeholderLabel]="'lang.issuingSite' | translate"
+        [formControlSelect]="control" [showResetOption]="showResetOption" [datas]="issuingSiteList"
+        (afterSelected)="afterSelected.emit($event);setAddress($event)" style="width:100%;">
+    </app-plugin-select-search>
+    <mat-card *ngIf="issuingSiteAddress !== null" color="primary">
+        <div>
+            {{issuingSiteAddress.siteLabel}}
+        </div>
+        <div>
+            {{issuingSiteAddress.addressAdditional1}}
+        </div>
+        <div>
+            {{issuingSiteAddress.addressNumber}} {{issuingSiteAddress.addressStreet}}
+        </div>
+        <div>
+            {{issuingSiteAddress.addressAdditional2}}
+        </div>
+        <div>
+            {{issuingSiteAddress.addressPostcode}} {{issuingSiteAddress.addressTown}}
+        </div>
+        <div *ngIf="registedMailType === 'RW'">
+            {{issuingSiteAddress.addressCountry}}
+        </div>
+        <button mat-icon-button class="map-icon" (click)="goTo()" [title]="'lang.openMap' | translate">
+            <mat-icon class="fa fas fa-map-marked-alt"></mat-icon>
+        </button>
+    </mat-card>
+</form>

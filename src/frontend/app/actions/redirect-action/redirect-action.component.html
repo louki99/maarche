@@ -1,0 +1,117 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>"{{data.action.label}}"</h1>
+    <div mat-dialog-content [class.fullWidth]="redirectMode == 'entity'">
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <ng-container *ngIf="!loading">
+            {{'lang.makeActionOn' | translate}}
+            <b *ngIf="data.resIds.length === 0" color="primary" class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+            <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+            <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                {{'lang.elements' | translate}}</b>
+            ?<br />
+        </ng-container>
+        <div class="chooseMode" *ngIf="redirectMode == '' && !loading">
+            <div>
+                <button mat-stroked-button color="primary" (click)="loadEntities()"><i
+                        class="fa fa-sitemap"></i>{{'lang.toAService' | translate}}</button>
+            </div>
+            <div>
+                <button mat-stroked-button color="primary" (click)="loadDestUser()"><i
+                        class="fa fa-user"></i>{{'lang.toAnUser' | translate}}</button>
+            </div>
+        </div>
+        <div *ngIf="redirectMode == 'none' && !loading">
+            <div class="alert-message alert-message-danger" role="alert" style="margin-top: 30px;">
+                {{'lang.noSettingsAvailable' | translate}}</div>
+        </div>
+        <div *ngIf="redirectMode == 'entity'" class="row" style="display: flex;">
+            <div class="redirectContent" style="flex:2">
+                <h2>{{'lang.redirectTo' | translate}} :</h2>
+                <div class="contentEntities">
+                    <mat-form-field appearance="outline" floatLabel="never" [style.fontSize.px]="10">
+                        <input matInput id="jstree_search" name="jstree_search" type="text"
+                            placeholder="{{'lang.searchEntities' | translate}}">
+                    </mat-form-field>
+                    <div id="jstree"></div>
+                </div>
+            </div>
+            <div class="redirectContent" style="flex:1;overflow: auto;">
+                <h2 title="{{currentEntity.entity_label}}">{{'lang.diffusionList' | translate}} "{{currentEntity.entity_label}}" :
+                </h2>
+                <div class="contentEntities">
+                    <app-diffusions-list #appDiffusionsList [adminMode]="true" [resId]="injectDatasParam.resId"
+                        [keepDestForRedirection]="injectDatasParam.keepDestForRedirection" [target]="'redirect'">
+                    </app-diffusions-list>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="redirectMode == 'user' && !loading" class="row">
+            <mat-form-field *ngIf="actionKeyword !== 'autoRedirectToUser'" appearance="outline" floatLabel="never" [style.fontSize.px]="10">
+                <input class="searchUserRedirect" matInput placeholder="{{'lang.searchNewAssignee' | translate}}"
+                    [matAutocomplete]="auto" [formControl]="userRedirectCtrl" (click)="userRedirectCtrl.setValue('')">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="changeDest($event)" isOpen="true">
+                    <mat-option *ngFor="let user of filteredUserRedirect | async" [value]="user">
+                        <mat-list>
+                            <mat-list-item>
+                                <mat-icon mat-list-icon class="fa fa-user" color="primary" style="padding-top:0px;">
+                                </mat-icon>
+                                <h4 mat-line>{{user.labelToDisplay}}</h4>
+                                <p mat-line style="opacity:0.5;line-height: 15px;font-size: 10px;">
+                                    {{user.descriptionToDisplay}} </p>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div class="redirectContent" style="flex:2">
+                <h2 style="top:-5px;">{{'lang.newAssignee' | translate}} :</h2>
+                <div class="contentUser">
+                    <mat-list *ngIf="destUser != null">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="fa fa-2x fa-user" color="primary"></mat-icon>
+                            <h4 mat-line>{{destUser.labelToDisplay}}</h4>
+                            <p mat-line style="opacity:0.5;">
+                                {{destUser.descriptionToDisplay}} </p>
+                        </mat-list-item>
+                    </mat-list>
+                    <div *ngIf="destUser == null" class="noSelection">
+                        {{'lang.noPerson' | translate}}
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="isDestinationChanging && data.resIds.length == 1" class="alert-message alert-message-info"
+                role="alert" style="margin-top: 30px;">{{'lang.destinationChangingInfo' | translate}}
+                <b>{{destUser.descriptionToDisplay}}</b></div>
+            <div *ngIf="isDestinationChanging && data.resIds.length > 1" class="alert-message alert-message-info"
+                role="alert" style="margin-top: 30px;">{{'lang.destinationChangingInfoMass' | translate}}
+                <b>{{destUser.labelToDisplay}}</b> {{'lang.destinationChangingInfoMass2' | translate}}
+                <b>{{destUser.descriptionToDisplay}}</b></div>
+            <div *ngIf="keepDestForRedirection && oldUser != null" class="alert-message alert-message-info" role="alert"
+                style="margin-top: 30px;"><b>{{oldUser.labelToDisplay}}</b>&nbsp;<span
+                    [innerHTML]="'lang.willBeAutomaticallyInCopy' | translate"></span></div>
+        </div>
+
+        <div class="row" *ngIf="redirectMode != '' && redirectMode != 'none'">
+            <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+        </div>
+        <ng-container *ngIf="showToggle">
+            <div class="row">
+                <div class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                    <mat-slide-toggle name="history" color="primary"
+                        [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                        {{'lang.canGoToNextRes' | translate}}
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div *ngIf="!loading" mat-dialog-actions class="actions">
+        <button *ngIf="redirectMode != ''" mat-raised-button mat-button color="primary" [disabled]="checkValidity()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

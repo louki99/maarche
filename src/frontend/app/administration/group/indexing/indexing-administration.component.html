@@ -1,0 +1,60 @@
+<div *ngIf="loading" class="loading">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>
+<div class="row" style="margin:0px;">
+    <div class="col-md-12">
+        <div *ngIf="!indexingInfo.canIndex" class="alert-message alert-message-danger" role="alert"
+            style="margin-top: 30px;">{{'lang.warnIndex' | translate}}
+            <button mat-raised-button (click)="toggleIndex(!indexingInfo.canIndex)">{{'lang.enableIndex' | translate}}</button>
+        </div>
+        <button *ngIf="indexingInfo.canIndex" color="warn" mat-raised-button
+            (click)="toggleIndex(!indexingInfo.canIndex)">{{'lang.disableIndex' | translate}}</button>
+    </div>
+    <div class="col-md-8" style="margin-top:20px;">
+        <div class="formType">
+            <div class="formType-title">
+                {{'lang.availableIndexingActions' | translate}}
+            </div>
+            <mat-hint class="infoActions" [innerHTML]="'lang.actionsInfo' | translate">
+            </mat-hint>
+            <app-plugin-autocomplete [labelPlaceholder]="'lang.linkNewAction' | translate"  [datas]="actionList" [targetSearchKey]="'label_action'"
+                (triggerEvent)="addAction($event)" appearance="outline"></app-plugin-autocomplete>
+            <mat-list cdkDropList [cdkDropListData]="indexingInfo.actions" (cdkDropListDropped)="drop($event)"
+                class="selectedActionList" role="list">
+                <mat-list-item class="selectedAction" role="listitem"
+                    *ngFor="let action of indexingInfo.actions;let i=index" [cdkDragData]="action" cdkDrag
+                    cdkDragLockAxis="y">
+                    <div>
+                        <i class="fas fa-bars fa-2x" color="primary" style="cursor: move" cdkDragHandle></i>
+                    </div>
+                    <div class="actionLabel">
+                        {{action.label_action}}</div>
+                    <div>
+                        <button mat-icon-button color="warn" (click)="removeAction(i)">
+                            <mat-icon class="fa fa-trash"></mat-icon>
+                        </button>
+                    </div>
+                    <mat-divider></mat-divider>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </div>
+    <div class="col-md-4" style="margin-top:20px;">
+        <div class="formType jstreeEntities">
+            <div class="formType-title">
+                {{'lang.authorizedEntities' | translate}}
+            </div>
+            <mat-form-field appearance="outline">
+                <mat-icon color="primary" class="fa fa-search" matPrefix></mat-icon>
+                <input matInput id="jstree_search" name="jstree_search" type="text"
+                    placeholder="{{'lang.searchEntities' | translate}}">
+                <button mat-button *ngIf="!emptyField" matSuffix
+                    mat-icon-button aria-label="Clear" (click)="clearFilter()"
+                    [title]="'lang.clearFilter' | translate">
+                    <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                </button>
+            </mat-form-field>
+            <div #jstree id="jstree"></div>
+        </div>
+    </div>
+</div>

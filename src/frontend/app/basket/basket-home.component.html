@@ -1,0 +1,85 @@
+<mat-expansion-panel #basketPanel class="basketList" expanded *ngIf="!loading">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <div style="flex: 1;display: flex;align-items: center;">
+                <i class="fa fa-inbox panelIconMenu"></i>&nbsp;{{'lang.myBaskets' | translate}}
+            </div>
+            <div style="display: flex;align-items: center;" title="{{'lang.listConfiguration' | translate}}" (click)="$event.stopPropagation();editGroupOrder()" (mouseover)="hoverEditGroupOrder=true" (mouseleave)="hoverEditGroupOrder=false">
+                <mat-icon [ngStyle]="{'color': editOrderGroups ? 'orange' : '#135F7F', 'opacity': editOrderGroups || hoverEditGroupOrder ? '1' : '0.4'}" mat-list-icon class="fa fa-cog" style="height:auto;"></mat-icon>
+            </div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-container *ngIf="!loading">
+        <mat-form-field [style.display]="(homeData.assignedBaskets.length > 0 || homeData.regroupedBaskets.length > 0) && !editOrderGroups ? 'inline-block' : 'none'" floatLabel="never" appearance="outline" class="basketsFilter"
+            style="padding-left:20px;padding-right:20px;font-size: 11px;">
+            <input matInput placeholder="{{'lang.filterBy' | translate}}" #listFilter>
+        </mat-form-field>
+        <div *ngIf="editOrderGroups" style="color: rgba(0,0,0,0.25);text-align:center;">
+            {{'lang.noticeGroupeOrder' | translate}}
+        </div>
+        <mat-list *ngIf="editOrderGroups">
+            <span dnd-sortable-container [dropZones]="['boxers-zone']" [sortableData]="homeData.regroupedBaskets">
+                <mat-list-item disableRipple="true" *ngFor="let regroupedBasket of homeData.regroupedBaskets;let i = index" title="{{'lang.move' | translate}}" dnd-sortable
+                               [sortableIndex]="i" (onDropSuccess)="updateGroupsOrder()">
+                    <mat-icon color="primary" mat-list-icon class="fa fa-arrows-alt" style="font-size:19px"></mat-icon>
+                    <span class="basketGroupTitle">{{regroupedBasket.groupDesc}}</span>
+                </mat-list-item>
+            </span>
+        </mat-list>
+        <ng-container *ngFor="let regroupedBasket of homeData.regroupedBaskets">
+            <span *ngIf="regroupedBasket.baskets[0] && !editOrderGroups" class="basketGroupTitle">{{regroupedBasket.groupDesc}}</span>
+            <mat-divider *ngIf="regroupedBasket.baskets[0] && !editOrderGroups" style="width: 80%;"></mat-divider>
+            <mat-nav-list style="padding-bottom: 10px;" *ngIf="!editOrderGroups">
+                <ng-container
+                    *ngFor="let basket of regroupedBasket.baskets | filterList:listFilter.value:'basket_name'">
+                    <a mat-list-item *ngIf="basket.redirected" disableRipple="true" style="cursor:not-allowed;">
+                        <mat-icon [ngStyle]="{'color': basket.color}"
+                            *ngIf="basket.redirected && !appService.getViewMode()" mat-list-icon class="fa fa-share">
+                        </mat-icon>
+                        <span *ngIf="basket.resourceNumber==0" class="nbResZero" [style.color]="basket.color">{{basket.resourceNumber}}</span>
+                        <span *ngIf="basket.resourceNumber!=0" class="nbRes" [ngStyle]="{'color': basket.color !== '#666666' ? basket.color : ''}" [class.defaultColor]="basket.color === '#666666'">{{basket.resourceNumber}}</span>
+                        <p mat-line title="{{basket.basket_name}}" [ngStyle]="{'color': basket.color}">
+                            {{basket.basket_name}}<br /><small color="primary">({{'lang.redirectedTo' | translate}}
+                                {{basket.redirectedUser}})</small>
+                        </p>
+                    </a>
+                    <a mat-list-item
+                        [ngClass]="{'selectedBasket': headerService.currentBasketInfo.basketId == basket.id && headerService.currentBasketInfo.ownerId == basket.owner_user_id && headerService.currentBasketInfo.groupId == regroupedBasket.groupSerialId}"
+                        *ngIf="!basket.redirected" (click)="refreshDatas(basket);closePanelLeft();"
+                        routerLink="/basketList/users/{{basket.owner_user_id}}/groups/{{regroupedBasket.groupSerialId}}/baskets/{{basket.id}}"
+                        style="cursor:pointer;"
+                        [ngStyle]="{'opacity': basket.resourceNumber==0 ? '0.5' : '1', 'height': appService.getViewMode() ? '50px' : '38px'}">
+                        <span *ngIf="basket.resourceNumber==0" class="nbResZero" [style.color]="basket.color">{{basket.resourceNumber}}</span>
+                        <span *ngIf="basket.resourceNumber!=0" class="nbRes" [ngStyle]="{'color': basket.color !== '#666666' ? basket.color : ''}" [class.defaultColor]="basket.color === '#666666'">{{basket.resourceNumber}}</span>
+                        <p mat-line title="{{basket.basket_name}}" [ngStyle]="{'color': basket.color}">
+                            {{basket.basket_name}}
+                        </p>
+                    </a>
+                </ng-container>
+            </mat-nav-list>
+        </ng-container>
+        <ng-container *ngIf="homeData.assignedBaskets.length>0 && !editOrderGroups">
+            <span color="primary" style="font-weight:bold;"
+                title="{{'lang.assignedBaskets' | translate}}">{{'lang.assignedBasketsShort' | translate}}</span>
+            <mat-divider></mat-divider>
+            <mat-nav-list>
+                <a mat-list-item
+                    *ngFor="let basket of homeData.assignedBaskets | filterList:listFilter.value:'basket_name'"
+                    [ngClass]="{'selectedBasket': headerService.currentBasketInfo.basketId==basket.id && headerService.currentBasketInfo.ownerId==basket.owner_user_id && headerService.currentBasketInfo.groupId==basket.group_id}"
+                    routerLink="/basketList/users/{{basket.owner_user_id}}/groups/{{basket.group_id}}/baskets/{{basket.id}}">
+                    <mat-icon *ngIf="!appService.getViewMode()" style="color:#666" mat-list-icon
+                        class="fa fa-paper-plane"></mat-icon>
+                    <span *ngIf="basket.resourceNumber==0" class="nbResZero" [style.color]="basket.color">{{basket.resourceNumber}}</span>
+                    <span *ngIf="basket.resourceNumber!=0" class="nbRes" [ngStyle]="{'color': basket.color !== '#666666' ? basket.color : ''}" [class.defaultColor]="basket.color === '#666666'">{{basket.resourceNumber}}</span>
+                    <p mat-line title="{{basket.basket_name}}" style="color:#666">
+                        {{basket.basket_name}}<br /><small color="primary">({{basket.userToDisplay}} -
+                            {{basket.group_desc}})</small>
+                    </p>
+                </a>
+            </mat-nav-list>
+        </ng-container>
+        <div class="noBasket" *ngIf="homeData.assignedBaskets.length === 0 && homeData.regroupedBaskets.length === 0">
+            {{'lang.noAvailableBasket' | translate}}
+        </div>
+    </ng-container>
+</mat-expansion-panel>

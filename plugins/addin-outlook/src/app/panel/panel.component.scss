@@ -1,0 +1,30 @@
+.status-app-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: 0.5;
+}
+
+.green {
+    color: var(--maarch-color-success);
+}
+
+.red {
+    color: var(--maarch-color-danger);
+}
+
+.primary {
+    color: var(--maarch-color-primary);
+}
+
+.status-app-text {
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.not-selected {
+    opacity: 0.5;
+}

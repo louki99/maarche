@@ -1,0 +1,92 @@
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(3, 33%);
+    grid-auto-rows: 50%;
+    height: 100%;
+    padding-bottom: 40px;
+    cursor: default !important;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-container {
+        grid-template-columns: repeat(2, 50%);
+    }
+}
+  
+
+.tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    // box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    // height: 250px;
+    background: white;
+    cursor: default !important;
+    border: solid 3px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.empty_tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    // height: 250px;
+    box-shadow: none;
+    background: none;
+    border: none;
+}
+
+.empty_tile_edit {
+    border: dashed 2px var(--maarch-color-secondary);
+}
+
+.tool {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+.tool-left {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-dashboard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    i {
+        opacity: 0.5;
+        font-size: 120px;
+    }
+
+    div {
+        font-size: 30px;
+        font-weight: bold;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        span {
+            opacity: 0.5;
+        }
+    }
+}
+
+::ng-deep.chartTypeMenu {
+    min-width: auto !important;
+}

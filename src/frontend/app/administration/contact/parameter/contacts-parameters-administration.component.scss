@@ -1,0 +1,25 @@
+
+.active, .active:hover , .active:active, .active:focus {
+    color: var(--maarch-color-primary);
+    border-left: solid 5px var(--maarch-color-primary);
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.civilities-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.civility-input {
+    ::ng-deep.mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+}
+
+.fa-question-circle::before {
+    position: absolute;
+    font-size: 13px;
+    margin-top: 5px;
+}

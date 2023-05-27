@@ -1,0 +1,98 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <a mat-list-item *ngFor="let menu of subMenus" [class.active]="menu.current" (click)="contactService.goTo(menu.route)">
+                <mat-icon color="primary" mat-list-icon [class]="menu.icon"></mat-icon>
+                <p mat-line>
+                    {{menu.label}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content" style="display: flex;flex-direction: column;overflow: hidden;">
+                <div class="criteria-container" *ngIf="!loading">
+                    <mat-accordion style="margin-bottom: 10px;">
+                        <mat-expansion-panel [expanded]="openedSearchTool">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{'lang.criteriaSearch' | translate}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <app-plugin-select-search [label]="'lang.addCriteria' | translate" [formControlSelect]="addCriteriaSelect"
+                                [placeholderLabel]="'lang.addCriteria' | translate" [datas]="contactFields"
+                                (afterSelected)="addCriteria($event)">
+                            </app-plugin-select-search>
+                            <mat-divider style="margin-top:20px;margin-bottom:20px;"></mat-divider>
+                            <mat-chip-list class="checkbox-selected-list">
+                                <mat-chip *ngFor="let field of currentFieldsSearch; let i = index" selected
+                                    [removable]="true" (removed)="removeCriteria(field)"
+                                    (click)="removeCriteria(field)">
+                                    {{field.label}}
+                                    <mat-icon matChipRemove class="fa fa-times-circle"></mat-icon>
+                                </mat-chip>
+                            </mat-chip-list>
+                            <div class="col-md-12 text-center">
+                                <button mat-raised-button color="primary" type="button" (click)="searchDuplicates()"
+                                    [disabled]="currentFieldsSearch.length === 0 || isLoadingResults">{{'lang.launchSearch' | translate}}</button>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                <div *ngIf="duplicatesContactsCount === 0" style="padding: 10px;text-align: center;color: rgba(0,0,0,0.54);">
+                    <em>{{'lang.noDuplicatesFound' | translate}}</em>
+                </div>
+                <div *ngIf="duplicatesContacts.length > 0" style="padding: 10px;text-align: right;color: rgba(0,0,0,0.54);">
+                    {{'lang.duplicatesContactDisplayed' | translate:{value1: duplicatesContactsRealCount, value2: duplicatesContactsCount} }}
+                </div>
+                <mat-list role="list" *ngIf="duplicatesContacts.length > 0">
+                    <mat-list-item role="listitem">
+                        <p mat-line class="contact-list-container-{{displayedColumns.length}}"
+                            style="font-size:80%;display: grid;grid-gap: 10px;">
+                            <span class="primary" *ngFor="let item of displayedColumns"
+                                style="overflow: hidden;text-overflow: ellipsis;">
+                                {{getLabel(item)}}
+                            </span>
+                        </p>
+                    </mat-list-item>
+                </mat-list>
+                <div style="position: relative;height: 100%;overflow: auto;">
+                    <cdk-virtual-scroll-viewport itemSize="48" class="example-viewport">
+                        <mat-list role="list">
+                            <ng-container *cdkVirtualFor="let element of duplicatesContacts;let i=index">
+                                <mat-list-item role="listitem" style="cursor: pointer;font-size: 14px;" [class.odd]="duplicatesContacts[i+1] !== undefined && element.odd !== duplicatesContacts[i+1].odd"
+                                    [class.hovered]="element.duplicateId === currentDuplicateId"
+                                    (mouseover)="selectDuplicates(element.duplicateId)"
+                                    (click)="manageDuplicate(element.duplicateId)">
+                                    <p mat-line class="contact-list-container-{{displayedColumns.length}}"
+                                        style="display: grid;grid-gap: 10px;align-items: center;">
+                                        <span *ngFor="let item of displayedColumns"
+                                            style="overflow: hidden;text-overflow: ellipsis;">
+                                            {{element[item]}}
+                                        </span>
+                                    </p>
+                                </mat-list-item>
+                            </ng-container>
+                        </mat-list>
+                    </cdk-virtual-scroll-viewport>
+                    <div *ngIf="isLoadingResults" class="example-loading-shade">
+                        <mat-spinner></mat-spinner>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

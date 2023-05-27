@@ -1,0 +1,15 @@
+<div class="mat-dialog-content-container">
+    <h2 mat-dialog-title color="primary">{{'lang.chooseIndexationProfil' | translate}}</h2>
+    <mat-dialog-content>
+        <mat-nav-list>
+            <ng-container *ngFor="let group of data.indexingGroups">
+                <a mat-list-item (click)="goTo(group)">
+                    <mat-icon color="primary" mat-list-icon class="fa fa-users"></mat-icon>
+                    <p mat-line>
+                        {{group.label}}
+                    </p>
+                </a>
+            </ng-container>
+        </mat-nav-list>
+    </mat-dialog-content>
+</div>

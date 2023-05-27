@@ -1,0 +1,151 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content [class.fullWidth]="shippings.length > 0" [class.fullHeight]="shippings.length > 0">
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div *ngIf="!functions.empty(fatalError)" class="alert-message alert-message-danger mailList" role="alert">
+            {{'lang.' + fatalError.reason | translate}}
+        </div>
+        <div *ngIf="functions.empty(fatalError) && shippings.length == 0"
+            class="alert-message alert-message-danger mailList" role="alert">
+            {{'lang.noShippingTemplate' | translate}} :<br />
+            <div class="mailList">
+                <ul>
+                    <li *ngFor="let entity of entitiesList">
+                        {{entity}}
+                    </li>
+                </ul>
+            </div>
+            <span [innerHTML]="'lang.doShippingParameter' | translate"></span>
+        </div>
+        <mat-sidenav-container *ngIf="shippings.length > 0" autosize style="height:100%;">
+            <mat-sidenav-content style="background: white;">
+                <div class="row" style="margin: 0;">
+                    <div class="col-md-12">
+                        {{'lang.makeActionOn' | translate}}
+                        <b *ngIf="data.resIds.length === 0" color="primary"
+                            class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                        <b *ngIf="data.resIds.length == 1" color="primary"
+                            class="highlight">{{data.resource.chrono}}</b>
+                        <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                            {{'lang.elements' | translate}}</b> ?
+                    </div>
+                    <div *ngIf="data.resIds.length > 0" style="padding:10px;display: flex;flex-direction: column;">
+                        <mat-checkbox color="primary" *ngFor="let inteKey of integrationsInfo | keyvalue"
+                            (click)="toggleIntegration(inteKey.key)"
+                            [checked]="data.resource.integrations[inteKey.key]">{{'lang.' + inteKey.key + '_doc' | translate}}
+                        </mat-checkbox>
+                    </div>
+                    <div class="col-md-12" style="padding-top: 10px;">
+                        <mat-form-field>
+                            <mat-label>{{'lang.shippings' | translate}}</mat-label>
+                            <mat-select name="currentShipping" [(ngModel)]="currentShipping" required>
+                                <mat-option *ngFor="let shipping of shippings" [value]="shipping">
+                                    {{shipping.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12" *ngIf="attachList.length > 0">
+                        <div>
+                            <div class="alert-message alert-message-info mailList" role="alert">
+                                <b>{{attachList.length}}</b> {{'lang.shippingReadyToSend' | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="mailsNotSend.length > 0">
+                        <div>
+                            <div class="alert-message alert-message-danger mailList" role="alert">
+                                <p>
+                                    <b>{{mailsNotSend.length}}</b> {{'lang.shippingNotEligible' | translate}} :
+                                </p>
+                                <ul>
+                                    <li *ngFor="let mail of mailsNotSend">
+                                        <b>{{mail.chrono}}</b> : {{'lang.' + mail.reason | translate}}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="currentShipping != null" class="col-md-12">
+                        <div class="formType" style="flex-direction: column;">
+                            <div class="formType-title">
+                                {{'lang.pricesInformations' | translate}}
+                            </div>
+                            <div class="priceContent">
+                                <div class="priceInfo">
+                                    <div class="col-md-6">
+                                        <p>
+                                            {{'lang.sendMode' | translate}} :
+                                        </p>
+                                        <ul>
+                                            <li>
+                                                {{'lang.maileva_' + currentShipping.options.sendMode | translate}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>
+                                            {{'lang.shapingOptions' | translate}} :
+                                        </p>
+                                        <ul>
+                                            <li *ngFor="let option of currentShipping.options.shapingOptions">
+                                                {{'lang.maileva_' + option | translate}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <mat-form-field appearance="outline">
+                                    <input matInput [(ngModel)]="currentShipping.fee" required name="totalPrice"
+                                        id="totalPrice" title="{{'lang.totalPrice' | translate}}" type="number" disabled>
+                                    <span matSuffix>&nbsp;€</span>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="currentShipping != null && (currentShipping.options.sendMode == 'digital_registered_mail' || currentShipping.options.sendMode == 'digital_registered_mail_with_AR') && invalidEntityAddress">
+                        <div>
+                            <div class="alert-message alert-message-danger mailList" role="alert" style="max-width: 530px">
+                                <p>
+                                    {{'lang.shippingInvalidEntityAddress' | translate}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="currentShipping != null">
+                        <div>
+                            <div class="alert-message alert-message-info mailList" role="alert">
+                                {{'lang.shippingDepositProofInformations' | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+                    </div>
+                    <div *ngIf="showToggle" class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                        <mat-slide-toggle name="history" color="primary" style="margin-bottom: 15px;"
+                            [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                            {{'lang.canGoToNextRes' | translate}}
+                        </mat-slide-toggle>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+            </mat-sidenav-content>
+            <mat-sidenav mode="side" fixedTopGap="56" position='end' [opened]="attachList.length > 0"
+                style="width: 50%;">
+                <div class="pjList">
+                    <img *ngFor="let attach of attachList" title="{{attach.chrono}} : {{attach.title}}"
+                        [src]="'../rest/' + (attach.type === 'attachment' ? 'attachments' : 'resources') + '/' + attach.res_id + '/thumbnail' | secureUrl | async" />
+                </div>
+            </mat-sidenav>
+        </mat-sidenav-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary"
+            [disabled]="loading || !isValid()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

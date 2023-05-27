@@ -1,0 +1,54 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{title | translate}}</h1>
+    <div mat-dialog-content>
+        <ng-container *ngIf="loading; else elseLoading">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </ng-container>
+        <ng-template #elseLoading>
+            <ng-container *ngIf="mainIndexingModel.used.length === 0; else elseTemplate">
+                <div class="alert-message alert-message-info" style="margin: 20px 0;" role="alert"
+                    [innerHTML]="'lang.confirmAction' | translate">
+                </div>
+            </ng-container>
+            <ng-template #elseTemplate>
+                <div class="alert-message alert-message-info">
+                    {{'lang.indexingModelUsedBy' | translate}}
+                    <ul>
+                        <li *ngFor="let usage of mainIndexingModel.used">
+                            <b>{{usage.count}}</b> {{'lang.mailsWithStatus' | translate}} <b>{{usage.status}}</b>
+                        </li>
+                    </ul>
+                    {{'lang.indexingModelReplaceToDelete' | translate}}
+                </div>
+                <div>
+                    <mat-form-field style="padding: 10px; margin-top: 15px">
+                        <mat-select name="model" [(ngModel)]="modelIds" [placeholder]="'lang.indexingModel' | translate"
+                            required (selectionChange)="changeModel($event)">
+                            <mat-option *ngFor="let model of indexingModels;let i=index" [value]="model.id"
+                                [disabled]="model.id === mainIndexingModel.id">
+                                {{model.label}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="alert-message alert-message-danger" *ngIf="resetFields.length !== 0">
+                    {{'lang.indexingModelFieldsReset' | translate}}
+                    <ul>
+                        <li *ngFor="let field of resetFields">
+                            {{field.label}}
+                        </li>
+                    </ul>
+
+                    {{'lang.confirmAction' | translate}}
+                </div>
+            </ng-template>
+        </ng-template>
+        <span class="divider-modal"></span>
+        <div mat-dialog-actions>
+            <button class="actions" color="primary" mat-raised-button [disabled]="!isValid()"
+                (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+            <button class="actions" color="" mat-raised-button
+                (click)="this.dialogRef.close('');">{{'lang.cancel' | translate}}</button>
+        </div>
+    </div>
+</div>

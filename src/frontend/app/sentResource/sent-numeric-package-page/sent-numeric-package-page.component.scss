@@ -1,0 +1,127 @@
+
+.loading {
+    display: flex;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: white;
+}
+
+.models {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    padding-top: 10px;
+}
+
+.activeButton {
+    color: var(--maarch-color-secondary);
+    font-weight: bold;
+}
+
+.attachLabel {
+    color: var(--maarch-color-primary);
+}
+
+::ng-deep.attachListMenu {
+    width: auto;
+    max-width: initial;
+    min-height: auto;
+}
+
+
+.numericPackageAttachItem {
+    font-size: 14px;
+    display: grid !important;
+    grid-template-columns: 1fr 150px 50px 50px;
+    grid-gap: 10px;
+    align-items: center;
+
+    .subInfo {
+        color: var(--maarch-color-primary);
+        font-size: 80%;
+    }
+}
+
+.m2mRecipientList {
+    line-height: initial;
+    font-size: 14px;
+}
+
+.recipients {
+    font-size: 14px !important;
+    padding: 10px !important;
+    width: 100%;
+    min-height: auto;
+    height: auto;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.attachMsg {
+    font-size: 20px;
+    padding: 30px;
+    opacity: 0.5;
+    font-weight: bold;
+    position: relative;
+    text-align: center;
+
+    i {
+        position: absolute;
+        top: 0px;
+        right: 40px;
+        transform: rotate(29deg);
+    }
+}
+
+.badge {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px !important;
+    color: white;
+    font-weight: normal;
+    border-radius: .25em;
+    background: var(--maarch-color-primary);
+}
+
+.alert-message {
+    min-width: 100%;
+}
+
+.messageExchangeHistory {
+    max-height: 300px;
+    overflow: auto;
+
+    &Item {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        grid-gap: 10px;
+        align-items: center;
+        padding: 10px;
+    }
+
+    &Item:nth-child(odd) {
+        background: rgba(19, 95, 127, 0.1);
+    }
+
+
+    &Date {
+        color: var(--maarch-color-primary);
+    }
+}
+
+.noAction {
+    padding: 10px;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+.warningNote {
+    font-style: italic;
+    opacity: 0.5;
+    margin-bottom: 10px;
+    font-size: 13px;
+}

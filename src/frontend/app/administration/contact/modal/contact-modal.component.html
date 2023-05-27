@@ -1,0 +1,34 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>
+        <span style="flex: 1;">
+            {{creationMode ? ('lang.contactCreation' | translate) : ('lang.contact' | translate)}}
+        </span>
+        <button [title]="'lang.close' | translate" mat-icon-button (click)="dialogRef.close();">
+            <mat-icon class="fa fa-times"></mat-icon>
+        </button></h1>
+    <mat-dialog-content class="modal-container">
+        <mat-sidenav-container>
+            <mat-sidenav-content>
+                <app-contact-form *ngIf="mode === 'update'" [creationMode]="creationMode" [contactId]="data.contactId"
+                    (onSubmitEvent)="dialogRef.close($event)" (linkContact)="linkContact($event)"></app-contact-form>
+                <app-contact-detail *ngIf="mode === 'read'" [contact]="contact"></app-contact-detail>
+            </mat-sidenav-content>
+            <mat-sidenav #drawer position='end' mode="side" style="overflow-x:hidden;width: 50%;" autoFocus="false">
+                <app-document-viewer *ngIf="loadedDocument"
+                    #appDocumentViewer
+                    class="documentViewer"
+                    [editMode]="false"
+                    [base64]="headerService.getLastLoadedFile()">
+                </app-document-viewer>
+            </mat-sidenav>
+        </mat-sidenav-container>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions" *ngIf="canUpdate && mode === 'read' && contact.type === 'contact'">
+        <button mat-raised-button color="primary" (click)="switchMode()">{{'lang.update' | translate}}</button>
+    </div>
+</div>
+
+<!--<div [class.admin-contact]="mode === 'update'">
+
+</div>-->

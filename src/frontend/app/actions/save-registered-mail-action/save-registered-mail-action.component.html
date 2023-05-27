@@ -1,0 +1,25 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{'lang.makeActionOn' | translate}} 
+                <b *ngIf="data.resIds.length === 0" color="primary" class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}} {{'lang.elements' | translate}}</b> ?
+            </div>
+            <div class="col-md-12">
+                <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+            </div>
+        </div>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading" (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>
+

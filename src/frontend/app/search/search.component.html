@@ -1,0 +1,38 @@
+<mat-sidenav-container class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <div id="filterTemplate"></div>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+                <app-criteria-tool #appCriteriaTool [isLoadingResult]="loadingResult" [data]="data" (searchUrlGenerated)="appSearchResultList.launchSearch($event, true);"
+                   style="width:100%;padding-bottom: 10px;" (loaded)="initSearch()"
+                   (afterGetSearchTemplates)="setLaunchWithSearchTemplate($event)"
+                   (refreshDaoResult)="appSearchResultList.listProperties = $event; appSearchResultList.refreshDao();"></app-criteria-tool>
+                <div id="toolTemplate" style="width: 100%;"></div>
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <app-search-result-list #appSearchResultList [searchTerm]="searchTerm" [appCriteriaTool]="appCriteriaTool" [sidenavRight]="sidenavRight"
+                    (loadingResult)="loadingResult=$event"
+                    (dataResult)="data = $event">
+                </app-search-result-list>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [fixedInViewport]="appService.getViewMode()" position='end'
+        [opened]="appService.getViewMode() ? false : false" [mode]="appService.getViewMode() ? 'over' : 'side'"
+        class="panel-right" style="overflow-x:hidden;"
+        [ngStyle]="{'width': appService.getViewMode() ? '80%' : '30%'}" autoFocus="false">
+        <div id="panelTemplate"></div>
+    </mat-sidenav>
+</mat-sidenav-container>

@@ -1,0 +1,56 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div class="alert-message alert-message-danger" style="min-width: 100%;"
+                        *ngIf="adminFormGroup.controls['status'].value === 'OK' || adminFormGroup.controls['status'].value === 'END' "
+                        [innerHTML]="'lang.registeredMailNumberRangeModificationMsg' | translate"></div>
+                    <form style="display: contents;" (ngSubmit)="onSubmit()" [formGroup]="adminFormGroup">
+                        <div>
+                            <mat-form-field>
+                                <mat-label>{{'lang.trackerNumber' | translate}}</mat-label>
+                                <input matInput formControlName="trackerNumber">
+                            </mat-form-field>
+                            <app-plugin-select-search [showLabel]="true" [label]="'lang.registeredMailType' | translate"
+                                [placeholderLabel]="'lang.registeredMailType' | translate" [datas]="registeredMailType"
+                                [class]="''" [formControlSelect]="adminFormGroup.controls['registeredMailType']">
+                            </app-plugin-select-search>
+                            <div style="display: grid;grid-template-columns: 1fr 1fr;grid-gap: 20px;">
+                                <mat-form-field>
+                                    <mat-label>{{'lang.registeredMailStart' | translate}}</mat-label>
+                                    <input matInput type="number" [min]="minRange" (keypress)="onlyNumbers($event)"
+                                        formControlName="rangeStart">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>{{'lang.registeredMailEnd' | translate}}</mat-label>
+                                    <input matInput type="number" [min]="this.adminFormGroup.controls['rangeStart'].value" (keypress)="onlyNumbers($event)"
+                                        formControlName="rangeEnd">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            <button mat-raised-button color="primary" type="submit"
+                                [disabled]="!adminFormGroup.valid">{{'lang.save' | translate}}</button>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

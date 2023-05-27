@@ -1,0 +1,63 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div class="row">
+            <ng-container *ngIf="data.resIds.length > 0">
+                <div class="col-md-12">
+                    {{'lang.makeActionOn' | translate}}
+                    <b *ngIf="data.resIds.length === 0" color="primary"
+                        class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                    <b *ngIf="data.resIds.length === 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                    <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                        {{'lang.elements' | translate}}</b> ?
+                </div>
+                <div class="col-md-12">
+                    <div *ngIf="resourcesErrors.length > 0" class="alert-message alert-message-danger mailList"
+                        style="max-width: 100%;">
+                        <p>
+                            {{'lang.canNotMakeAction' | translate}} :
+                        </p>
+                        <ul>
+                            <li *ngFor="let ressource of resourcesErrors">
+                                <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div *ngIf="!noResourceToProcess" class="col-md-12">
+                    <div class="alert-message alert-message-info" role="alert" style="max-width: 100%;"
+                        [innerHTML]="data.resIds.length === 1 ? ('lang.reconcileMsg' | translate) : ('lang.reconcileMsg' | translate) + '<br/>' + ('lang.reconcileMsg2' | translate)">
+                    </div>
+                </div>
+                <ng-container *ngIf="showToggle">
+                    <div class="row">
+                        <div class="col-md-12" style="margin: 10px 0px 15px 12px;">
+                            <mat-slide-toggle name="history" color="primary"
+                                [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                                {{'lang.canGoToNextRes' | translate}}
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+                </ng-container>
+                <div *ngIf="!noResourceToProcess" class="col-md-12">
+                    <div class="bg-primary">
+                        <app-criteria-tool #appCriteriaTool [openedPanel]="true" (searchUrlGenerated)="appSearchResultList.launchSearch($event)"
+                        [defaultCriteria]="['chrono', 'subject','recipients','senders']"></app-criteria-tool>
+                        <div id="toolTemplate" style="padding-top: 10px;"></div>
+                    </div>
+                    <app-search-result-list #appSearchResultList [actionMode]="false" [hideFilter]="true" [appCriteriaTool]="appCriteriaTool" [standalone]="true" [singleSelection]="true"></app-search-result-list>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary"
+            [disabled]="loading || !isSelectedResources() || noResourceToProcess"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

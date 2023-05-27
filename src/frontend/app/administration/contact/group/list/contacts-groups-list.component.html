@@ -1,0 +1,113 @@
+<div *ngIf="loading" style="display:flex;height:100%;">
+    <mat-spinner style="margin:auto;"></mat-spinner>
+</div>
+<mat-card *ngIf="!loading" class="card-app-content">
+    <div class="table-tools">
+        <div>
+            <button class="action-button" *ngIf="showAddButton" mat-stroked-button color="primary" [title]="'lang.addNewCorrespondentsGroup' | translate" (click)="contactGroupFormMode !== 'modal' ? goTo() : openContactsGroupModal()">
+                <mat-icon class="fa fa-plus" style="width: auto;height: auto;"></mat-icon>
+                {{'lang.add' | translate}}
+            </button>
+            <button class="action-button" mat-stroked-button color="primary" [disabled]="selection.selected.length <= 1" (click)="mergeContactsGroups()">
+                <mat-icon class="far fa-object-group" style="width: auto;height: auto;"></mat-icon>
+                {{'lang.merge' | translate}}
+            </button>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput [formControl]="adminService.getFilterField()"
+                    placeholder="{{'lang.filterBy' | translate}}">
+                <button mat-button *ngIf="adminService.searchTerm.value !== ''" matSuffix
+                    mat-icon-button aria-label="Clear" (click)="adminService.searchTerm.setValue('')"
+                    [title]="'lang.clearFilter' | translate">
+                    <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+        <div>
+            <div class="table-head table-head-tool">
+                <span style="position: relative;">
+                    <mat-paginator #paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100, 150]"></mat-paginator>
+                    <app-select-page [paginator]="paginator"></app-select-page>
+                </span>
+            </div>
+        </div>
+    </div>
+    <mat-table #table [dataSource]="adminService.getDataSource()" matSortDisableClear matSort>
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef
+                style="width:60px;flex: initial;align-items: center;display: flex;">
+                <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                    (change)="$event ? toggleAllContactsGroups() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" (click)="$event.stopPropagation()"
+                style="width:60px;flex: initial;align-items: center;display: flex;">
+                <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                    (change)="$event ? toggleContactGroup(element) : null"
+                    [checked]="selection.isSelected(element)"
+                    [disabled]="!element.allowed">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="label">
+            <mat-header-cell *matHeaderCellDef mat-sort-header
+                [class.hide-for-mobile]="appService.getViewMode()" style="flex:2;">
+                {{'lang.label' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" [class.hide-for-mobile]="appService.getViewMode()"
+                style="flex:2;">{{element.label}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:2;">
+                {{'lang.description' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" style="flex:2;"> {{element.description}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="nbCorrespondents">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="header-item" style="flex:1;">
+                {{'lang.relatedCorrespondents' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" style="flex:1;">
+                <span [class.noCorrespondent]="element.nbCorrespondents === 0" [class.hasCorrespondent]="element.nbCorrespondents > 0">{{element.nbCorrespondents}}</span>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="shared">
+            <mat-header-cell *matHeaderCellDef mat-sort-header
+                [class.hide-for-mobile]="appService.getViewMode()" style="flex:1;">
+                {{'lang.shared' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" [class.hide-for-mobile]="appService.getViewMode()"
+                style="flex:1;">
+                {{element.shared ? ('lang.yes' | translate) : ('lang.no' | translate) }}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="labelledOwner">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:1;">
+                {{'lang.createdBy' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" style="flex:1;"> {{element.labelledOwner !== '' ? element.labelledOwner : ('lang.userDeleted' | translate)}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element" style="justify-content: flex-end;">
+                <button mat-icon-button color="primary" [title]="'lang.duplicate' | translate" [disabled]="!(element.owner === headerService.user.id || privilegeService.hasCurrentUserPrivilege('create_contacts'))"
+                    (click)="$event.stopPropagation();copyContactsGroup(element)">
+                    <mat-icon class="fas fa-copy fa-2x" aria-hidden="true"></mat-icon>
+                </button>
+                <button mat-icon-button color="warn" [title]="'lang.delete' | translate" [disabled]="!element.allowed"
+                    (click)="$event.stopPropagation();deleteContactsGroup(element)">
+                    <mat-icon class="fa fa-trash-alt fa-2x" aria-hidden="true"></mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" style="cursor:pointer;"
+            [class.selected]="selection.isSelected(row)" [title]="'lang.view' | translate" (click)="goTo(row)"></mat-row>
+    </mat-table>
+    <div class="mat-paginator"
+        style="min-height:48px;display: flex;justify-content: end;align-items: center;padding-right: 20px;">
+        {{contactsGroups.length}} {{'lang.contactsGroupsAlt' | translate}}</div>
+</mat-card>

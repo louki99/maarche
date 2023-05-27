@@ -1,0 +1,185 @@
+
+
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.loading {
+    display: flex;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 999;
+    top: 0px;
+    left: 0px;
+    background: #ffffffd1;
+}
+
+.workflowList {
+    ::ng-deep.mat-tab-links {
+        justify-content: center;
+        display: flex;
+    }
+}
+
+.mat-tab-label {
+    color: var(--maarch-color-primary);
+}
+
+.mat-tab-label-active {
+    opacity: 1;
+}
+
+.mat-tab-link {
+    display: flex;
+    flex-direction: column;
+}
+
+.mat-tab-link:focus,
+.mat-tab-link:hover,
+.mat-tab-link:active {
+    text-decoration: none !important;
+}
+
+.signatureContainer {
+    position: relative;
+    overflow: auto;
+    margin: auto;
+}
+
+.posSignButton {
+    position: sticky;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.signature {
+    position: absolute;
+    border: dashed 1px var(--maarch-color-danger);
+    background: var(--maarch-color-danger-opacity-60) none repeat scroll 0% 0%;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.example-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+
+.example-radio-button {
+    margin: 5px;
+}
+
+.signDisabled {
+    opacity: 0.2;
+}
+
+.pageList {
+    position: fixed;
+    width: 100px !important;
+
+    ::ng-deep.mat-form-field-flex {
+        background: white;
+    }
+}
+
+.signUserName {
+    position: absolute;
+    font-size: 10px;
+    bottom: 5px;
+    font-weight: normal;
+    color: white;
+}
+
+.dateBlock {
+    position: absolute;
+    border: dashed 1px grey;
+    background: rgba(255, 255, 255, 0.6) none repeat scroll 0% 0%;
+    background: none;
+    font: sans-serif;
+}
+
+.selected {
+    background: var(--maarch-color-secondary-opacity-30);
+}
+
+.paginate-left {
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    transform: translateY(-50%);
+    background: #c6c6c680;
+    color: #666;
+}
+
+.paginate-right {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%);
+    background: #c6c6c680;
+    color: #666;
+}
+
+.page {
+    &-info {
+      position: absolute;
+      bottom: 70px;
+      height: 30px;
+      width: auto;
+      max-width: 70%;
+      color: rgba(var(--ion-color-dark-rgb), 0.8);
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+      left: 50%;
+      transform: translateX(-50%);
+      font-weight: 500;
+      transition: all 0.3s ease-in-out;
+      z-index: 9999;
+  
+      &-doc {
+        max-width: 80%;
+        background-color: #F1F4F4;
+        border-radius: 14px;
+        padding: 0 20px;
+        z-index: 1;
+        white-space: pre;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  
+      &-page {
+        cursor: pointer;
+        text-align: center;
+        border-radius: 0 14px 14px 0;
+        padding: 0 20px;
+        background: #fff;
+        border: 1px solid #ECF0F1;
+        margin-left: -15px;
+        height: 28px;
+        white-space: pre;
+        display: flex;
+        align-items: center;
+      }
+    }
+    &-info:hover {
+      opacity: 1;
+    }
+  }

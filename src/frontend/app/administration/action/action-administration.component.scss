@@ -1,0 +1,142 @@
+.action-admin-input-form {
+    font-size: 13px;
+    color: #666;
+    width: 400px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    .mat-input-element {
+        color: var(--maarch-color-primary);
+        padding-left: 10px;
+    }
+
+    input {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    ::ng-deep.mat-select-value-text {
+        padding-left: 20px;
+        color: var(--maarch-color-primary);
+    }
+
+    ::ng-deep.mat-form-field-label {
+        top: 15px;
+        left: 30px;
+    }
+
+    ::ng-deep.mat-form-field-infix {
+        display: flex;
+        padding-top: 0px;
+        padding-bottom: 5px;
+    }
+
+    ::ng-deep.mat-form-field-label-wrapper {
+        top: -13px;
+    }
+
+    ::ng-deep.mat-form-field-flex {
+        background: white;
+        height: 40px;
+        border-radius: 10px;
+        border: solid 1px var(--maarch-color-primary);
+    }
+
+    ::ng-deep .mat-form-field-underline {
+        display: none;
+    }
+
+    ::ng-deep.mat-form-field-prefix {
+        margin-left: 10px;
+    }
+
+    ::ng-deep.mat-form-field-suffix {
+        margin-right: 10px;
+    }
+
+    ::ng-deep.mat-select-arrow-wrapper {
+        padding-right: 20px;
+    }
+
+    ::ng-deep.mat-list-option {
+        color: rgba(0, 0, 0, 0.54);
+    }
+
+    ::ng-deep.mat-form-field-wrapper {
+        padding: 0px;
+    }
+
+    ::ng-deep.mat-datepicker-toggle-default-icon {
+        height: auto;
+    }
+}
+
+.action-admin-input-form.input-date {
+    ::ng-deep.mat-form-field-flex {
+        align-items: center;
+
+    }
+    ::ng-deep.mat-date-range-input-start-wrapper {
+        flex: 1;
+    }
+
+    ::ng-deep.mat-date-range-input-inner {
+        color: var(--maarch-color-primary);
+    }
+}
+
+.action-admin-radio-form {
+    padding-left: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+
+    .mat-radio-button {
+        flex: 1;
+
+        ::ng-deep.mat-radio-label-content {
+            font-weight: normal;
+            color: rgba(0, 0, 0, 0.54);
+        }
+    }
+
+    .mat-radio-disabled {
+        opacity: 0.5;
+    }
+}
+
+.action-admin-checkbox-form {
+    width: 100%;
+    padding: 0px;
+    border: solid 1px var(--maarch-color-primary);
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.action-admin-checkbox-selected-list {
+    margin-top: 10px;
+
+    ::ng-deep.mat-chip-list-wrapper {   
+        justify-content: center;
+    }
+
+    .mat-chip {
+        font-size: 13px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        @media (max-width: 768px) {
+            font-size: 1em;
+        }
+    }
+}
+
+.action-admin-contact-form {
+    width: 100%;
+    padding: 0px;
+    overflow: hidden;
+}
+
+.action-admin-banauto-form {
+    width: 100%;
+}

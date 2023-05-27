@@ -1,0 +1,28 @@
+<ng-container *ngIf="resources.length > 0; else elseEmpty">
+    <div style="width: 100%;overflow: auto;">    
+        <div class="resource" [class.resource-link]="route !== null" role="listitem" *ngFor="let resource of resources;let it=index" (mouseenter)="resource.hovered=true" (mouseleave)="resource.hovered=false" (click)="route !== null ? goTo(resource): false">
+            <ng-container *ngFor="let col of displayColumns;let i=index">
+                <div class="item" *ngIf="['contactTitle'].indexOf(col) === -1">
+                    <span *ngIf="!isDate(resource[col])" [title]="col !== 'contactLabel' ? resource[col] : resource['contactTitle']">
+                        {{!functionsService.empty(resource[col]) ? (resource[col] | shorten : 50:'...') : ('lang.undefined' | translate)}}
+                    </span>
+                    <span class="date-item" *ngIf="isDate(resource[col])" [title]="resource[col] | fullDate">
+                        {{resource[col] | timeAgo}}
+                    </span>
+                </div>
+            </ng-container>
+            <div *ngIf="!functionsService.empty(viewDocRoute)" class="view-action" [style.visibility]="resource.hovered ? 'initial': 'hidden'" (mouseenter)="viewThumbnail($event,resource);" (mouseleave)="closeThumbnail();">
+                <i class="fa fa-eye view-action-icon" color="primary"></i>
+            </div>
+            <ng-container *ngIf="it===0">
+                <i class="{{icon}} tile-icon" color="primary" (click)="$event.stopPropagation()"></i>
+            </ng-container>
+        </div>
+    </div>
+    <mat-card id="viewThumbnail" *ngIf="showThumbnail" style="top:0px;right:0px;position: fixed;margin-left: 1px;z-index: 3;"><img style="max-height: 100vh;" *ngIf="thumbnailUrl !== ''" [src]="thumbnailUrl | secureUrl | async" /></mat-card>       
+</ng-container>
+<ng-template #elseEmpty>
+    <div class="empty-data">
+        {{'lang.noDataAvailable' | translate}}
+    </div>
+</ng-template>

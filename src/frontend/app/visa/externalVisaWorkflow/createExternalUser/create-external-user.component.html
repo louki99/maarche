@@ -1,0 +1,105 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{(data === null ? 'lang.addOtp' : 'lang.updateOtp') | translate}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div *ngIf="!loading" class="userForm">
+            <mat-form-field *ngIf="sources.length > 1" appearance="fill">
+                <mat-label>{{ 'lang.source' | translate }}</mat-label>
+                <mat-select #source
+                    [(ngModel)]="userOTP.sourceId"
+                    (selectionChange)="setCurrentSource($event.value)" required>
+                    <mat-optgroup *ngFor="let source of sourceTypes" [label]="(source === 'yousign' ? 'lang.youSign' : 'lang.fastParapheur') | translate">
+                        <mat-option *ngFor="let item of getSources(source)"[value]="item.id" [title]="item.label" role="option">
+                            {{ item.label }}
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-select>
+            </mat-form-field>
+            <div style="display: flex;margin-bottom: 10px;" *ngIf="searchMode">
+                <div style="flex: 1;">
+                    <app-contact-autocomplete [exclusion]="'?noEntities=true&noContactsGroups=true'"
+                        [inputMode]="true" style="width:100%;padding-bottom:10px;" (afterContactSelected)="getContact($event)" [fromExternalWorkflow]="true">
+                    </app-contact-autocomplete>
+                </div>
+                <div>
+                    <button mat-icon-button color="primary" [title]="'lang.viewSuggestions' | translate" (click)="searchMode=!searchMode">
+                        <mat-icon class="fa fa-users"></mat-icon>
+                    </button>
+                </div>
+            </div>
+            <ng-container *ngIf="!searchMode">
+                <div class="formType">
+                    <div class="formType-title">
+                        {{'lang.suggestedCorrespondents' | translate}}
+                    </div>
+                    <div class="formType-content">
+                        <div class="correspondent-list">
+                            <div *ngIf="correspondentShorcuts.length === 0; else elseBlock" class="empty">
+                                {{'lang.noSuggestion' | translate}}
+                            </div>
+                            <ng-template #elseBlock>
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let shortcut of correspondentShorcuts" [title]="shortcut.title"
+                                        (click)="setOtpInfoFromShortcut(shortcut)" style="cursor: pointer;font-size: 12px;min-height: 24px;">
+                                        {{shortcut.label}}
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </ng-template>
+                        </div>
+                        <div>
+                            <button mat-icon-button color="primary" [title]="'lang.searchCorrespondent' | translate" (click)="searchMode=!searchMode">
+                                <mat-icon class="fa fa-search"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <mat-form-field appearance="fill">
+                <mat-label>{{'lang.firstname' | translate}}</mat-label>
+                <input matInput #firstname type="text" maxlength="128" [(ngModel)]="userOTP.firstname" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>{{'lang.lastname' | translate}}</mat-label>
+                <input matInput #lastname type="text" maxlength="128" [(ngModel)]="userOTP.lastname" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>{{'lang.phoneNumber' | translate}}</mat-label>
+                <input matInput #phoneNumber type="text" [(ngModel)]="userOTP.phone" placeholder="Exemple: +33621235684"
+                    [pattern]="getRegexPhone()" (keyup)="formatPhone()" required>
+                <mat-hint align="start">{{ 'lang.frFormatPhone' | translate }}</mat-hint>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>{{'lang.email' | translate}}</mat-label>
+                <input matInput #email type="email" [(ngModel)]="userOTP.email"
+                    pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)" required>
+            </mat-form-field>
+            <mat-form-field floatLabel="always" appearance="fill">
+                <mat-label>{{'lang.role' | translate}}</mat-label>
+                <input matInput style="display: none;">
+                <mat-radio-group #role style="display: flex" [(ngModel)]="userOTP.role" required>
+                    <mat-radio-button *ngFor="let role of availableRoles" [value]="role.id" style="flex:1" color="primary" [disabled]="role.id === 'visa' && userOTP.type === 'fast'">
+                        {{ role.label }}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </mat-form-field>
+            <mat-form-field *ngIf="currentSource.length > 1 && userOTP.role !== 'visa'" appearance="fill">
+                <mat-label>{{ 'lang.securityMode' | translate }}</mat-label>
+                <mat-select #securityMode [(ngModel)]="userOTP.security" required>
+                    <mat-option *ngFor="let mode of currentSource" [value]="mode">
+                        {{ 'lang.' + mode | translate }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <app-maarch-message *ngIf="userOTP.security" [mode]="'info'"
+                [content]="(userOTP.role === 'visa' ? 'lang.otpVisaUser' : 'lang.securityModeInfo') | translate : {mode: userOTP.security}"></app-maarch-message>
+        </div>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || !isValidForm()"
+            (click)="addOtpUser()">{{ (this.data === null ? 'lang.validate' : 'lang.update') | translate}}</button>
+        <button mat-raised-button mat-button [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

@@ -1,0 +1,171 @@
+
+/*.mat-dialog-title {
+  margin: -24px !important;
+  margin-bottom: -24px !important;
+  margin-bottom: 0 !important;
+  background: var(--maarch-color-primary);
+  color: white;
+  padding: 5px;
+
+  small {
+    color: #F99830; 
+  }
+}
+
+.mat-dialog-content {
+  padding-top: 10px !important;
+  position: relative;
+  max-height: 80vh !important;
+}
+
+.mat-dialog-actions, .mat-dialog-title {
+  justify-content: center;
+  text-align: center;
+}*/
+
+
+.maarch-full-height-modal {
+  height: 99%;
+  min-height: 99%;
+
+  .mat-dialog-title {
+    margin: 0;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: var(--maarch-color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    small {
+      color: #F99830; 
+    }
+  }
+
+  .mat-dialog-content-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-dialog-content {
+    height: 100%;
+    min-height: 150px;
+    max-height: 100% !important;
+    margin: 0px;
+    position: relative;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .mat-dialog-container {
+    padding: 0px;
+  }
+
+  .mat-dialog-actions {
+    margin: 0px;
+    padding: 0px;
+    justify-content: center;
+  }
+
+  .divider-modal {
+    flex: 1 1 auto;
+  }
+}
+
+.maarch-doc-modal {
+  min-width: 856px;
+  .mat-dialog-content {
+    padding: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+}
+
+
+.maarch-modal {
+  height: auto;
+
+  .mat-dialog-title {
+    margin: 0;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: var(--maarch-color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      flex : 1;
+      text-align: center;
+    }
+    
+    small {
+      color: #F99830; 
+    }
+  }
+
+  .mat-dialog-content-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-dialog-content {
+    height: 100%;
+    min-height: 150px;
+    max-height: 100% !important;
+    margin: 0px;
+    position: relative;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .mat-dialog-container {
+    padding: 0px;
+  }
+
+  .mat-dialog-actions {
+    margin: 0px;
+    padding: 0px;
+    justify-content: center;
+  }
+
+  .divider-modal {
+    flex: 1 1 auto;
+  }
+}
+
+.attachment-modal-container {
+  .mat-dialog-title {
+      margin: -24px !important;
+      margin-bottom: -24px !important;
+      margin-bottom: 0 !important;
+      background: var(--maarch-color-primary);
+      color: white;
+      padding: 5px;
+    
+      small {
+        color: #F99830; 
+      }
+    }
+    
+    .mat-dialog-content {
+      padding-top: 10px !important;
+      position: relative;
+      max-height: 80vh !important;
+    }
+    
+    .mat-dialog-actions, .mat-dialog-title {
+      justify-content: center;
+      text-align: center;
+    }
+
+  .mat-dialog-container {
+      padding: 0px;
+  }
+}

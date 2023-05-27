@@ -1,0 +1,30 @@
+<ng-container *ngIf="loading; else elseTemplate">
+    <div class="loading">
+        <mat-spinner diameter="35"></mat-spinner>
+    </div>
+</ng-container>
+<ng-template #elseTemplate>
+    <ng-container *ngIf="!disabledHistory; else noPrivilegeTemplate">
+        <div class="historyList" *ngFor="let history of histories">
+            <div class="date" [title]="history.event_date | fullDate">
+                {{history.event_date | timeAgo}}
+            </div>
+            <div class="info">
+                {{history.info | shorten: 110: '...'}}
+            </div>
+            <div class="date" [title]="history.userLabel">
+                {{history.userLabel}}
+            </div>
+        </div>
+        <button mat-button *ngIf="histories.length === 3" class="showMore"
+            (click)="showMore()">{{'lang.showMore' | translate}}</button>
+        <div class="noData" *ngIf="histories.length === 0">
+            {{'lang.noEvent' | translate}}
+        </div>
+    </ng-container>
+    <ng-template #noPrivilegeTemplate>
+        <div class="noData">
+            {{'lang.historyDisabled' | translate}}
+        </div>
+    </ng-template>
+</ng-template>

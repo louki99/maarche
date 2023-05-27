@@ -1,0 +1,169 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list>
+            <a mat-list-item *ngFor="let menu of subMenus" [class.active]="menu.current" (click)="contactService.goTo(menu.route)">
+                <mat-icon color="primary" mat-list-icon [class]="menu.icon"></mat-icon>
+                <p mat-line>
+                    {{menu.label}}
+                </p>
+            </a>
+        </mat-nav-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <mat-tab-group>
+                    <mat-tab [label]="'lang.usableFields' | translate">
+                        <div class="alert-message alert-message-info" role="alert" *ngIf="customFields.length === 0"
+                            [innerHTML]="'lang.noCustomFieldInfo' | translate">
+                        </div>
+                        <mat-accordion>
+                            <mat-expansion-panel *ngFor="let custom of customFields;index as indexCustom">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title color="primary">
+                                        {{custom.label}}
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        {{'lang.' + custom.type + 'Input' | translate}}
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput name="id" [(ngModel)]="custom.id" disabled
+                                            [placeholder]="'lang.technicalId' | translate" [value]="custom.id">
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input matInput name="label" [(ngModel)]="custom.label"
+                                            [placeholder]="'lang.label' | translate" [value]="custom.label">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-12"
+                                    *ngIf="['select', 'radio', 'checkbox'].indexOf(custom.type) > -1">
+                                    <mat-expansion-panel class="customFieldValues" opened>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title [matBadge]="custom.values.length" matBadgeSize="small">
+                                                {{'lang.valuesList' | translate}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="actionValuesCustom">
+                                            <div style="flex: 1;">
+                                                <button mat-raised-button color="primary"
+                                                    (click)="addValue(indexCustom)">
+                                                    {{'lang.addValue' | translate}}</button>
+                                            </div>
+                                            <div>
+                                                <button mat-mini-fab color="default" *ngIf="custom.values.length > 0"
+                                                    (click)="sortValues(custom)" [title]="'lang.orderValues' | translate">
+                                                    <mat-icon color="primary" class="fas fa-sort-alpha-down"
+                                                        style="height:auto;"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <mat-form-field *ngFor="let value of custom.values;let i=index;"
+                                                floatLabel="never">
+                                                <input matInput [(ngModel)]="value.label"
+                                                    [placeholder]="'lang.newValue' | translate">
+                                                <button color="warn" mat-icon-button matSuffix [title]="'lang.delete' | translate"
+                                                    (click)="removeValue(custom, i)">
+                                                    <mat-icon class="fa fa-trash"></mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <button mat-raised-button color="primary"
+                                        (click)="updateCustomField(custom,indexCustom)"
+                                        [disabled]="isModified(custom,indexCustom)">{{'lang.update' | translate}}</button>
+                                    <button mat-raised-button color="warn"
+                                        (click)="removeCustomField(indexCustom)">{{'lang.delete' | translate}}</button>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </mat-sidenav-content>
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        position='end' opened class="col-md-4 col-sm-12 customFielsdPanel">
+        <mat-tab-group>
+            <mat-tab [label]="'lang.customFieldsTypesAvailable' | translate">
+                <div class="customFieldsTypesItem" *ngFor="let customField of customFieldsTypes">
+                    <div class="addCustomFieldTypeContainer">
+                        <button mat-icon-button color="primary" (click)="addCustomField(customField)"
+                            [title]="'lang.add' | translate">
+                            <mat-icon class="fas fa-plus-circle fa-2x"></mat-icon>
+                        </button>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="color: rgba(0,0,0,0.54);">{{customField.label}} :</div>
+                        <ng-container *ngIf="customField.type === 'string'">
+                            <mat-form-field class="input-form" floatLabel="never">
+                                <textarea matInput [placeholder]="'lang.' + customField.type + 'Input' | translate" cdkTextareaAutosize
+                                    matAutosizeMinRows="1" cdkAutosizeMaxRows="6" disabled></textarea>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="customField.type === 'integer'">
+                            <mat-form-field class="input-form" floatLabel="never">
+                                <input type="number" matInput [placeholder]="'lang.' + customField.type + 'Input' | translate" disabled>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="customField.type === 'select'">
+                            <mat-form-field class="input-form" floatLabel="never">
+                                <mat-select [placeholder]="'lang.' + customField.type + 'Input' | translate" disabled>
+                                    <mat-option *ngFor="let sample of sampleIncrement" [value]="sample">
+                                        {{'lang.choice' | translate}} {{sample}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="customField.type === 'date'">
+                            <mat-form-field class="input-form" floatLabel="never">
+                                <input matInput [matDatepicker]="picker"
+                                    [placeholder]="'lang.' + customField.type + 'Input' | translate" (click)="picker.open()" disabled>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="customField.type === 'radio'">
+                            <mat-radio-group class="radio-form" color="primary" disabled>
+                                <mat-radio-button *ngFor="let sample of sampleIncrement" [value]="sample">
+                                    {{'lang.choice' | translate}} {{sample}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </ng-container>
+                        <ng-container *ngIf="customField.type === 'checkbox'">
+                            <div class="input-form checkbox-form">
+                                <mat-selection-list #sampleList class="div-list" disabled>
+                                    <mat-list-option *ngFor="let sample of sampleIncrement" [value]="sample"
+                                        checkboxPosition="before">
+                                        {{'lang.choice' | translate}} {{sample}}
+                                    </mat-list-option>
+                                </mat-selection-list>
+                            </div>
+                            <mat-chip-list class="checkbox-selected-list">
+                                <mat-chip *ngFor="let chip of sampleList.selectedOptions.selected">
+                                    {{'lang.selectedValue' | translate}}
+                                </mat-chip>
+                            </mat-chip-list>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-sidenav>
+</mat-sidenav-container>

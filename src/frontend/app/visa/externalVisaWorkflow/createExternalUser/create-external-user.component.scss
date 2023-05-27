@@ -1,0 +1,58 @@
+.loading {
+    display: flex;
+    height: 100%;
+}
+
+.userForm {
+    display: flex;
+    height: 100%;
+    flex-direction:column;
+}
+.formType {
+    align-items: center;
+    display: flex;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: solid 1px #ccc;
+    position: relative;
+
+    &-title {
+        white-space: pre;
+        overflow: hidden;
+        max-width: 85%;
+        text-overflow: ellipsis;
+        z-index: 1;
+        font-size: 10px;
+        font-weight: bold;
+        background: white;
+        position: absolute;
+        top: -7px;
+        left: 10px;
+        padding: 0px;
+        margin: 0px;
+        color: #135f7f;
+    }
+
+    &-content {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+    }
+}
+
+.correspondent-list {
+    max-height: 100px;
+    overflow: auto;
+    padding: 10px;
+}
+
+.empty {
+    color: #666;
+    text-align: center;
+    font-style: italic;
+    overflow: hidden;
+}
+
+::ng-deep mat-optgroup .mat-optgroup-label {
+    font-weight: bold !important;
+}

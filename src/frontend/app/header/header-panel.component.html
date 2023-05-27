@@ -1,0 +1,19 @@
+<div class="panelHeader">
+    <div *ngIf="headerService.sideBarButton !== null" class="panelHeader-backHome">
+        <button mat-button style="padding-top: 5px;padding-bottom: 5px;" (click)="goTo()">
+            <i class="{{headerService.sideBarButton.icon}}" style="height: auto"></i>&nbsp;
+            <span>{{headerService.sideBarButton.label}}</span>
+        </button>   
+    </div>
+    <div class="panelHeader-logo" [class.text-center]="headerService.sideBarButton !== null">
+        <button mat-button style="margin-right: 30px;" (click)="goToHome()" title="{{'lang.home' | translate}}">
+            <mat-icon class="maarchLogo" svgIcon="maarchLogoFull"></mat-icon>
+        </button>
+    </div>
+    <div class="panelHeader-button">
+        <button mat-icon-button (click)="headerService.sideNavLeft.close()" title="{{'lang.closeSidePanel' | translate}}">
+            <mat-icon fontSet="fas" fontIcon="fa-stream" style="transform: rotate(180deg);"></mat-icon>
+        </button>
+    </div>
+</div>
+<mat-divider></mat-divider>

@@ -1,0 +1,94 @@
+<form *ngIf="!addAccountMode && additionalsInfos.attachments.length > 0" #accountForm="ngForm">
+    <div class="col-md-12" style="padding-top: 10px;">
+        <mat-form-field>
+            <mat-label>{{'lang.selectedAccount' | translate}}</mat-label>
+            <mat-select name="loginAccount" (selectionChange)="selectAccount($event)" required>
+                <mat-option class="accountList" *ngFor="let account of additionalsInfos.accounts;let i=index"
+                    [value]="account">
+                    <span class="accountName">{{account.login}} ({{account.siret}})</span> <button title="{{'lang.delete' | translate}}" mat-icon-button
+                        color="warn" (click)="removeAccount(i);">
+                        <mat-icon class="fa fa-trash"></mat-icon>
+                    </button>
+                </mat-option>
+            </mat-select>
+            <mat-hint><a (click)="initNewAccount()" style="cursor: pointer;">{{'lang.addNewAccount' | translate}}</a>
+            </mat-hint>
+        </mat-form-field>
+    </div>
+</form>
+<form *ngIf="addAccountMode && additionalsInfos.attachments.length > 0" (ngSubmit)="addNewAccount();" #newAccountForm="ngForm">
+    <div class="col-md-6" style="padding-top: 10px;">
+        <mat-form-field>
+            <input id="newAccountLogin" matInput name="newAccountLogin" placeholder="{{'lang.newAccount' | translate}}" [(ngModel)]="newAccount.login" required>
+        </mat-form-field>
+    </div>
+    <div class="col-md-6" style="padding-top: 10px;">
+        <mat-form-field>
+            <input id="newAccountSiret" matInput name="newAccountSiret" placeholder="{{'lang.siret' | translate}}" [(ngModel)]="newAccount.siret" required>
+        </mat-form-field>
+    </div>
+    <div class="col-md-12 text-center" style="padding-top: 10px;">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!newAccountForm.form.valid || loading">
+            {{'lang.add' | translate}}
+        </button>
+        <button mat-raised-button (click)="addAccountMode = false">
+            {{'lang.cancel' | translate}}
+        </button>
+    </div>
+</form>
+<div *ngIf="usersWorkflowList.length > 0" class="col-md-12" style="padding-top: 20px;">
+    <div class="workflowContent">
+        <h2 style="top:-5px;">{{'lang.visaWorkflow' | translate}} :</h2>
+        <div class="contentUser">
+            <mat-form-field appearance="outline" floatLabel="never" [style.fontSize.px]="10">
+                <input id="availableUsers" type="text" matInput placeholder="{{'lang.addPerson' | translate}}"
+                    [matAutocomplete]="auto" [formControl]="usersCtrl">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addItem($event)" isOpen="true">
+                    <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                        {{user.displayName}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div cdkDropList #dataAvailableList="cdkDropList" [cdkDropListData]="currentWorkflow" class="cdk-list"
+                (cdkDropListDropped)="drop($event)">
+                <div *ngIf="currentWorkflow.length === 0"
+                    style="opacity: 0.5;text-align: center;font-size: 10px;padding: 10px;">
+                    {{'lang.noPerson' | translate}}
+                </div>
+                <mat-list *ngFor="let diffusion of currentWorkflow;let i=index" class="columns" cdkDrag>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon class="fa fa-user fa-2x" color="primary"></mat-icon>
+                        <h4 mat-line style="display: flex;">
+                            <span
+                                style="flex: 1;text-overflow: ellipsis;overflow: hidden;">{{diffusion.displayName}}</span>
+                        </h4>
+                        <p class="otherInfo" mat-line style="display: flex;">
+                            <span style="opacity:0.5;flex: 1;">
+                                <button class="currentRoleButton" mat-button [matMenuTriggerFor]="menu" title="{{'lang.' + diffusion.currentRole + 'User' | translate}}">{{'lang.' + diffusion.currentRole + 'User' | translate}}</button>
+                                <mat-menu [class]="'listMenu'" #menu="matMenu">
+                                    <div style="text-align: center;font-size: 10px;color: white;background: #135F7F;padding: 5px;font-weight: bold;">
+                                        {{'lang.roles' | translate}}
+                                    </div>
+                                    <button *ngFor="let role of diffusion.roles" mat-menu-item
+                                        (click)="changeRole(i, role)">{{'lang.' + role + 'User' | translate}}</button>
+                                </mat-menu>
+                                <button class="currentContextButton" mat-button
+                                    [matMenuTriggerFor]="menuContext" title="{{'lang.' + diffusion.currentContext | translate}}">{{'lang.' + diffusion.currentContext | translate}}</button>
+                                <mat-menu [class]="'listMenu'" #menuContext="matMenu">
+                                    <div style="text-align: center;font-size: 10px;color: white;background: #135F7F;padding: 5px;font-weight: bold;">
+                                        {{'lang.contextParaph' | translate}}
+                                    </div>
+                                    <button *ngFor="let context of contextList" mat-menu-item
+                                        (click)="changeContext(i, context)">{{'lang.' + context | translate}}</button>
+                                </mat-menu>
+                            </span>
+                        </p>
+                        <button mat-icon-button (click)="deleteItem(i)">
+                            <mat-icon class="fa fa-times" color="warn"></mat-icon>
+                        </button>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,154 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div *ngIf="!shippingAvailable" class="alert-message alert-message-danger" role="alert" [innerHTML]="'lang.shippingUnavailable' | translate" style="max-width: 100%">
+                    </div>
+
+                    <form class="form-horizontal" (ngSubmit)="onSubmit()" #shippingForm="ngForm">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="shipping.label" required name="label" id="label" title="{{'lang.label' | translate}}"
+                                           type="text" placeholder="{{'lang.label' | translate}}" maxlength="64">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="shipping.description" required name="description" id="description"
+                                           title="{{'lang.description' | translate}}" type="text" placeholder="{{'lang.description' | translate}}"
+                                           maxlength="255">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex-direction: row; flex-wrap: wrap;">
+                            <div class="formType ratio-2 col-sm-12">
+                                <div class="formType-title">
+                                    {{'lang.shapingOptions' | translate}}
+                                </div>
+                                <mat-list role="list">
+                                    <mat-list-item role="listitem" *ngFor="let option of shapingOptions">
+                                        <mat-slide-toggle color="primary" name="{{option}}" [checked]="shipping.options.shapingOptions.indexOf(option) > -1"
+                                                          (change)="toggleShapingOption(option)">{{'lang.maileva_' + option | translate}}</mat-slide-toggle>
+                                    </mat-list-item>
+                                    <div *ngIf="shipping.options.shapingOptions.indexOf('addressPage') == -1" class="alert-message alert-message-danger" role="alert" style="margin-top: 30px;max-width: none;" [innerHTML]="'lang.warnShapingOption' | translate"></div>
+                                </mat-list>
+                            </div>
+                            <div class="formType ratio-1 col-sm-12">
+                                <div class="formType-title">
+                                    {{'lang.sendModes' | translate}}
+                                </div>
+                                <mat-radio-group class="radio-group" name="sendMode" [(ngModel)]="shipping.options.sendMode">
+                                    <mat-radio-button *ngFor="let mode of sendModes" name="{{mode}}" [value]="mode" color="primary">
+                                        {{'lang.maileva_' + mode | translate}}
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex-direction: row; flex-wrap: wrap;">
+                            <div class="formType ratio-2" style="flex-direction: column;">
+                                <div class="formType-title">
+                                    {{'lang.pricesInformations' | translate}}
+                                </div>
+                                <div class="priceContent">
+                                    <label class="priceContent-label" for="firstPagePrice">
+                                        {{'lang.maileva_firstPagePrice' | translate}}
+                                    </label>
+                                    <mat-form-field appearance="outline">
+                                        <input matInput [(ngModel)]="shipping.fee.firstPagePrice" required name="firstPagePrice"
+                                               id="firstPagePrice" title="{{'lang.maileva_firstPagePrice' | translate}}" type="number"
+                                               maxlength="255" min="0" step="0.1" pattern="^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$">
+                                        <span matSuffix>&nbsp;€</span>
+                                    </mat-form-field>
+                                </div>
+                                <div class="priceContent">
+                                    <label class="priceContent-label" for="nextPagePrice">
+                                        {{'lang.maileva_nextPagePrice' | translate}}
+                                    </label>
+                                    <mat-form-field appearance="outline">
+                                        <input matInput [(ngModel)]="shipping.fee.nextPagePrice" required name="nextPagePrice"
+                                               id="nextPagePrice" title="{{'lang.maileva_nextPagePrice' | translate}}" type="number"
+                                               maxlength="255" min="0" step="0.1" pattern="^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$">
+                                        <span matSuffix>&nbsp;€</span>
+                                    </mat-form-field>
+                                </div>
+                                <div class="priceContent">
+                                    <label class="priceContent-label" for="postagePrice">
+                                        {{'lang.maileva_postagePrice' | translate}}
+                                    </label>
+                                    <mat-form-field appearance="outline">
+                                        <input matInput [(ngModel)]="shipping.fee.postagePrice" required name="postagePrice"
+                                               id="postagePrice" title="{{'lang.maileva_postagePrice' | translate}}" type="number"
+                                               maxlength="255" min="0" step="0.1" pattern="^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$">
+                                        <span matSuffix>&nbsp;€</span>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="formType ratio-1" style="flex-direction: column; justify-content: center;">
+                                <div class="formType-title">
+                                    {{'lang.mailevaAccount' | translate}}
+                                </div>
+                                <div class="alert-message alert-message-info" style="max-width: none;">{{'lang.infoMailevaAccount' | translate}}</div>
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <input matInput [(ngModel)]="shipping.account.id" required name="login" id="login"
+                                               title="{{'lang.login' | translate}}" type="text" placeholder="{{'lang.id' | translate}}" maxlength="255">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-12">
+                                    <mat-form-field>
+                                        <input name="password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="shipping.account.password"
+                                               matInput [placeholder]="creationMode === false ? ('lang.passwordModification' | translate) : ('lang.password' | translate)" [required]="creationMode">
+                                        <mat-icon color="primary" style="cursor: pointer;" matSuffix (click)="hidePassword = !hidePassword" maxlength="255"
+                                                  class="fa fa-2x" [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                    </mat-form-field>
+                                </div>
+                                <div class="form-group col-sm-12" style="text-align:center;">
+                                    <mat-slide-toggle name="subscribed" [title]="'lang.shippingSubscriptionDesc' | translate"
+                                        id="subscribed" color="primary" [(ngModel)]="shipping.subscribed"
+                                        [checked]="shipping.subscribed">
+                                        {{(shipping.subscribed ? 'lang.shippingSubscribe' : 'lang.shippingUnsubscribe') | translate}}</mat-slide-toggle>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex-direction: row; align-items: center">
+                            <div class="col-sm-12 text-center" style="padding:10px;">
+                                <button mat-raised-button type="submit" color="primary" [disabled]="checkModif() || !shippingForm.valid">{{'lang.validate' | translate}}</button>
+                                <button mat-raised-button type="button" color="default" [disabled]="checkModif()" (click)="cancelModification()">{{'lang.cancel' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+                 fixedTopGap="56" position='end' [opened]="!appService.getViewMode()" style="overflow-x:hidden;width:400px;">
+        <mat-list>
+            <h3 mat-subheader>{{'lang.chooseEntityAssociationModel' | translate}}</h3>
+            <div style="padding:10px;">
+                <app-maarch-flat-tree #maarchTree (afterSelectNode)="updateSelectedEntities()" (afterDeselectNode)="updateSelectedEntities()"></app-maarch-flat-tree>
+            </div>
+        </mat-list>
+    </mat-sidenav>
+</mat-sidenav-container>

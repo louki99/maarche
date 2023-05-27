@@ -1,0 +1,40 @@
+<div class="stepContent">
+    <h2 class="stepContentTitle"><i class="fas fa-user"></i> {{'lang.userAdmin' | translate}}</h2>
+    <div class="alert-message alert-message-info" role="alert" style="margin-top: 30px;min-width: 100%;">
+        {{'lang.stepUserAdmin_desc' | translate}}
+    </div>
+    <form [formGroup]="stepFormGroup" style="width: 850px;margin: auto;">
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.id' | translate}}</mat-label>
+            <input matInput formControlName="login">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.firstname' | translate}}</mat-label>
+            <input matInput formControlName="firstname">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.lastname' | translate}}</mat-label>
+            <input matInput formControlName="lastname">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.password' | translate}}</mat-label>
+            <input [type]="hide ? 'password' : 'text'" matInput formControlName="password">
+            <button mat-icon-button matSuffix color="primary" (click)="hide = !hide">
+                <mat-icon class="fa {{hide ? 'fa-eye-slash' : 'fa-eye'}}"></mat-icon>
+            </button>
+            <mat-error>{{'lang.passwordNotMatch' | translate}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.retypeNewPassword' | translate}}</mat-label>
+            <input [type]="hide ? 'password' : 'text'" matInput formControlName="passwordConfirm">
+            <button mat-icon-button matSuffix color="primary" (click)="hide = !hide">
+                <mat-icon class="fa {{hide ? 'fa-eye-slash' : 'fa-eye'}}"></mat-icon>
+            </button>
+            <mat-error>{{'lang.passwordNotMatch' | translate}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{'lang.email' | translate}}</mat-label>
+            <input matInput formControlName="email">
+        </mat-form-field>
+    </form>
+</div>

@@ -1,0 +1,275 @@
+{
+    "swagger" : "2.0",
+    "info" : {
+        "title" : "Maarch Courrier",
+        "version" : "2301",
+        "description" : "Documentation de l'API Maarch Courrier V2301",
+        "contact" : {
+            "name" : "Maarch",
+            "email" : "dev.maarch@maarch.org"
+        }
+    },
+    "basePath" : "/rest",
+    "paths" : {
+        "/res/resource/status" : {
+            "put" :  {
+                "description" : "Update documents status",
+                "operationId" : "Resource/controllers/ResController::updateStatus",
+                "parameters" : [
+                    {
+                        "name" : "body",
+                        "in" : "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "resId": {
+                                    "type": "array",
+                                    "description" : "Documents identifier",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example" : 101
+                                    }
+                                },
+                                "chrono": {
+                                    "type": "array",
+                                    "description" : "Documents chrono number",
+                                    "items": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example" : "MAARCH/2017A/91"
+                                    }
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "description" : "New status",
+                                    "maxLength": 10,
+                                    "default": "COU",
+                                    "example" : "NEW"
+                        
+                                },
+                                "historyMessage": {
+                                    "type": "string",
+                                    "description" : "Message in history table",
+                                    "default": "status update",
+                                    "example" : "Document is reopen"
+                                }
+                            }
+                        }
+                    } 
+                ],
+                "responses" : {
+                    "200" : {
+                        "description" : "Status updated",
+                        "schema": {
+                            "type" : "object",
+                            "properties" : {
+                                "success" : {
+                                    "type" : "string"
+                                }
+                            }
+                        },
+                        "examples" : {
+                            "application/json": {
+                                "success": "success"
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Status or document not found",
+                        "schema": {
+                            "type" : "object",
+                            "properties" : {
+                                "errors" : {
+                                    "type" : "string"
+                                }
+                            }
+                        },
+                        "examples" : {
+                            "application/json": {
+                                "errors": "Status not found"
+                            }
+                        }
+                    },
+                    "403" : {
+                        "description" : "Document is out of perimeter",
+                        "schema": {
+                            "type" : "object",
+                            "properties" : {
+                                "errors" : {
+                                    "type" : "string"
+                                }
+                            }
+                        },
+                        "examples" : {
+                            "application/json": {
+                                "errors": "Document out of perimeter"
+                            }
+                        }
+                    }
+                }
+            } 
+        },
+        "/entities/{id}" : {
+            "get" : {
+                "description" : "Get entity informations",
+                "operationId" : "Entity/controllers/EntityController::getById",
+                "parameters" : [
+                    {
+                        "name" : "id",
+                        "description" : "Entity identifier",
+                        "in" : "path",
+                        "required" : true,
+                        "type" : "string",
+                        "maxLength" : 32
+                    }
+                ],
+                "responses" : {
+                    "200" : {
+                        "description" : "Return entity informations",
+                        "schema" : {
+                            "$ref": "#/definitions/EntityRead"
+                        },
+                        "examples" : {
+                            "application/json": {
+                                "entity": {
+                                    "entity_id" : "VILLE",
+                                    "entity_label" : "Ville de Maarch-Les-Bains",
+                                    "short_label" : "Ville de Maarch-Les-Bains",
+                                    "enabled" : "Y",
+                                    "address_number" : "11",
+                                    "address_street" : "Bd du sud-est",
+                                    "address_additional1" : "",
+                                    "address_additional2" : "",
+                                    "address_postcode" : "92000",
+                                    "address_town" : "Nanterre",
+                                    "address_country" : "FRANCE",
+                                    "email" : "info@maarchlesbains.org",
+                                    "business_id" : "",
+                                    "parent_entity_id" : "",
+                                    "entity_type" : "Direction",
+                                    "ldap_id" : "",
+                                    "archival_agency" : "",
+                                    "archival_agreement" : "",
+                                    "entity_full_name" : ""
+                                } 
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Entity not found",
+                        "schema": {
+                            "type" : "object",
+                            "properties" : {
+                                "errors" : {
+                                    "type" : "string"
+                                }
+                            }
+                        },
+                        "examples" : {
+                            "application/json": {
+                                "errors": "Entity not found"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions" : {
+        "EntityRead" : {
+            "type" : "object",
+            "required" : [
+                "entity"
+            ],
+            "properties": {
+                "entity" : {
+                    "required" : [
+                        "entity_id",
+                        "entity_label",
+                        "short_label",
+                        "entity_type",
+                        "enabled"
+                    ],
+                    "properties" : {
+                        "entity_id" : {
+                            "type" : "string",
+                            "maxLength" : 32
+                        },                       
+                        "entity_label" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "short_label" : {
+                            "type" : "string",
+                            "maxLength" : 50
+                        },                       
+                        "enabled" : {
+                            "type" : "string",
+                            "maxLength" : 1
+                        },                       
+                        "address_number" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "address_street" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "address_additional1" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "address_additional2" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },
+                        "address_postcode" : {
+                            "type" : "string",
+                            "maxLength" : 32
+                        },                       
+                        "address_town" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "address_country" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "email" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "business_id" : {
+                            "type" : "string",
+                            "maxLength" : 32
+                        },                       
+                        "parent_entity_id" : {
+                            "type" : "string",
+                            "maxLength" : 32
+                        },                       
+                        "entity_type" : {
+                            "type" : "string",
+                            "maxLength" : 64
+                        },                       
+                        "ldap_id" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "archival_agency" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "archival_agreement" : {
+                            "type" : "string",
+                            "maxLength" : 255
+                        },                       
+                        "entity_full_name" : {
+                            "type" : "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

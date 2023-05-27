@@ -1,0 +1,106 @@
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    background: white;
+    padding: 10px;
+    .mat-icon {
+        display: none;
+    }
+
+    button {
+        opacity: 0;
+    }
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.columns:last-child {
+    border: none;
+}
+
+.cdk-list {
+    height: 250px;
+    overflow: auto;
+}
+
+.cdk-list.cdk-drop-list-dragging .columns:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.columns {
+    cursor: move;
+}
+
+.workflowContent {
+    position: relative;
+    background: white;
+    border-radius: 4px;
+    border: solid 1px #ccc;
+    padding: 10px;
+
+    .mat-list-item {
+        height: auto;
+        font-size: 13px;
+    }
+
+    h2 {
+        white-space: pre;
+        overflow: hidden;
+        max-width: 85%;     
+        text-overflow: ellipsis;
+        z-index: 1;
+        font-size: 10px;
+        font-weight: bold;
+        background: white;
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        padding: 0px;
+        margin: 0px;
+        padding-left: 5px;
+        padding-right: 5px;
+        color: #135f7f;
+    }
+}
+
+.accountList {
+    ::ng-deep.mat-option-text {
+        display: flex;
+    }
+
+    .accountName {
+        flex: 1;
+    }
+}
+
+::ng-deep.listMenu {
+    .mat-menu-content {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.currentContextButton{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    width: 150px;
+    text-align: left;
+}
+
+.currentRoleButton{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    width: 120px;
+    text-align: left;
+}

@@ -1,0 +1,6 @@
+{
+    "connectionUrl" : "https://serveur/openam/UI/Login",
+    "attributeUrl"  : "https://serveur/openam/identity/json/attributes",
+    "cookieName"    : "iPlanetDirectoryPro",
+    "attributeName" : "employeeNumber"
+}

@@ -1,0 +1,15 @@
+/.angular/cache
+installed.lck
+config/config.json
+apps/maarch_entreprise/xml/log4php.xml
+*.log
+test/unitTests/build/
+cypress/
+modules/visa/xml/remoteSignatoryBooks.xml
+/dist/
+/dist-addin/
+node_modules/
+/custom/*
+/tmp/*
+# vendor/ is not versioned on develop, but should be versioned in release branches
+vendor/

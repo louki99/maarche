@@ -1,0 +1,22 @@
+.userBaskets {
+    overflow: hidden;
+
+    #selectAll {
+        opacity: 0.5;
+        font-style: italic;
+        font-size: 80%;
+    }
+
+    #selectionBasket {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.redirectedBaskets {
+    overflow:hidden;
+
+    .paper-plane {
+        margin-top:-60px;
+    }
+}

@@ -1,0 +1,70 @@
+
+.basketList {
+    border-radius: 0px;
+    box-shadow:none;
+
+    ::ng-deep.mat-expansion-panel-body {
+        padding: 0;
+    }
+
+    .mat-expansion-panel-header-title {
+        color: #135F7F;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .mat-line {
+        font-size: 12px;
+        font-weight: bold;
+    }
+}
+
+.selectedBasket {
+    border-left: solid 5px var(--maarch-color-primary);
+    background: var(--maarch-color-primary-opacity-10);
+}
+
+.selectedBasket:focus {
+    background: var(--maarch-color-primary-opacity-10);
+}
+.nbRes {
+    font-size: 14px;
+    font-weight: bold;
+    min-width:auto;
+}
+.nbResZero {
+    font-size: 12px;
+    font-weight: bold;
+    min-width:auto;
+}
+
+.basketGroupTitle {
+    color: var(--maarch-color-primary);
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+.basketsFilter {
+    ::ng-deep.mat-form-field-infix {
+        padding : 0px;
+        padding-bottom: 5px;
+    }
+}
+
+.panelIconMenu {
+    font-size: 22px;
+}
+
+.noBasket {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+.defaultColor {
+    color: var(--maarch-color-primary);
+}

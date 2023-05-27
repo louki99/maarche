@@ -1,0 +1,56 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.folder' | translate}} : {{folder.label}}</h1>
+    <mat-dialog-content>
+        <form #submitForm="ngForm" (ngSubmit)="onSubmit()">
+            <div class="col-md-12">
+                <mat-form-field>
+                    <input matInput placeholder="{{'lang.label' | translate}}" name="label" [(ngModel)]="folder.label">
+                </mat-form-field>
+            </div>
+            <div class="col-md-12">
+                <mat-tab-group (selectedTabChange)="initService($event)">
+                    <mat-tab label="{{'lang.setInParentFolder' | translate}}">
+                        <mat-form-field appearance="outline">
+                            <input matInput id="jstree_searchFolders" type="text" placeholder="{{'lang.searchFolder' | translate}}">
+                        </mat-form-field>
+                        <div id="jstreeFolders" class="entitiesList"></div>
+                    </mat-tab>
+                    <mat-tab label="{{'lang.shareToEntities' | translate}}">
+                        <div [class.col-md-12]="folder.sharing.entities.length === 0"
+                            [class.col-md-6]="folder.sharing.entities.length > 0">
+                            <mat-form-field appearance="outline">
+                                <input matInput id="jstree_search" type="text" placeholder="{{'lang.searchEntities' | translate}}">
+                            </mat-form-field>
+                            <div id="jstree" class="entitiesList"></div>
+                        </div>
+                        <div class="col-md-6" *ngIf="folder.sharing.entities.length > 0">
+                            <div class="formType jstreeEntities">
+                                <div class="formType-title">
+                                    {{'lang.parameters' | translate}}
+                                </div>
+                                <ng-container *ngFor="let entity of entities">
+                                    <mat-expansion-panel class="selectedEntities" *ngIf="checkSelectedFolder(entity)"
+                                        opened>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{entity.entity_label}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-slide-toggle color="primary" [checked]="isAdminEnabled(entity)"
+                                            (change)="toggleAdmin(entity, $event)">{{'lang.canManageFolder' | translate}}
+                                        </mat-slide-toggle>
+                                    </mat-expansion-panel>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </form>
+    </mat-dialog-content>
+    <span class="divider-modal"></span>
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary" type="submit" (click)="submitForm.ngSubmit.emit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button type="button" color="default" (click)="dialogRef.close()">{{'lang.cancel' | translate}}</button>
+    </mat-dialog-actions>
+</div>

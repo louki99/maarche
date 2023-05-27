@@ -1,0 +1,109 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content" style="overflow: hidden;">
+                <mat-horizontal-stepper [@.disabled]="true" *ngIf="!loading" linear #stepper style="height: 100vh;overflow: auto;" (selectionChange)="initStep($event)">
+                    <mat-step label="install">
+                        <ng-template matStepLabel>Installation</ng-template>
+                        <div class="stepContainer">
+                            <div class="stepContent">
+                                <app-welcome #stepContent #appWelcome></app-welcome>
+                            </div>
+                            <button *ngIf="!authService.noInstall" mat-fab [title]="'lang.home' | translate" class="previousStepButton" color="primary" (click)="gotToLogin()">
+                                <mat-icon class="fas fa-home"></mat-icon>
+                            </button>
+                            <button mat-fab matStepperNext [title]="'lang.next' | translate" class="nextStepButton" color="primary">
+                                <mat-icon class="fa fa-arrow-right"></mat-icon>
+                            </button>
+                        </div>
+                    </mat-step>
+                    <mat-step [stepControl]="appPrerequisite.getFormGroup()">
+                        <ng-template matStepLabel>{{'lang.prerequisite' | translate}}</ng-template>
+                        <div class="stepContainer">
+                            <div class="stepContent">
+                                <app-prerequisite #appPrerequisite #stepContent></app-prerequisite>
+                            </div>
+                            <button mat-fab matStepperPrevious [title]="'lang.previous' | translate" class="previousStepButton" color="primary">
+                                <mat-icon class="fa fa-arrow-left"></mat-icon>
+                            </button>
+                            <button mat-fab matStepperNext [title]="'lang.next' | translate" class="nextStepButton" color="primary" [disabled]="!appPrerequisite.isValidStep()">
+                                <mat-icon class="fa fa-arrow-right"></mat-icon>
+                            </button>
+                        </div>
+                    </mat-step>
+                    <mat-step [stepControl]="appDatabase.getFormGroup()">
+                        <ng-template matStepLabel>{{'lang.database' | translate}}</ng-template>
+                        <div class="stepContainer">
+                            <div class="stepContent">
+                                <app-database #appDatabase #stepContent (nextStep)="nextStep()"></app-database>
+                            </div>
+                            <button mat-fab matStepperPrevious [title]="'lang.previous' | translate" class="previousStepButton" color="primary">
+                                <mat-icon class="fa fa-arrow-left"></mat-icon>
+                            </button>
+                            <button mat-fab matStepperNext [title]="'lang.next' | translate" class="nextStepButton" color="primary" [disabled]="!appDatabase.isValidStep()">
+                                <mat-icon class="fa fa-arrow-right"></mat-icon>
+                            </button>
+                        </div>
+                    </mat-step>
+                    <mat-step [stepControl]="appDocservers.getFormGroup()">
+                        <ng-template matStepLabel>{{'lang.docserver' | translate}}</ng-template>
+                        <div class="stepContainer">
+                            <div class="stepContent">
+                                <app-docservers #appDocservers #stepContent (nextStep)="nextStep()"></app-docservers>
+                            </div>
+                            <button mat-fab matStepperPrevious [title]="'lang.previous' | translate" class="previousStepButton" color="primary">
+                                <mat-icon class="fa fa-arrow-left"></mat-icon>
+                            </button>
+                            <button mat-fab matStepperNext [title]="'lang.next' | translate" class="nextStepButton" color="primary" [disabled]="!appDocservers.isValidStep()">
+                                <mat-icon class="fa fa-arrow-right"></mat-icon>
+                            </button>
+                        </div>
+                    </mat-step>
+                    <mat-step [stepControl]="appCustomization.getFormGroup()">
+                        <ng-template matStepLabel>{{'lang.customization' | translate}}</ng-template>
+                        <div class="stepContainer">
+                            <div class="stepContent">
+                                <app-customization #appCustomization #stepContent [appDatabase]="appDatabase" [appWelcome]="appWelcome"></app-customization>
+                            </div>
+                            <button mat-fab matStepperPrevious [title]="'lang.previous' | translate" class="previousStepButton" color="primary">
+                                <mat-icon class="fa fa-arrow-left"></mat-icon>
+                            </button>
+                            <button mat-fab matStepperNext [title]="'lang.next' | translate" class="nextStepButton" color="primary" [disabled]="!appCustomization.isValidStep()">
+                                <mat-icon class="fa fa-arrow-right"></mat-icon>
+                            </button>
+                        </div>
+                    </mat-step>
+                    <mat-step [stepControl]="appUseradmin.getFormGroup()">
+                        <ng-template matStepLabel>{{'lang.userAdmin' | translate}}</ng-template>
+                        <div class="stepContainer">
+                            <div class="stepContent">
+                                <app-useradmin #appUseradmin #stepContent (tiggerInstall)="endInstall()"></app-useradmin>
+                            </div>
+                            <button mat-fab matStepperPrevious [title]="'lang.previous' | translate" class="previousStepButton" color="primary">
+                                <mat-icon class="fa fa-arrow-left"></mat-icon>
+                            </button>
+                            <button mat-fab [title]="'lang.beginInstall' | translate" class="nextStepButton" color="accent" [disabled]="!appUseradmin.isValidStep()" (click)="endInstall()">
+                                <mat-icon class="fas fa-check-double"></mat-icon>
+                            </button>
+                        </div>
+                    </mat-step>
+                    <ng-template matStepperIcon="edit">
+                        <mat-icon class="fa fa-check stepIcon"></mat-icon>
+                    </ng-template>
+                
+                    <ng-template matStepperIcon="done">
+                        <mat-icon class="fa fa-check stepIcon"></mat-icon>
+                    </ng-template>
+                
+                    <ng-template matStepperIcon="error">
+                        <mat-icon class="fa fa-times stepIcon" style="color: red;font-size: 15px !important;"></mat-icon>
+                    </ng-template>
+                </mat-horizontal-stepper>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

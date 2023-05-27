@@ -1,0 +1,70 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <mat-sidenav-container autosize style="height:100%;">
+            <mat-sidenav-content style="background: white;padding:10px;">
+                <div>
+                    {{'lang.makeActionOn' | translate}}
+                    <b *ngIf="data.resIds.length === 0" color="primary"
+                        class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                    <b *ngIf="data.resIds.length == 1" color="primary" class="highlight">{{data.resource.chrono}}</b>
+                    <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                        {{'lang.elements' | translate}}</b> ?
+                </div>
+                <div class="alert-message alert-message-info"
+                    *ngIf="data.resIds.length == 1 && appVisaWorkflow !== undefined && appVisaWorkflow.getNextVisaUser() !== ''"
+                    role="alert" style="margin-top: 30px;"
+                    [innerHTML]="('lang.sendToDocTo' | translate) + ' <b>' + appVisaWorkflow.getNextVisaUser().labelToDisplay + '</b>'">
+                </div>
+
+                <div class="alert-message alert-message-info"
+                    *ngIf="data.resIds.length == 1 && appVisaWorkflow !== undefined && appVisaWorkflow.getNextVisaUser() === '' && !noResourceToProcess"
+                    role="alert" style="margin-top: 30px;" [innerHTML]="'lang.endWorkflow' | translate"></div>
+
+                <div *ngIf="resourcesErrors.length > 0" class="alert-message alert-message-danger mailList"
+                    role="alert">
+                    <p>
+                        {{'lang.canNotMakeAction' | translate}} :
+                    </p>
+                    <ul>
+                        <li *ngFor="let ressource of resourcesErrors">
+                            <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                        </li>
+                    </ul>
+                </div>
+                <div *ngIf="resourcesWarnings.length > 0" class="alert-message alert-message-info mailList"
+                    role="alert">
+                    <ul style="margin: 0;padding-bottom: 0px;">
+                        <li *ngFor="let ressource of resourcesWarnings">
+                            <b>{{ressource.alt_identifier}}</b> : {{'lang.' + ressource.reason | translate}}
+                        </li>
+                    </ul>
+                </div>
+                <div *ngIf="resourcesMailing.length > 0 && appVisaWorkflow !== undefined && appVisaWorkflow.getNextVisaUser() !== '' && appVisaWorkflow.getNextVisaUser().requested_signature"
+                    class="alert-message alert-message-info" role="alert">
+                    <p>{{'lang.mailingActionInformations' | translate}}</p>
+                    <ul>
+                        <li *ngFor="let ressource of resourcesMailing">
+                            <b>{{ressource.alt_identifier}}</b>
+                        </li>
+                    </ul>
+                </div>
+                <app-visa-workflow *ngIf="data.resIds.length == 1" [adminMode]="false" [resId]="data.resIds[0]"
+                    #appVisaWorkflow [target]="'action'">
+                </app-visa-workflow>
+                <div style="padding-top: 10px;">
+                    <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+                </div>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || !isValidAction()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

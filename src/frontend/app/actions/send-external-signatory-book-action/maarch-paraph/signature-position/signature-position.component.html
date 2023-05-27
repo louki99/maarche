@@ -1,0 +1,127 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{'lang.manageSignaturesPositions' | translate}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <div style="display: flex;height: 100%;flex-direction:column">
+            <nav mat-tab-nav-bar *ngIf="!loading" class="workflowList">
+                <a mat-tab-link *ngFor="let user of data.workflow;let i=index" (click)="selectUser(i)"
+                    [active]="currentUser == i">
+                    <div>
+                        <i class="fas" [class.fa-pen-nib]="user.requested_signature"
+                            [class.fa-check-double]="!user.requested_signature"></i>&nbsp;{{user.labelToDisplay}}
+                    </div>
+                    <div>
+                        <mat-chip-list>
+                            <ng-container *ngFor="let sign of signList">
+                                <mat-chip *ngIf="sign.sequence === i" color="primary"
+                                    style="font-size: 10px; padding-top: 0px; padding-bottom: 0px; min-height: 20px;cursor: pointer;"
+                                    (click)="goToSignUserPage(i,sign.page)"
+                                    [selected]="currentUser == i && currentPage === sign.page">
+                                    {{'lang.page' | translate}}
+                                    {{sign.page}}
+                                </mat-chip>
+                            </ng-container>
+                            <ng-container *ngFor="let date of dateList">
+                                <mat-chip *ngIf="!hasSign(i, date.page) && date.sequence === i" color="primary"
+                                    style="font-size: 10px; padding-top: 0px; padding-bottom: 0px; min-height: 20px; cursor: pointer;"
+                                    (click)="goToSignUserPage(i,date.page)"
+                                    [selected]="currentUser == i && currentPage === date.page">
+                                    {{'lang.page' | translate}}
+                                    {{date.page}}
+                                </mat-chip>
+                            </ng-container>
+                        </mat-chip-list>
+                    </div>
+                </a>
+            </nav>
+            <app-maarch-message *ngIf="!loading && !checkExternalUser()"
+                [mode]="'info'" 
+                [content]="'lang.cannotManageSignature' | translate">
+            </app-maarch-message>
+            <div class="signatureContainer">
+                <div id="myBounds" #myBounds style="position: absolute;"
+                    [style.width.px]="workingAreaWidth" [style.height.px]="workingAreaHeight">
+                    <ng-container *ngFor="let sign of signList;let indexSign=index;">
+                        <div *ngIf="sign.page === currentPage" [class.signDisabled]="currentUser!==sign.sequence"
+                            [position]="{x: (sign.positionX*workingAreaWidth)/100, y:(sign.positionY*workingAreaHeight)/100}"
+                            [style.width.%]="25" [ngDraggable]="currentUser===sign.sequence"
+                            (endOffset)="moveSign($event);" [preventDefaultEvent]="false" [bounds]="myBounds"
+                            [inBounds]="true" class="signature"
+                            (click)="currentUser!=sign.sequence ? goToSignUserPage(sign.sequence, currentPage) : false">
+                            <button style="position: absolute;top: -40px;right: 0px;" mat-icon-button color="warn"
+                                [title]="'lang.delete' | translate" (click)="deleteSign(indexSign)">
+                                <mat-icon class="fa fa-trash-alt"></mat-icon>
+                            </button>
+                            <span class="signUserName">{{getUserName(sign.sequence)}}</span>
+                            {{'lang.signature' | translate | uppercase}}
+                        </div>
+                    </ng-container>
+                    <ng-container *ngFor="let date of dateList;let indexSign=index;">
+                        <div *ngIf="date.page === currentPage" [class.signDisabled]="currentUser!==date.sequence"
+                            [position]="{x: (date.positionX*workingAreaWidth)/100, y:(date.positionY*workingAreaHeight)/100}"
+                            [ngDraggable]="currentUser===date.sequence && !resizing" (endOffset)="moveDate($event);"
+                            [preventDefaultEvent]="false" [bounds]="myBounds" [inBounds]="true" class="dateBlock"
+                            [style.width.%]="date.width" [style.height.%]="date.height"
+                            (click)="$event.stopPropagation();currentUser!=date.sequence ? goToSignUserPage(date.sequence, currentPage) : false"
+                            ngResizable [rzAspectRatio]="true" (rzStart)="resizing=true"
+                            (rzStop)="onResizeDateStop($event, indexSign);resizing=false;">
+                            <div style="position: absolute;top: -40px;right: 0px;">
+                                <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
+                                    <mat-icon class="fas fa-cog"></mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <button mat-menu-item
+                                        (click)="openDateSettings(indexSign)">{{'lang.options' | translate}}</button>
+                                    <button mat-menu-item
+                                        (click)="deleteDate(indexSign)">{{'lang.delete' | translate}}</button>
+                                </mat-menu>
+                            </div>
+                            <svg viewBox="0 0 130 30" preserveAspectRatio="xMinYMin meet">
+                                <text y="21" [attr.font-size]="date.size" [style.font-family]="date.font"
+                                    [style.fill]="date.color">{{today | date : date.format : undefined : ('lang.langISO' | translate)}}</text></svg>
+                        </div>
+                    </ng-container>
+                </div>
+                <button mat-mini-fab color="primary" style="position: fixed;margin-top: 10px;margin-left: 10px;"
+                    [matMenuTriggerFor]="actionPosMenu"
+                    [disabled]="!emptySign() && !emptyDate()">
+                    <mat-icon class="fas fa-plus" style="height: auto"></mat-icon>
+                </button>
+                <mat-menu #actionPosMenu="matMenu">
+                    <button mat-menu-item [disabled]="!emptyDate() || data.workflow[this.currentUser].item_id === null"
+                        (click)="initDateBlock()">{{'lang.addDateBlock' | translate}}</button>
+                    <button mat-menu-item [disabled]="!emptySign()"
+                        (click)="initSign()">{{'lang.addSignaturePosition' | translate}}</button>
+                </mat-menu>
+                <img class="img-content" [src]="imgContent" (load)="imgLoaded()" />
+            </div>
+        </div>
+        <ng-container *ngIf="pages.length > 1">
+            <button mat-fab *ngIf="currentPage > 1" (click)="goToSignUserPage(currentUser, currentPage-1)"
+                class="paginate-left">
+                <mat-icon class="fa fa-chevron-left" style="height:auto"></mat-icon>
+            </button>
+            <button mat-fab *ngIf="currentPage < pages.length" (click)="goToSignUserPage(currentUser, currentPage+1)"
+                class="paginate-right">
+                <mat-icon class="fa fa-chevron-right" style="height:auto"></mat-icon>
+            </button>
+        </ng-container>
+        <section class="page-info">
+            <div class="page-info-doc">{{data.resource.title}}</div>
+            <div class="page-info-page"  [matMenuTriggerFor]="menuPage">
+                {{'lang.page' | translate}} {{ currentPage }} / {{ pages.length }}</div>
+            <mat-menu #menuPage="matMenu">
+                <button mat-menu-item *ngFor="let page of pages"
+                    (click)="goToSignUserPage(currentUser, page)">{{'lang.page' | translate}} {{ page }}</button>
+            </mat-menu>
+        </section>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>

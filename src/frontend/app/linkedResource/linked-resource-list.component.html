@@ -1,0 +1,76 @@
+<ng-container *ngIf="loading; else elseLoading">
+    <div class="loading">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
+<ng-template #elseLoading>
+    <mat-card id="viewThumbnail"
+        style="display:none;position: fixed;z-index: 2;margin-left: 1px;left: 50%;transform: translate(-50%,-50%);top: 50%;">
+        <img style="max-height: 100vh;" *ngIf="thumbnailUrl !== ''" [src]="thumbnailUrl | secureUrl | async" /></mat-card>
+    <div class="row" style="margin: 0px;">
+        <div class="col-md-12">
+            <mat-paginator #paginator [length]="100" [hidePageSize]="true" [pageSize]="10">
+            </mat-paginator>
+        </div>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort matSortActive="resId" matSortDirection="desc">
+        <ng-container matColumnDef="resId">
+            <mat-cell *matCellDef="let row" style="flex: 1;flex-direction: column;padding: 0px;">
+                <div class="sub-info">
+                    <span class="sub-info-data col-md-4">
+                        <i class="fas fa-exchange-alt" title="{{'lang.category_id' | translate}}"></i>
+                        &nbsp;
+                        <span title="{{'lang.' + row.categoryId | translate}}">{{'lang.' + row.categoryId | translate}}</span>
+                    </span>
+                    <span class="sub-info-data col-md-4 text-center senders" (click)="openContact(row,'senders')">
+                        <i class="fas fa-user" title="{{'lang.contact' | translate}}"></i>
+                        &nbsp;
+                        <span [title]="row.senders">{{row.senders}}</span>
+                    </span>
+                    <span class="sub-info-data col-md-4 text-right">
+                        <i class="fas fa-calendar" title="{{'lang.creationDate' | translate}}"></i>
+                        &nbsp;
+                        <span
+                            [title]="row.documentDate | fullDate">{{row.documentDate | timeAgo : 'full' | ucfirst}}</span>
+                    </span>
+                    <span class="sub-info-data col-md-6">
+                        <i class="fas fa-sitemap" title="{{'lang.getAssignee' | translate}}"></i>
+                        &nbsp;
+                        <span
+                            [title]="row.destUserLabel + ' (' + row.destinationLabel +  ')'">{{row.destUserLabel + ' (' + row.destinationLabel +  ')'}}</span>
+                    </span>
+                    <span class="sub-info-data col-md-6 text-right" *ngIf="row.visaCircuit.length > 0">
+                        <i class="fas fa-list-ol" title="{{'lang.visaWorkflow' | translate}}"></i>
+                        &nbsp;
+                        <span [title]="getUsersVisaCircuit(row)">{{getUsersVisaCircuit(row)}}</span>
+                    </span>
+                </div>
+                <div class="main-info">
+                    <span class="main-info-status">
+                        <mat-icon title="{{row.statusLabel}}" [ngStyle]="{'color': row.priorityColor}" color="primary"
+                            class="{{row.statusImage.charAt(0)}}{{row.statusImage.charAt(1)}} {{row.statusImage}} {{row.statusImage.charAt(0)}}{{row.statusImage.charAt(1)}}-2x">
+                        </mat-icon>
+                        <span *ngIf="row.confidentiality" class="watermark">{{'lang.confidential' | translate}}</span>
+                    </span>
+                    <span class="main-info-data" style="width:200px;text-align:center;">
+                        {{row.chrono}}
+                    </span>
+                    <span class="main-info-data" style="font-weight:bold;flex:1;"
+                        [class.undefined]="row.subject == ('lang.undefined' | translate)"
+                        title="{{row.subject}}">{{row.subject | shorten: 150: '...'}}</span>
+                    <span class="main-info-data">
+                        <button *ngIf="editMode" mat-icon-button color="warn" [title]="'lang.unlink' | translate"
+                            (click)="$event.stopPropagation();unlinkResource(row)">
+                            <mat-icon class="fa fa-unlink fa-2x" aria-hidden="true"></mat-icon>
+                        </button>
+                    </span>
+                </div>
+            </mat-cell>
+        </ng-container>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goTo(row.resId)" (mouseenter)="viewThumbnail(row);"
+            (mouseleave)="closeThumbnail();" [class.can-click]="canAccessResources"></mat-row>
+    </mat-table>
+    <button *ngIf="editMode" mat-fab class="linkRes" color="primary" [title]="'lang.linkResource' | translate" (click)="openSearchResourceModal()">
+        <mat-icon class="fa fa-link" style="height:auto;"></mat-icon>
+    </button>
+</ng-template>

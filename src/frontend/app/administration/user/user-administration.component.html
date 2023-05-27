@@ -1,0 +1,631 @@
+<mat-sidenav-container autosize class="maarch-container">
+    <ng-template #adminMenuTemplate>
+        <mat-nav-list *ngIf="!creationMode && !loading">
+            <h3 mat-subheader>{{'lang.actions' | translate}}</h3>
+            <div *ngIf="!authService.mailServerOnline"
+                class="alert-message alert-message-danger mailList"
+                style="max-width: 100%;margin: 0px;"
+                [innerHTML]="'lang.mailServerOfflineMsg' | translate :{action:('lang.sendActivationNotification' | translate)}">
+            </div>
+            <a mat-list-item *ngIf="user.status != 'ABS'" (click)="activateAbsence()">
+                <mat-icon color="warn" mat-list-icon class="fa fa-plane"></mat-icon>
+                <p mat-line>
+                    {{'lang.activateAbsence' | translate}}
+                </p>
+            </a>
+            <a mat-list-item *ngIf="user.status == 'ABS'" (click)="desactivateAbsence()">
+                <mat-icon color="accent" mat-list-icon class="fa fa-check"></mat-icon>
+                <p mat-line>
+                    {{'lang.desactivateAbsence' | translate}}
+                </p>
+            </a>
+            <a mat-list-item *ngIf="user.canSendActivationNotification" [disabled]="!authService.mailServerOnline" (click)="resendActivationNotification()">
+                <mat-icon color="primary" mat-list-icon class="fa fa-paper-plane"></mat-icon>
+                <p mat-line>
+                    {{'lang.sendActivationNotification' | translate}}
+                </p>
+            </a>
+            <a *ngIf="user.canModifyPassword" mat-list-item (click)="changePasswd();">
+                <mat-icon color="primary" mat-list-icon class="fa fa-key"></mat-icon>
+                <p mat-line>
+                    {{'lang.changePassword' | translate}}
+                </p>
+            </a>
+            <a mat-list-item *ngIf="!loading && user.canLinkToExternalSignatoryBook"
+                (click)="linkExternalSignatoryBookAccount()"
+                [title]="getLabelById('linkAccount')">
+                <mat-icon color="primary" mat-list-icon class="fa fa-link"></mat-icon>
+                <p mat-line>
+                    {{getLabelById('linkAccount')}}
+                </p>
+                <p mat-line *ngIf="!externalSignatoryBookConnectionStatus" style="font-size:11px;color:red">
+                    {{'lang.maarchParapheurLinkbroken' | translate}}
+                </p>
+            </a>
+        </mat-nav-list>
+        <mat-divider></mat-divider>
+        <mat-list *ngIf="externalSignatoryBookLink.login !== ''">
+            <h3 mat-subheader>{{getLabelById('account')}}</h3>
+            <mat-list-item style="margin-top: 10px;">
+                <mat-icon class="avatarAccount" color="primary" mat-list-icon
+                    [style.background-image]="'url('+externalSignatoryBookLink.picture+')'"></mat-icon>
+                <p mat-line class="accountInfo" [title]="externalSignatoryBookLink.login">
+                    <span class="externalUserLogin">
+                        {{externalSignatoryBookLink.login}}
+                    </span>
+                    <button mat-icon-button color="warn" (click)="unlinkSignatoryBookAccount()" style="align-self: center;"
+                        title="{{'lang.unlinkAccount' | translate}}">
+                        <mat-icon class="fas fa-unlink"></mat-icon>
+                    </button>
+                </p>
+            </mat-list-item>
+        </mat-list>
+    </ng-template>
+    <mat-sidenav-content>
+        <div class="bg-head">
+            <div class="bg-head-title" [class.customContainerRight]="appService.getViewMode()">
+                <div class="bg-head-title-label">
+                    <app-header-left></app-header-left>
+                </div>
+                <div class="bg-head-title-tool">
+                    <app-header-right></app-header-right>
+                </div>
+            </div>
+            <div class="bg-head-content" [class.fullContainer]="appService.getViewMode()">
+            </div>
+        </div>
+        <div class="container" [class.fullContainer]="appService.getViewMode()">
+            <div class="container-content">
+                <div *ngIf="loading" style="display:flex;height:100%;">
+                    <mat-spinner style="margin:auto;"></mat-spinner>
+                </div>
+                <mat-card *ngIf="!loading" class="card-app-content">
+                    <div *ngIf="!authService.mailServerOnline && creationMode">
+                        <div class="alert-message alert-message-danger" role="alert" style="max-width: 100%" 
+                            [innerHTML]="'lang.mailServerOfflineMsg' | translate :{action:('lang.receiveActivationNotification' | translate)}"></div>
+                    </div>
+                    <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="initService()">
+                        <mat-tab label="{{'lang.informations' | translate}}">
+                            <div *ngIf="showPassword" style="margin-bottom: 5%">
+                                <form [formGroup]="firstFormGroup">
+                                    <div class="form-group">
+                                        <mat-form-field style="padding:10px;">
+                                            <input matInput placeholder="{{'lang.typeCurrentPassword' | translate}}"
+                                                formControlName="currentPasswordCtrl" required
+                                                [type]="hidePassword ? 'password' : 'text'">
+                                            <mat-icon matSuffix (click)="hidePassword = !hidePassword" class="fa fa-2x"
+                                                [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                            <mat-error
+                                                *ngIf="firstFormGroup.controls['currentPasswordCtrl'].hasError('required')">
+                                                {{'lang.requiredField' | translate}}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="text-align:center;color: rgba(0,0,0,0.54);font-size: 75%;">
+                                            {{this.ruleText}}</div>
+                                        <div class="col-sm-6" style="padding-left:0px;padding-right: 0px;">
+                                            <mat-form-field style="padding:10px;">
+                                                <input matInput #inputPasswd
+                                                    placeholder="{{'lang.typeNewPassword' | translate}}"
+                                                    formControlName="newPasswordCtrl" required
+                                                    [type]="hidePassword ? 'password' : 'text'">
+                                                <mat-icon matSuffix (click)="hidePassword = !hidePassword"
+                                                    class="fa fa-2x"
+                                                    [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                                <mat-hint *ngIf="validPassword">
+                                                    <i color="accent" class="fa fa-check"></i>
+                                                    <span color="accent">{{'lang.passwordValid' | translate}}</span>
+                                                </mat-hint>
+                                                <mat-error>{{getErrorMessage()}}</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-6" style="padding-left:0px;padding-right:0px;">
+                                            <mat-form-field style="padding:10px;">
+                                                <input matInput #inputPasswd2
+                                                    placeholder="{{'lang.retypeNewPassword' | translate}}" required
+                                                    [type]="hidePassword ? 'password' : 'text'"
+                                                    formControlName="retypePasswordCtrl">
+                                                <mat-icon matSuffix (click)="hidePassword = !hidePassword"
+                                                    class="fa fa-2x"
+                                                    [ngClass]="[hidePassword ? 'fa-eye-slash' : 'fa-eye']"></mat-icon>
+                                                <mat-hint
+                                                    *ngIf="!firstFormGroup.controls['retypePasswordCtrl'].hasError('mismatch') && firstFormGroup.controls['retypePasswordCtrl'].value != ''">
+                                                    <i color="accent" class="fa fa-check"></i>
+                                                    <span color="accent">{{'lang.passwordMatch' | translate}}</span>
+                                                </mat-hint>
+                                                <mat-error>{{'lang.passwordNotMatch' | translate}} !</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="passwordRules.renewal.enabled || passwordRules.historyLastUse.enabled"
+                                        class="form-group">
+                                        <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                                            <div class="alert alert-warning" role="alert" [innerHTML]="otherRuleText"
+                                                style="text-align:center;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="text-align:center;">
+                                            <button mat-raised-button color="primary" type="button"
+                                                (click)="updatePassword()"
+                                                [disabled]="!firstFormGroup.valid">{{'lang.update' | translate}}</button>
+                                            <button mat-raised-button color="default" type="button"
+                                                (click)="showPassword=false">{{'lang.cancel' | translate}}</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div *ngIf="user.status == 'ABS' && !showPassword" class="text-warning"
+                                style="position: absolute;opacity: 0.25;font-size: 120px;transform: rotate(324deg);-webkit-transform: rotate(324deg);margin-left: 35%;margin-top: 90px;">
+                                {{user.status}}</div>
+                            <form class="form-horizontal" (ngSubmit)="onSubmit()" #profileForm="ngForm"
+                                *ngIf="!showPassword">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <div class="pull-left">
+                                            <div class="avatar" style="font-size:90px;text-align:center;">
+                                                <i class="fa fa-user" style="font-size:90px;padding-top:5px;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <mat-form-field>
+                                                <input matInput *ngIf="creationMode" type="text"
+                                                    title="{{'lang.id' | translate}}" name="user_id"
+                                                    [(ngModel)]="user.userId" placeholder="{{'lang.id' | translate}}"
+                                                    pattern="^[\w.@-]*$" required (keyup)="setLowerUserId()"
+                                                    maxlength="128">
+                                                <input matInput *ngIf="!creationMode" type="text"
+                                                    title="{{'lang.id' | translate}}" value="{{user.user_id}}"
+                                                    placeholder="{{'lang.id' | translate}}" disabled>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-5" style="font-weight:bold;">
+                                        <mat-form-field>
+                                            <input matInput type="text" id="lastname" name="lastname" maxlength="255"
+                                                title="{{'lang.lastname' | translate}}"
+                                                placeholder="{{'lang.lastname' | translate}}"
+                                                [(ngModel)]="user.lastname" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-5" style="font-weight:bold;">
+                                        <mat-form-field>
+                                            <input matInput type="text" id="firstname" name="firstname" maxlength="255"
+                                                title="{{'lang.firstname' | translate}}"
+                                                placeholder="{{'lang.firstname' | translate}}"
+                                                [(ngModel)]="user.firstname" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-2" style="font-style:italic;">
+                                        <mat-form-field>
+                                            <input matInput type="text" id="initials" name="initials" maxlength="32"
+                                                title="{{'lang.initials' | translate}}"
+                                                placeholder="{{'lang.initials' | translate}}"
+                                                [(ngModel)]="user.initials">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <mat-form-field>
+                                            <input matInput type="tel" id="phone" name="phone" maxlength="32"
+                                                title="{{'lang.phoneNumber' | translate}}"
+                                                placeholder="{{'lang.phoneNumber' | translate}}"
+                                                [(ngModel)]="user.phone" pattern="\+?((|\ |\.|\(|\)|\-)?(\d)*)*\d$"
+                                                [disabled]="(creationMode && !canManagePersonalDatas) || (!creationMode && (!canManagePersonalDatas || !canViewPersonalDatas))">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <mat-form-field>
+                                            <input matInput type="email" id="mail" name="mail"
+                                                title="{{'lang.email' | translate}}"
+                                                placeholder="{{'lang.email' | translate}}" [(ngModel)]="user.mail"
+                                                maxlength="255"
+                                                pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)" required>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <mat-accordion>
+                                    <mat-expansion-panel [expanded]="creationMode">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title style="color: rgba(0,0,0,0.54);">
+                                                {{'lang.otherInformations' | translate}}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            <app-input-correspondent-group #appInputCorrespondentGroup [id]="serialId" [type]="'user'" style="display: block;"></app-input-correspondent-group>
+                                            <mat-form-field>
+                                                <mat-label>{{'lang.accountType' | translate}}</mat-label>
+                                                <mat-select [(ngModel)]="user.mode" id="accountType" name="accountType"
+                                                    required
+                                                    [disabled]="headerService.user.mode === 'standard' && ['root_visible','root_invisible'].indexOf(user.mode) > -1">
+                                                    <ng-container *ngFor="let mode of adminModes | sortBy : 'label'">
+                                                        <mat-option [value]="mode.id"
+                                                            [disabled]="headerService.user.mode === 'standard' && ['root_visible','root_invisible'].indexOf(mode.id) > -1"
+                                                            [title]="headerService.user.mode === 'standard' && ['root_visible','root_invisible'].indexOf(mode.id) > -1 ? ('lang.mustSuperadmin' | translate) : ''">
+                                                            {{mode.label}}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="user.mode === 'rest'">
+                                            <mat-form-field>
+                                                <mat-label>{{'lang.authorizedRoutes' | translate}}</mat-label>
+                                                <textarea matInput name="authorizedApi" [(ngModel)]="user.authorizedApi"
+                                                    placeholder="Ex : PUT/attachments/{id}"></textarea>
+                                                <mat-hint>{{'lang.authorizedRoutesInformations' | translate}} <a
+                                                        [href]="docApiUrl"
+                                                        target="_blank">{{'lang.here' | translate}}</a></mat-hint>
+                                            </mat-form-field>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <div style="text-align:center;">
+                                        <button mat-raised-button color="primary" *ngIf="creationMode" type="submit"
+                                            [disabled]="!profileForm.form.valid">{{'lang.save' | translate}}</button>
+                                        <button mat-raised-button color="primary" *ngIf="!creationMode" type="submit"
+                                            [disabled]="!profileForm.form.valid">{{'lang.update' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-tab>
+                        <mat-tab *ngIf="!creationMode" label="{{'lang.groups' | translate}}">
+                            <mat-nav-list>
+                                <mat-list-item *ngFor="let group of user.allGroups" disableRipple="true">
+                                    <mat-slide-toggle id="{{group.group_id}}" color="primary"
+                                        [checked]="group.checked == true" [disabled]="!group.enabled"
+                                        (change)="toggleGroup(group)">
+                                        {{group.group_desc}}</mat-slide-toggle>
+                                </mat-list-item>
+                            </mat-nav-list>
+                        </mat-tab>
+                        <mat-tab *ngIf="!creationMode" label="{{'lang.entities' | translate}}">
+                            <app-maarch-flat-tree #maarchTree (afterSelectNode)="addEntity($event)"
+                                [selectionPropagation]="false"  [openState]="'all'"
+                                (afterDeselectNode)="deleteEntity($event)"></app-maarch-flat-tree>
+                        </mat-tab>
+                        <mat-tab *ngIf="!creationMode" label="{{'lang.baskets' | translate}}">
+                            <div class="col-sm-6" style="overflow:hidden;">
+                                <mat-list>
+                                    <mat-list-item>
+                                        <mat-icon mat-list-icon color="primary">
+                                            <mat-checkbox color="primary"
+                                                (change)="$event ? masterToggleBaskets($event) : null"
+                                                [checked]="selectionBaskets.hasValue()"
+                                                matTooltip="{{'lang.selectAll' | translate}}">
+                                            </mat-checkbox>
+                                        </mat-icon>
+                                        <p mat-line *ngIf="!selectionBaskets.hasValue()"
+                                            style="opacity: 0.5;font-style: italic;font-size: 80%;margin-top:10px;">
+                                            {{'lang.selectAll' | translate}}
+                                        </p>
+                                        <p mat-line *ngIf="selectionBaskets.hasValue()" style="margin-top:10px;">
+                                            <button [matMenuTriggerFor]="menu" mat-icon-button
+                                                matTooltip="{{'lang.redirectBaskets' | translate}}">
+                                                <mat-icon class="fa fa-reply"></mat-icon>
+                                                <mat-divider [vertical]="true" class="vertical-divider"></mat-divider>
+                                            </button>
+                                            <button color="warn" mat-icon-button
+                                                matTooltip="{{'lang.disableBasket' | translate}}"
+                                                (click)="toggleBasket(false)">
+                                                <mat-icon class="fa fa-ban"></mat-icon>
+                                            </button>
+                                            <button color="accent" mat-icon-button
+                                                matTooltip="{{'lang.enableBasket' | translate}}"
+                                                (click)="toggleBasket(true)">
+                                                <mat-icon class="fa fa-check"></mat-icon>
+                                            </button>
+                                            <mat-menu #menu="matMenu" style="width:200px !important;">
+                                                <app-plugin-autocomplete [labelPlaceholder]="'lang.redirectBaskets' | translate"
+                                                    [routeDatas]="['/rest/autocomplete/users']"
+                                                    [targetSearchKey]="'idToDisplay'"
+                                                    [subInfoKey]="'descriptionToDisplay'"
+                                                    [disableItems]="[user.id]"
+                                                    [styles]="['no-margin']"
+                                                    (triggerEvent)="addBasketRedirection($event)" appearance="outline">
+                                                </app-plugin-autocomplete>
+                                            </mat-menu>
+                                        </p>
+                                    </mat-list-item>
+                                    <mat-divider></mat-divider>
+                                    <ng-container *ngFor="let basket of user.baskets;let i = index">
+                                        <mat-list-item *ngIf="basket.userToDisplay == null" style="cursor: pointer;">
+                                            <mat-icon mat-list-icon color="primary" *ngIf="basket.enabled">
+                                                <mat-checkbox (click)="$event.stopPropagation()"
+                                                    (change)="$event ? selectionBaskets.toggle(basket) : null"
+                                                    [checked]="selectionBaskets.isSelected(basket)" color="primary">
+                                                </mat-checkbox>
+                                            </mat-icon>
+                                            <h4 mat-line color="primary" style="display: flex;align-items: center;">
+                                                <span (click)="selectionBaskets.toggle(basket);"
+                                                    matTooltip="{{basket.basket_name}} [{{basket.group_desc}}]"
+                                                    [ngStyle]="{'opacity': basket.allowed ? '1' : '0.5'}"
+                                                    style="flex: 2;overflow: hidden;text-overflow: ellipsis;">
+                                                    {{basket.basket_name}}
+                                                    <span class="label label-primary"
+                                                        style="font-weight:normal">{{basket.group_desc}}</span>
+                                                </span>
+                                            </h4>
+                                        </mat-list-item>
+                                    </ng-container>
+                                </mat-list>
+                            </div>
+                            <div class="col-sm-6" style="overflow:hidden;">
+                                <mat-tab-group>
+                                    <mat-tab label="{{'lang.redirectedBaskets' | translate}}">
+                                        <mat-list>
+                                            <ng-container *ngFor="let basket of user.redirectedBaskets;let i = index">
+                                                <mat-list-item>
+                                                    <mat-icon mat-list-icon color="primary" style="margin-top:-60px;"
+                                                        class="fa fa-paper-plane">
+                                                    </mat-icon>
+                                                    <h4 mat-line color="primary">{{basket.basket_name}}
+                                                        <span class="label label-primary"
+                                                            style="font-weight:normal">{{basket.group_desc}}</span>
+                                                    </h4>
+                                                    <p mat-line>
+                                                        <mat-form-field>
+                                                            <input type="text" color="warn" matInput disabled
+                                                                value="{{'lang.redirectedTo' | translate}} {{basket.userToDisplay}}">
+                                                            <button mat-button color="warn" matSuffix mat-icon-button
+                                                                aria-label="Clear"
+                                                                (click)="delBasketRedirection(basket,i)"
+                                                                matTooltip="{{'lang.deleteRedirection' | translate}}">
+                                                                <mat-icon color="warn" class="fa fa-times text-danger">
+                                                                </mat-icon>
+                                                            </button>
+                                                        </mat-form-field>
+                                                    </p>
+                                                </mat-list-item>
+                                            </ng-container>
+                                        </mat-list>
+                                    </mat-tab>
+                                </mat-tab-group>
+
+                                <mat-tab-group>
+                                    <mat-tab label="{{'lang.assignedBaskets' | translate}}">
+                                        <mat-list>
+                                            <ng-container *ngFor="let basket of user.assignedBaskets;let i = index">
+                                                <mat-list-item>
+                                                    <mat-icon mat-list-icon color="primary" style="margin-top:-60px;"
+                                                        class="fa fa-reply">
+                                                    </mat-icon>
+                                                    <h4 mat-line color="primary">{{basket.basket_name}}
+                                                        <span class="label label-primary"
+                                                            style="font-weight:normal">{{basket.group_desc}}</span>
+                                                    </h4>
+                                                    <p mat-line>
+                                                        <app-plugin-autocomplete *ngIf="basket.userToDisplay == null"
+                                                            [labelPlaceholder]="'lang.redirectBaskets' | translate"
+                                                            [routeDatas]="['/rest/autocomplete/users']"
+                                                            [targetSearchKey]="'idToDisplay'"
+                                                            [subInfoKey]="'descriptionToDisplay'"
+                                                            (triggerEvent)="reassignBasketRedirection($event,basket,i)"
+                                                            appearance="outline"></app-plugin-autocomplete>
+                                                        <mat-form-field>
+                                                            <input type="text" color="warn" matInput disabled
+                                                                value="{{'lang.assignBy' | translate}} {{basket.userToDisplay}}">
+                                                            <button mat-button color="warn" matSuffix mat-icon-button
+                                                                aria-label="Clear" (click)="basket.userToDisplay=null"
+                                                                matTooltip="{{'lang.reassign' | translate}}">
+                                                                <mat-icon color="primary" class="fa fa-edit"></mat-icon>
+                                                            </button>
+                                                            <button mat-button color="warn" matSuffix mat-icon-button
+                                                                aria-label="Clear"
+                                                                (click)="delBasketAssignRedirection(basket,i)"
+                                                                matTooltip="{{'lang.deleteAssignation' | translate}}">
+                                                                <mat-icon color="warn" class="fa fa-times text-danger">
+                                                                </mat-icon>
+                                                            </button>
+                                                        </mat-form-field>
+                                                    </p>
+                                                </mat-list-item>
+                                            </ng-container>
+                                        </mat-list>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                        </mat-tab>
+                        <mat-tab *ngIf="!creationMode" label="{{'lang.signatures' | translate}}"
+                            [disabled]="!canViewPersonalDatas">
+                            <div *ngIf="canManagePersonalDatas" dnd-droppable
+                                matTooltip="{{'lang.uploadSignFileInfo' | translate}}"
+                                (click)="clickOnUploader('uploadSignFile')" [class.dndFileHighlighted]="highlightMe"
+                                (dragover)="highlightMe=true" (dragleave)="highlightMe=false"
+                                (onDropSuccess)="test($event);highlightMe=false;" class="dndFile">
+                                {{'lang.uploadSignFile' | translate}}
+                            </div>
+                            <div style="display: flex;align-items: flex-start;">
+                                <div style="flex:1;">
+                                    <div class="col-md-3 col-sm-6 col-xm-12"
+                                        *ngFor="let signature of user.signatures; let i = index">
+                                        <mat-card style="margin-bottom:10px;overflow:hidden;">
+                                            <mat-card-content style="text-align:center;">
+                                                <mat-form-field floatLabel="never">
+                                                    <input matInput type="text" [(ngModel)]="signature.signature_label"
+                                                        name="selectedSignatureLabel"
+                                                        placeholder="{{'lang.label' | translate}}"
+                                                        (change)="updateSignature(i)"
+                                                        [disabled]="!canManagePersonalDatas">
+                                                    <button mat-button matSuffix mat-icon-button
+                                                        (click)="deleteSignature(signature)" color="warn"
+                                                        matTooltip="{{'lang.delete' | translate}}"
+                                                        [disabled]="!canManagePersonalDatas">
+                                                        <mat-icon class="fa fa-times"></mat-icon>
+                                                    </button>
+                                                </mat-form-field>
+                                                <img [src]="'../rest/users/' + user.id + '/signatures/' + signature.id + '/content' | secureUrl | async"
+                                                    alt="Signature" style="width:auto;height:60px;">
+                                            </mat-card-content>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button *ngIf="user.signatures.length > 0 && canManagePersonalDatas" mat-icon-button
+                                        color="primary" (click)="synchronizeSignatures()"
+                                        matTooltip="{{'lang.syncSignsToMaarchParapheur' | translate}}"
+                                        [disabled]="!externalSignatoryBook.canSynchronizeSignatures() || loadingSign">
+                                        <mat-icon class="fa fa-sync-alt fa-2x" [class.fa-spin]="loadingSign"></mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <form (ngSubmit)="submitSignature()" #signatureForm="ngForm" style="display:none;">
+                                <div class="col-md-11">
+                                    <input type="text" [(ngModel)]="signatureModel.label" id="signLabel" name="label"
+                                        placeholder="{{'lang.label' | translate}}" class="form-control" required>
+                                    <div class="form-inline hide">
+                                        <div class="form-group">
+                                            <input type="file" name="files[]" id="uploadSignFile"
+                                                (change)="uploadSignatureTrigger($event)" accept="image/*">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1" style="margin-bottom:5px;">
+                                    <button class="form-control btn btn-sm btn-success" type="submit"
+                                        [disabled]="!signatureForm.form.valid || !signatureModel.size">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div [ngClass]="[signatureModel.size != '' ? 'col-md-10' : 'col-md-12']">
+                                    <div class="upload-drop-zone" (click)="clickOnUploader('uploadSignFile')"
+                                        style="cursor:pointer">
+                                        {{'lang.clickOn' | translate}}
+                                        <i class="fa fa-upload fa-2x"></i> (
+                                        < 2MB ) </div> </div> <div class="col-md-2" *ngIf="signatureModel.size">
+                                            <img id="signaturePreview" src="{{signatureModel.base64ForJs}}"
+                                                alt="Invalid image" style="width: 100%;">
+                                    </div>
+                            </form>
+                        </mat-tab>
+                        <mat-tab *ngIf="!creationMode" label="{{'lang.history' | translate}}">
+                            <div class="col-md-12">
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-xs-6">
+                                            <mat-form-field>
+                                                <input matInput #filterHistory (keyup)="applyFilter($event.target.value)"
+                                                    placeholder="{{'lang.filterBy' | translate}}">
+                                                <button mat-button *ngIf="filterHistory.value" matSuffix
+                                                    mat-icon-button aria-label="Clear" (click)="applyFilter(''); filterHistory.value = ''"
+                                                    [title]="'lang.clearFilter' | translate">
+                                                    <mat-icon class="fas fa-times" style="color:#B3B3B3"></mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-6 col-xs-6">
+                                            <div class="table-head table-head-tool">
+                                                <span style="position: relative;">
+                                                    <mat-paginator #paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100, 150]"></mat-paginator>
+                                                    <app-select-page [paginator]="paginator"></app-select-page>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <mat-table #table [dataSource]="dataSource" matSort matSortActive="event_date"
+                                        matSortDirection="desc">
+                                        <ng-container matColumnDef="event_date">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:1;">
+                                                {{'lang.date' | translate}}
+                                            </mat-header-cell>
+                                            <mat-cell *matCellDef="let element" style="flex:1;">
+                                                {{element.event_date | date : "dd/MM/y HH:mm"}}</mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="record_id">
+                                            <mat-header-cell *matHeaderCellDef style="flex:1;">
+                                                {{'lang.technicalId' | translate}}
+                                            </mat-header-cell>
+                                            <mat-cell *matCellDef="let element" style="flex:1;">{{element.record_id}}
+                                            </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="info">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:2;">
+                                                {{'lang.description' | translate}}</mat-header-cell>
+                                            <mat-cell *matCellDef="let element" style="flex:2;"> {{element.info}}
+                                            </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="remote_ip">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header style="flex:1;">
+                                                {{'lang.ip' | translate}}
+                                            </mat-header-cell>
+                                            <mat-cell *matCellDef="let element" style="flex:1;"> {{element.remote_ip}}
+                                            </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                    </mat-table>
+                                    <div class="row">
+                                        <div class="col-md-3 pull-right" style="padding-top:10px;">
+                                            <mat-form-field>
+                                                <input matInput [(ngModel)]="minDate" [matDatepicker]="picker"
+                                                    placeholder="{{'lang.since' | translate}}" disabled>
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker startView="month" [startAt]="minDate">
+                                                </mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </mat-card>
+            </div>
+        </div>
+    </mat-sidenav-content>
+
+    <mat-sidenav #snav2 [mode]="appService.getViewMode() ? 'over' : 'side'" [fixedInViewport]="appService.getViewMode()"
+        fixedTopGap="56" position='end' [opened]="appService.getViewMode() || creationMode ? false : true"
+        style="overflow-x:hidden;max-width:500px;">
+        <mat-list>
+            <h3 mat-subheader>{{'lang.groups' | translate}}</h3>
+            <mat-list-item *ngFor="let userGroup of user.groups">
+                <mat-icon color="primary" mat-list-icon class="fa fa-users"></mat-icon>
+                <h4 mat-line>{{userGroup.group_desc}}</h4>
+                <p mat-line>
+                    <mat-form-field style="font-size:10px;">
+                        <input matInput type="text" id="role" name="role" title="{{'lang.role' | translate}}"
+                            placeholder="{{'lang.role' | translate}}" [(ngModel)]="userGroup.role"
+                            (change)="updateGroup(userGroup)">
+                        <mat-hint matTooltip="{{'lang.perimeter' | translate}}">{{userGroup.maarch_comment}}</mat-hint>
+                    </mat-form-field>
+                </p>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>{{'lang.entities' | translate}}</h3>
+            <mat-list-item *ngFor="let userEntity of user.entities">
+                <mat-icon color="primary" *ngIf="userEntity.primary_entity == 'Y'" mat-list-icon class="fa fa-sitemap">
+                </mat-icon>
+                <mat-icon color="primary" *ngIf="userEntity.primary_entity != 'Y'" mat-list-icon class="fa fa-sitemap"
+                    style="position:relative;">
+                    <button mat-icon-button
+                        style="cursor:pointer;position: absolute;right: -20px;top: -20px;font-size:10px;"
+                        (click)="updatePrimaryEntity(userEntity)"
+                        matTooltip="{{'lang.entityTooglePrimary' | translate}}">
+                        <mat-icon class="fa fa-arrow-up"></mat-icon>
+                    </button>
+                </mat-icon>
+                <h4 mat-line [ngStyle]="{'font-weight': userEntity.primary_entity == 'Y' ? 'bold' : 'normal'}"
+                    matTooltip="{{userEntity.entity_label}}">
+                    {{userEntity.entity_label}}
+                    <span *ngIf="userEntity.primary_entity == 'Y'" class="label label-primary"
+                        style="font-weight:normal">{{'lang.primary' | translate}}</span>
+                </h4>
+                <p mat-line>
+                    <mat-form-field style="font-size:10px;">
+                        <input matInput type="text" id="role" name="role" title="{{'lang.role' | translate}}"
+                            placeholder="{{'lang.role' | translate}}" [(ngModel)]="userEntity.user_role"
+                            (change)="updateEntity(userEntity)">
+                    </mat-form-field>
+                </p>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </mat-sidenav>
+
+</mat-sidenav-container>

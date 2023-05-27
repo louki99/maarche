@@ -1,0 +1,25 @@
+<form [formGroup]="documentFinalAction" style="display: contents;">
+    <mat-form-field appearance="outline">
+        <mat-label>{{'lang.bindingDocumentFinalAction' | translate}}</mat-label>
+        <mat-select formControlName="bindingDocumentFinalAction" id="bindingDocumentFinalAction"
+        name="bindingDocumentFinalAction"
+        title="{{'lang.bindingDocumentFinalAction' | translate}}">
+            <mat-option *ngFor="let item of finalActionValues" [value]="item">
+                {{ 'lang.' + item | translate}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <br>
+    
+    <mat-form-field appearance="outline">
+        <mat-label>{{'lang.nonBindingDocumentFinalAction' | translate}}</mat-label>
+        <mat-select formControlName="nonBindingDocumentFinalAction" id="nonBindingDocumentFinalAction"
+        name="nonBindingDocumentFinalAction" 
+        title="{{'lang.nonBindingDocumentFinalAction' | translate}}">
+            <mat-option *ngFor="let item of finalActionValues" [value]="item">
+                {{ 'lang.' + item | translate}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>

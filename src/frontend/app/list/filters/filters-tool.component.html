@@ -1,0 +1,105 @@
+<div class="filtersContent">
+    <form [formGroup]="stateForm" class="filterTool">
+        <mat-form-field floatLabel="never" class="basket-search">
+            <input class="metaSearch" type="text" matInput placeholder="{{title}}" formControlName="stateGroup"
+                [matAutocomplete]="autoGroup" (focus)="initFilters()" (keyup.enter)="metaSearch($event);">
+            <button mat-icon-button matPrefix>
+                <mat-icon class="fa fa-search"></mat-icon>
+            </button>
+            <mat-button-toggle matSuffix class="processLimitButton" (click)="$event.stopPropagation();"
+                [checked]="this.listProperties.delayed" value="delayed" title="{{'lang.displayProcessLimitRes' | translate}}"
+                (change)="setFilters($event, 'delayed')">
+                <mat-icon fontSet="fas" fontIcon="fa-stopwatch fa-2x"></mat-icon>
+            </mat-button-toggle>
+            <mat-autocomplete #autoGroup="matAutocomplete" (optionSelected)="selectFilter($event)"
+                [class]="'autoCompletePanelFilter'">
+                <mat-option *ngIf="isLoading" class="is-loading">
+                    <mat-spinner diameter="50"></mat-spinner>
+                </mat-option>
+                <ng-container *ngIf="!isLoading">
+                    <ng-container *ngFor="let group of stateGroupOptions | async">
+                        <mat-optgroup *ngIf="group.names.length > 0" [label]="group.letter">
+                            <mat-option *ngFor="let name of group.names" [value]="name" class="filterOptionContent">
+                                <span [class.undefined]="name.label === '_UNDEFINED'"
+                                    style="flex:1;overflow: hidden;text-overflow: ellipsis;">{{name.label}}</span>
+                                <span class="filterBadges">
+                                    <span class="badge badge-{{name.id}}" style="min-width:auto;">{{name.count}}</span>
+                                </span>
+                            </mat-option>
+                        </mat-optgroup>
+                    </ng-container>
+                </ng-container>
+            </mat-autocomplete>
+        </mat-form-field>
+    </form>
+    <div class="orderTool">
+        <mat-form-field class="basket-order">
+            <mat-icon matPrefix class="fa fa-list"></mat-icon>
+            <mat-select [(ngModel)]="this.listProperties.order" (selectionChange)="updateFilters()">
+                <mat-option value="" style="text-align: center;">{{'lang.defaultOrder' | translate}}</mat-option>
+                <mat-option [value]="column.id" *ngFor="let column of displayColsOrder">
+                    {{'lang.' + column.id | translate}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="ascDescTool">
+        <button [disabled]="this.listProperties.order == ''"
+            [style.opacity]="this.listProperties.order == '' ? '0.2' : '1'" mat-fab
+            [title]="this.listProperties.orderDir == 'DESC' ? ('lang.descOrder' | translate) : ('lang.ascOrder' | translate)"
+            style="color: rgba(0,0,0,0.38);" (click)="changeOrderDir();">
+            <mat-icon *ngIf="this.listProperties.orderDir == 'DESC'" fontSet="fas" fontIcon="fa-sort-amount-down fa-2x">
+            </mat-icon>
+            <mat-icon *ngIf="this.listProperties.orderDir == 'ASC'" fontSet="fas" fontIcon="fa-sort-amount-up fa-2x">
+            </mat-icon>
+        </button>
+    </div>
+</div>
+
+
+<!--<mat-button-toggle-group #group="matButtonToggleGroup" class="envFilter" multiple>
+    
+    <mat-button-toggle class="processLimitButton" [checked]="this.listProperties.delayed" value="delayed" title="{{'lang.displayProcessLimitRes' | translate}}"
+        (change)="setFilters($event, 'delayed')">
+        <mat-icon fontSet="fas" fontIcon="fa-stopwatch fa-2x"></mat-icon>
+    </mat-button-toggle>
+
+
+</mat-button-toggle-group>-->
+<div class="filterBadges">
+    <span *ngIf="haveFilters()" class="label badge-eraser" title="{{'lang.eraseAllFilters' | translate}}"
+        (click)="this.listProperties.search='';removeFilters();"><i class="fas fa-eraser"></i></span>
+
+    <span class="label badge-search" *ngIf="this.listProperties.search !== ''"
+        title="{{'lang.subject' | translate}} / {{'lang.chronoNumber' | translate}}"
+        (click)="this.listProperties.search='';updateFilters();">{{this.listProperties.search}}
+        <i class="fa fa-times-circle"></i></span>
+    <span class="label badge-categories" title="{{'lang.categories' | translate}}"
+        *ngFor="let category of this.listProperties.categories; let i=index"
+        (click)="removeFilter('categories', i)">{{category.label}}
+        <i class="fa fa-times-circle"></i></span>
+    <span class="label badge-priorities" title="{{'lang.priorities' | translate}}"
+        *ngFor="let priority of this.listProperties.priorities; let i=index"
+        (click)="removeFilter('priorities', i)">{{priority.label}}
+        <i class="fa fa-times-circle"></i></span>
+    <span class="label badge-statuses" title="{{'lang.statuses' | translate}}"
+        *ngFor="let status of this.listProperties.statuses; let i=index"
+        (click)="removeFilter('statuses', i)">{{status.label}}
+        <i class="fa fa-times-circle"></i></span>
+    <span class="label badge-entities" title="{{'lang.entities' | translate}}"
+        *ngFor="let entity of this.listProperties.entities; let i=index"
+        (click)="removeFilter('entities', i)">{{entity.label}}
+        <i class="fa fa-times-circle"></i></span>
+    <span class="label badge-subEntities" title="{{'lang.subEntities' | translate}}"
+        *ngFor="let subEntity of this.listProperties.subEntities; let i=index"
+        (click)="removeFilter('subEntities', i)">{{subEntity.label}}
+        <i class="fa fa-times-circle"></i></span>
+    <span class="label badge-doctypes" title="{{'lang.doctypes' | translate}}"
+        *ngFor="let doctype of this.listProperties.doctypes; let i=index"
+        (click)="removeFilter('doctypes', i)">{{doctype.label}}
+        <i class="fa fa-times-circle"></i></span>
+    <span class="label badge-folders" title="{{'lang.folders' | translate}}"
+        *ngFor="let folder of this.listProperties.folders; let i=index"
+        (click)="removeFilter('folders', i)">{{folder.label}}
+        <i class="fa fa-times-circle"></i></span>
+</div>

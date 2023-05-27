@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <CONFIG>
+        <name>visa</name>
+        <comment>_VISA_WORKFLOW_COMMENT</comment>
+        <loaded>true</loaded>
+        <routing_template>modules/visa/Bordereau_visa_modele.pdf</routing_template>
+		
+		<exeSign>C:\Program Files (x86)\Maarch\DIS\DISPDFSigner.exe</exeSign>
+		<showAppletSign>false</showAppletSign>
+		<reason>Signé et approuvé par </reason>
+		<location>Maarch-les-Bains, Ville de Maarch</location>
+		
+		<licence_number>40dd49384bf59e98d10d</licence_number>
+
+		<width_blocsign>150</width_blocsign>
+		<height_blocsign>100</height_blocsign>
+        <confirm_sign_by_email>false</confirm_sign_by_email>
+    </CONFIG>
+</root>

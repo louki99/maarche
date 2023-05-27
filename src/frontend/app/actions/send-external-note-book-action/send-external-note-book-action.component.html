@@ -1,0 +1,66 @@
+<div class="mat-dialog-content-container">
+    <h1 mat-dialog-title>{{data.action.label}}</h1>
+    <div mat-dialog-content>
+        <div *ngIf="loading" class="loading" style="display:flex;height:100%;">
+            <mat-spinner style="margin:auto;"></mat-spinner>
+        </div>
+        <mat-sidenav-container autosize style="height:100%;">
+            <mat-sidenav-content style="background: white;">
+                <div class="row" style="margin: 0;">
+                    <div class="col-md-12">
+                        {{'lang.makeActionOn' | translate}}
+                        <b *ngIf="data.resIds.length === 0" color="primary"
+                            class="highlight">{{'lang.currentIndexingMail' | translate}}</b>
+                        <b *ngIf="data.resIds.length == 1" color="primary"
+                            class="highlight">{{data.resource.chrono}}</b>
+                        <b *ngIf="data.resIds.length > 1" color="primary" class="highlight">{{data.resIds.length}}
+                            {{'lang.elements' | translate}}</b> ?
+                    </div>
+                    <div>
+                        <div class="col-md-12" style="padding-top: 10px;" *ngIf="additionalsInfos.users.length != 0">
+                            <app-plugin-autocomplete [labelPlaceholder]="'lang.userMaarchParapheur' | translate"
+                                [datas]="additionalsInfos.users" [targetSearchKey]="'displayName'" [subInfoKey]="'email'"
+                                (triggerEvent)="setVal($event)" [singleMode]="true" appearance="outline">
+                            </app-plugin-autocomplete>
+                        </div>
+                        <div class="col-md-12" *ngIf="additionalsInfos.users.length == 0">
+                            {{'lang.noUserDefinedInMaarchParapheur' | translate}}
+                        </div>
+                        <div class="col-md-12" *ngIf="additionalsInfos.noMail.length != 0">
+                            <div>
+                                <div class="alert-message alert-message-danger mailList" role="alert">
+                                    <p>
+                                        {{'lang.canNotMakeAction' | translate}} :
+                                    </p>
+                                    <ul>
+                                        <li *ngFor="let mail of additionalsInfos.noMail">
+                                            <b>{{mail.alt_identifier}}</b> : {{'lang.' + mail.reason | translate}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="padding-top: 10px;">
+                        <app-note-editor #noteEditor [resIds]="data.resIds"></app-note-editor>
+                    </div>
+                    <ng-container *ngIf="showToggle">
+                        <div class="col-md-12" style="margin: 10px 0px 10px 0px;">
+                            <mat-slide-toggle name="history" color="primary"
+                                [title]="'lang.canGoToNextResDesc' | translate" [(ngModel)]="canGoToNextRes" [checked]="canGoToNextRes">
+                                {{'lang.canGoToNextRes' | translate}}
+                            </mat-slide-toggle>
+                        </div>
+                        <mat-divider></mat-divider>
+                    </ng-container>
+                </div>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </div>
+    <span class="divider-modal"></span>
+    <div mat-dialog-actions class="actions">
+        <button mat-raised-button mat-button color="primary" [disabled]="loading || checkValidAction()"
+            (click)="onSubmit()">{{'lang.validate' | translate}}</button>
+        <button mat-raised-button mat-button [disabled]="loading" [mat-dialog-close]="">{{'lang.cancel' | translate}}</button>
+    </div>
+</div>
